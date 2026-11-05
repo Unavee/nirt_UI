@@ -10,6 +10,10 @@ import { INITIAL_SERVICE_TICKETS } from "@/data/serviceTicketsData";
 import { MASTER_AUDIT_LOGS } from "@/data/auditTrailData";
 import { INITIAL_APPROVAL_REQUESTS } from "@/data/approvalsData";
 import ApprovalDecisionModal from "@/components/approvals/ApprovalDecisionModal";
+import { INITIAL_STORE_INVENTORY } from "@/data/storeInventoryData";
+import MaterialIssueModal from "@/components/store/MaterialIssueModal";
+import MaterialReturnModal from "@/components/store/MaterialReturnModal";
+import StoreManagementView from "@/components/store/StoreManagementView";
 import { INITIAL_PROCUREMENT_ITEMS } from "@/data/procurementData";
 import ProcurementModal from "@/components/procurement/ProcurementModal";
 import GoodsReceiptModal from "@/components/procurement/GoodsReceiptModal";
@@ -105,6 +109,15 @@ export default function ProjectDetailPage() {
   const [selectedProcurementItem, setSelectedProcurementItem] = useState(null);
   const [isProcurementModalOpen, setIsProcurementModalOpen] = useState(false);
   const [isGRNModalOpen, setIsGRNModalOpen] = useState(false);
+  const [storeInventory, setStoreInventory] = useState(
+    INITIAL_STORE_INVENTORY.filter(i => i.projectId === project.id).length > 0
+      ? INITIAL_STORE_INVENTORY.filter(i => i.projectId === project.id)
+      : INITIAL_STORE_INVENTORY.map(i => ({ ...i, projectId: project.id }))
+  );
+  const [selectedStoreItem, setSelectedStoreItem] = useState(null);
+  const [isIssueModalOpen, setIsIssueModalOpen] = useState(false);
+  const [isReturnModalOpen, setIsReturnModalOpen] = useState(false);
+
 
 
 
@@ -610,7 +623,8 @@ export default function ProjectDetailPage() {
           { id: "approvals", label: `Approvals (Section 33)` },
           { id: "audit", label: "Audit Trail (Section 34)" },
           { id: "discom_subsidy", label: "DISCOM & Feasibility (Sec 12-13)" },
-          { id: "procurement", label: "Procurement & BoM (Section 14)" }
+          { id: "procurement", label: "Procurement & BoM (Section 14)" },
+          { id: "store", label: "Store & Inventory (Section 15)" }
         ].map((tab) => (
           <button
             key={tab.id}
@@ -2025,6 +2039,23 @@ export default function ProjectDetailPage() {
         />
       )}
 
+      
+      {/* TAB: SECTION 15 STORE & INVENTORY MANAGEMENT */}
+      {activeTab === "store" && (
+        <StoreManagementView
+          inventoryItems={storeInventory}
+          project={project}
+          onOpenIssueModal={(item) => {
+            setSelectedStoreItem(item);
+            setIsIssueModalOpen(true);
+          }}
+          onOpenReturnModal={(item) => {
+            setSelectedStoreItem(item);
+            setIsReturnModalOpen(true);
+          }}
+        />
+      )}
+
       {activeTab === "discom_subsidy" && (
         <div className="space-y-6">
           {/* Segmented Sub-Tab Switcher between Section 13, Section 12, and Subsidy */}
@@ -2601,6 +2632,28 @@ export default function ProjectDetailPage() {
 
 
 
+
+
+      {/* SECTION 15: STORE MANAGEMENT MODALS */}
+      <MaterialIssueModal
+        isOpen={isIssueModalOpen}
+        item={selectedStoreItem}
+        projectId={project.id}
+        onClose={() => setIsIssueModalOpen(false)}
+        onConfirmIssue={(updatedItem) => {
+          setStoreInventory(prev => prev.map(i => i.id === updatedItem.id ? updatedItem : i));
+        }}
+      />
+
+      <MaterialReturnModal
+        isOpen={isReturnModalOpen}
+        item={selectedStoreItem}
+        projectId={project.id}
+        onClose={() => setIsReturnModalOpen(false)}
+        onConfirmReturn={(updatedItem) => {
+          setStoreInventory(prev => prev.map(i => i.id === updatedItem.id ? updatedItem : i));
+        }}
+      />
 
       {/* SECTION 14: PROCUREMENT MODALS */}
       <ProcurementModal
