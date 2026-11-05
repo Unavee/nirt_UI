@@ -10,6 +10,9 @@ import { INITIAL_SERVICE_TICKETS } from "@/data/serviceTicketsData";
 import { MASTER_AUDIT_LOGS } from "@/data/auditTrailData";
 import { INITIAL_APPROVAL_REQUESTS } from "@/data/approvalsData";
 import ApprovalDecisionModal from "@/components/approvals/ApprovalDecisionModal";
+import { INITIAL_TECHNICAL_FEASIBILITY } from "@/data/technicalFeasibilityData";
+import FeasibilityAssessmentModal from "@/components/feasibility/FeasibilityAssessmentModal";
+import TechnicalFeasibilityView from "@/components/feasibility/TechnicalFeasibilityView";
 import { INITIAL_DISCOM_APPLICATIONS, DISCOM_STATUS_STAGES } from "@/data/discomApplicationsData";
 import DISCOMStatusModal from "@/components/discom/DISCOMStatusModal";
 import DISCOMSanctionCertificateModal from "@/components/discom/DISCOMSanctionCertificateModal";
@@ -78,6 +81,19 @@ export default function ProjectDetailPage() {
   );
   const [isDiscomStatusModalOpen, setIsDiscomStatusModalOpen] = useState(false);
   const [isSanctionCertModalOpen, setIsSanctionCertModalOpen] = useState(false);
+  const [feasibilityRecord, setFeasibilityRecord] = useState(
+    INITIAL_TECHNICAL_FEASIBILITY.find(f => f.projectId === project.id) || {
+      ...INITIAL_TECHNICAL_FEASIBILITY[0],
+      projectId: project.id,
+      customerName: project.customerName,
+      consumerNumber: project.consumerNumber || "04-219-002-1482",
+      appliedCapacityKw: project.capacityKw || 3.3,
+      approvedCapacityKw: project.capacityKw || 3.3
+    }
+  );
+  const [isFeasibilityModalOpen, setIsFeasibilityModalOpen] = useState(false);
+  const [discomHubSubTab, setDiscomHubSubTab] = useState("feasibility");
+
 
 
   const totalReceived = payments.reduce((acc, curr) => acc + (curr.paymentStatus !== "Bounced" ? curr.amount : 0), 0);
@@ -580,7 +596,7 @@ export default function ProjectDetailPage() {
           { id: "service", label: `Service & O&M (${projectTickets.length})` },
           { id: "approvals", label: `Approvals (Section 33)` },
           { id: "audit", label: "Audit Trail (Section 34)" },
-          { id: "discom_subsidy", label: "DISCOM Management (Section 12)" }
+          { id: "discom_subsidy", label: "DISCOM & Feasibility (Sec 12-13)" }
         ].map((tab) => (
           <button
             key={tab.id}
@@ -1976,7 +1992,57 @@ export default function ProjectDetailPage() {
 
       {activeTab === "discom_subsidy" && (
         <div className="space-y-6">
-          {/* SECTION 12: DISCOM APPLICATION MANAGEMENT CONSOLE */}
+          {/* Segmented Sub-Tab Switcher between Section 13, Section 12, and Subsidy */}
+          <div className="flex items-center gap-2 border-b border-slate-200 pb-3 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <button
+              onClick={() => setDiscomHubSubTab("feasibility")}
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+                discomHubSubTab === "feasibility"
+                  ? "bg-slate-900 text-white shadow-sm"
+                  : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+              }`}
+            >
+              <Activity className="w-3.5 h-3.5 text-blue-400" />
+              <span>Section 13: Technical Feasibility Stage</span>
+            </button>
+
+            <button
+              onClick={() => setDiscomHubSubTab("application")}
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+                discomHubSubTab === "application"
+                  ? "bg-slate-900 text-white shadow-sm"
+                  : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+              }`}
+            >
+              <Building2 className="w-3.5 h-3.5 text-blue-400" />
+              <span>Section 12: DISCOM Application & Filing</span>
+            </button>
+
+            <button
+              onClick={() => setDiscomHubSubTab("subsidy")}
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+                discomHubSubTab === "subsidy"
+                  ? "bg-slate-900 text-white shadow-sm"
+                  : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+              }`}
+            >
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+              <span>PM Surya Ghar Subsidy Sub-Track</span>
+            </button>
+          </div>
+
+          {/* VIEW 1: SECTION 13 DEDICATED TECHNICAL FEASIBILITY */}
+          {discomHubSubTab === "feasibility" && (
+            <TechnicalFeasibilityView
+              feasibilityRecord={feasibilityRecord}
+              project={project}
+              onOpenEditModal={() => setIsFeasibilityModalOpen(true)}
+              onOpenSanctionOrder={() => setIsSanctionCertModalOpen(true)}
+            />
+          )}
+
+          {/* VIEW 2: SECTION 12 DISCOM APPLICATION MANAGEMENT */}
+          {discomHubSubTab === "application" && (
           <div className="p-6 bg-white rounded-2xl border border-slate-200/90 shadow-xs space-y-6">
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
@@ -2237,7 +2303,10 @@ export default function ProjectDetailPage() {
             </div>
           </div>
 
-          {/* PM Surya Ghar National Portal Sub-Track */}
+          )}
+
+          {/* VIEW 3: PM SURYA GHAR SUBSIDY SUB-TRACK */}
+          {discomHubSubTab === "subsidy" && (
           <div className="p-6 bg-white rounded-2xl border border-slate-200/90 shadow-xs space-y-4">
             <div className="border-b border-zinc-200 pb-3 flex justify-between items-center">
               <div>
@@ -2272,6 +2341,7 @@ export default function ProjectDetailPage() {
               ))}
             </div>
           </div>
+          )}
         </div>
       )}
 
@@ -2494,6 +2564,18 @@ export default function ProjectDetailPage() {
 
 
 
+
+
+      {/* SECTION 13: TECHNICAL FEASIBILITY MODAL */}
+      <FeasibilityAssessmentModal
+        isOpen={isFeasibilityModalOpen}
+        feasibilityRecord={feasibilityRecord}
+        project={project}
+        onClose={() => setIsFeasibilityModalOpen(false)}
+        onUpdateFeasibility={(updatedRecord) => {
+          setFeasibilityRecord(updatedRecord);
+        }}
+      />
 
       {/* SECTION 12: DISCOM APPLICATION MODALS */}
       <DISCOMStatusModal
