@@ -9,7 +9,6 @@ import HomePage from "@/pages/HomePage";
 import PipelinesPage from "@/pages/PipelinesPage";
 import ProjectsPage from "@/pages/ProjectsPage";
 import ProjectDetailPage from "@/pages/ProjectDetailPage";
-import CalculatorPage from "@/pages/CalculatorPage";
 import SettingsPage from "@/pages/SettingsPage";
 import UserRolesPage from "@/pages/UserRolesPage";
 import LoginPage from "@/pages/LoginPage";
@@ -25,7 +24,6 @@ export default function App() {
               <Route path="/pipelines" element={<PipelinesPage />} />
               <Route path="/projects" element={<ProjectsPage />} />
               <Route path="/projects/:id" element={<ProjectDetailPage />} />
-              <Route path="/calculator" element={<CalculatorPage />} />
               <Route path="/settings" element={<SettingsPage />} />
               <Route path="/settings/users" element={<UserRolesPage />} />
               <Route path="/login" element={<LoginPage />} />

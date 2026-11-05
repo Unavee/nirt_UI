@@ -7,7 +7,6 @@ import {
   X, 
   FolderKanban, 
   Layers, 
-  Calculator, 
   Settings, 
   LayoutDashboard, 
   ArrowRight,
@@ -40,7 +39,6 @@ export default function CommandPalette({ isOpen, onClose }) {
     { label: "Go to Pipelines (Sales, Execution, Subsidy)", href: "/pipelines", icon: Layers },
     { label: "Go to Projects Registry", href: "/projects", icon: FolderKanban },
     { label: "Go to User & Access Control", href: "/settings/users", icon: ShieldCheck },
-    { label: "Go to Solar Proposal & Sizing Calculator", href: "/calculator", icon: Calculator },
     { label: "Go to Settings & Master Data Hub", href: "/settings", icon: Settings },
   ];
 

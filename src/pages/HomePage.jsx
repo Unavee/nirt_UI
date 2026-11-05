@@ -187,7 +187,7 @@ export default function DashboardPage() {
               TODAY • Action & Daily Tasks
             </h2>
           </div>
-          <span className="text-xs text-slate-400 font-medium">Daily Target Realization</span>
+          {/* <span className="text-xs text-slate-400 font-medium">Daily Target Realization</span> */}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">

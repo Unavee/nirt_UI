@@ -25,7 +25,6 @@ export default function Navbar() {
     { href: "/", label: "Dashboard", icon: LayoutDashboard },
     { href: "/pipelines", label: "Pipelines (3)", icon: Kanban },
     { href: "/projects", label: "Projects Registry", icon: FolderKanban },
-    { href: "/calculator", label: "Solar Sizer & ROI", icon: Calculator },
     { href: "/settings", label: "Settings", icon: Settings },
   ];
 

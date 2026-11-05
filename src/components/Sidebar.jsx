@@ -6,7 +6,6 @@ import {
   LayoutDashboard, 
   Layers, 
   FolderKanban, 
-  Calculator, 
   ShieldCheck, 
   ChevronDown, 
   Plus, 
@@ -31,7 +30,6 @@ export default function Sidebar() {
     { label: "Dashboard", href: "/", icon: LayoutDashboard },
     { label: "5-Pipeline Board", href: "/pipelines", icon: Layers, badge: "20" },
     { label: "Projects Registry", href: "/projects", icon: FolderKanban },
-    { label: "Solar Proposal Sizer", href: "/calculator", icon: Calculator },
   ];
 
   const pipelineStages = [

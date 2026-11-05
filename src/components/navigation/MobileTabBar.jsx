@@ -5,7 +5,7 @@ import {
   Layers, 
   Plus, 
   FolderKanban, 
-  Calculator,
+  Settings,
   ShieldCheck 
 } from "lucide-react";
 import { QuickActionSheet } from "@/components/dashboard/QuickActionSheet";
@@ -20,7 +20,7 @@ export function MobileTabBar() {
     { label: "5 Pipelines", href: "/pipelines", icon: Layers },
     { label: "Action", href: "#action", icon: Plus, isAction: true },
     { label: "Projects", href: "/projects", icon: FolderKanban },
-    { label: "Calculator", href: "/calculator", icon: Calculator },
+    { label: "Settings", href: "/settings", icon: Settings },
   ];
 
   return (
