@@ -6,7 +6,8 @@ import {
   Plus, 
   FolderKanban, 
   Settings,
-  ShieldCheck 
+  ShieldCheck,
+  Smartphone 
 } from "lucide-react";
 import { QuickActionSheet } from "@/components/dashboard/QuickActionSheet";
 
@@ -17,10 +18,10 @@ export function MobileTabBar() {
 
   const navItems = [
     { label: "Dashboard", href: "/", icon: LayoutDashboard },
-    { label: "5 Pipelines", href: "/pipelines", icon: Layers },
-    { label: "Action", href: "#action", icon: Plus, isAction: true },
+    { label: "Pipelines", href: "/pipelines", icon: Layers },
+    { label: "Field Hub", href: "/field", icon: Smartphone },
     { label: "Projects", href: "/projects", icon: FolderKanban },
-    { label: "Settings", href: "/settings", icon: Settings },
+    { label: "Action", href: "#action", icon: Plus, isAction: true },
   ];
 
   return (
