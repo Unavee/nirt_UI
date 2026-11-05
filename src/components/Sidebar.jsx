@@ -16,15 +16,12 @@ import {
   PanelLeftClose,
   PanelLeftOpen
 } from "lucide-react";
-import { QuickActionSheet } from "@/components/dashboard/QuickActionSheet";
 
 export default function Sidebar() {
   const location = useLocation();
   const pathname = location.pathname;
   const { activeRole, switchRole, allRoles, canViewAudit } = useRole();
   const { isCollapsed, toggleSidebar } = useSidebar();
-  const [isRoleDropdownOpen, setIsRoleDropdownOpen] = useState(false);
-  const [isActionSheetOpen, setIsActionSheetOpen] = useState(false);
 
   const mainNavigation = [
     { label: "Dashboard", href: "/", icon: LayoutDashboard },
@@ -90,88 +87,6 @@ export default function Sidebar() {
               )}
             </button>
           </div>
-
-          {/* Active Role Selector Card */}
-          <div className="relative">
-            <button
-              onClick={() => setIsRoleDropdownOpen(!isRoleDropdownOpen)}
-              className={`apple-button w-full p-2 rounded-2xl bg-slate-50 border border-slate-200 hover:border-slate-300 text-left transition-all flex items-center justify-between group ${
-                isCollapsed ? "justify-center" : ""
-              }`}
-              title={isCollapsed ? `${activeRole.title} (Click to switch)` : ""}
-            >
-              <div className="flex items-center space-x-2.5 min-w-0">
-                <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-[10px] font-black uppercase font-mono shrink-0 shadow-2xs ${activeRole.badgeColor}`}>
-                  {activeRole.shortCode}
-                </div>
-                {!isCollapsed && (
-                  <div className="min-w-0 animate-in fade-in duration-200">
-                    <span className="text-xs font-bold text-slate-900 block truncate leading-tight">
-                      {activeRole.title.split("/")[0]}
-                    </span>
-                    <span className="text-[10px] text-slate-400 block truncate">
-                      {activeRole.department.split("&")[0]}
-                    </span>
-                  </div>
-                )}
-              </div>
-              {!isCollapsed && (
-                <ChevronDown className="w-3.5 h-3.5 text-slate-400 group-hover:text-slate-600 shrink-0 ml-1" />
-              )}
-            </button>
-
-            {/* Apple Role Dropdown */}
-            {isRoleDropdownOpen && (
-              <>
-                <div
-                  className="fixed inset-0 z-30"
-                  onClick={() => setIsRoleDropdownOpen(false)}
-                />
-                <div className="absolute left-0 mt-2 w-72 bg-white/95 backdrop-blur-2xl rounded-2xl shadow-2xl border border-slate-200/90 py-1.5 z-40 max-h-64 overflow-y-auto animate-in zoom-in-95 duration-150">
-                  <span className="px-3 py-1 text-[9px] font-bold text-slate-400 uppercase tracking-wider block">
-                    Switch Active Role (8 Roles)
-                  </span>
-                  {allRoles.filter((r) => r.id !== "managing_director").map((role) => {
-                    const isCur = activeRole.id === role.id;
-                    return (
-                      <button
-                        key={role.id}
-                        onClick={() => {
-                          switchRole(role.id);
-                          setIsRoleDropdownOpen(false);
-                        }}
-                        className={`w-full text-left px-3 py-2 flex items-center justify-between text-xs transition-colors ${
-                          isCur ? "bg-slate-100 font-bold text-slate-900" : "text-slate-600 hover:bg-slate-50"
-                        }`}
-                      >
-                        <div className="truncate mr-2">
-                          <span className="block font-medium text-slate-900 leading-tight">
-                            {role.title.split("/")[0]}
-                          </span>
-                          <span className="text-[10px] text-slate-400 block truncate">
-                            {role.department}
-                          </span>
-                        </div>
-                        {isCur && <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />}
-                      </button>
-                    );
-                  })}
-                </div>
-              </>
-            )}
-          </div>
-
-          {/* Quick Action Button */}
-          <button
-            onClick={() => setIsActionSheetOpen(true)}
-            className={`apple-button w-full py-2.5 px-3 rounded-2xl text-xs font-semibold bg-slate-900 hover:bg-black text-white shadow-md shadow-slate-900/15 flex items-center justify-center transition-all ${
-              isCollapsed ? "p-2.5" : "space-x-2"
-            }`}
-            title="Perform Step Action"
-          >
-            <Plus className="w-4 h-4" />
-            {!isCollapsed && <span>Perform Step Action</span>}
-          </button>
 
           {/* Main Navigation Group */}
           <div className="space-y-1">
@@ -315,11 +230,6 @@ export default function Sidebar() {
 
       </aside>
 
-      {/* Floating Action Sheet for Steps */}
-      <QuickActionSheet
-        isOpen={isActionSheetOpen}
-        onClose={() => setIsActionSheetOpen(false)}
-      />
-    </>
+      </>
   );
 }
