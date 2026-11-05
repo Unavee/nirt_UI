@@ -4,7 +4,12 @@ import { MOCK_PROJECTS } from "@/data/mockProjects";
 import SiteSurveyModal from "@/components/SiteSurveyModal";
 import ProposalManager from "@/components/proposal/ProposalManager";
 import CustomerConfirmationModal from "@/components/confirmation/CustomerConfirmationModal";
-import { 
+import ComplaintTicketModal from "@/components/service/ComplaintTicketModal";
+import TicketLifecycleModal from "@/components/service/TicketLifecycleModal";
+import { INITIAL_SERVICE_TICKETS } from "@/data/serviceTicketsData";
+import {
+  Plus,
+  Headset,
   ArrowLeft, 
   Zap, 
   IndianRupee, 
@@ -40,6 +45,38 @@ export default function ProjectDetailPage() {
   const [activeTab, setActiveTab] = useState("overview");
   const [selectedDocPreview, setSelectedDocPreview] = useState(null);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+  const [projectTickets, setProjectTickets] = useState(
+    INITIAL_SERVICE_TICKETS.filter(t => t.projectId === project.id).length > 0
+      ? INITIAL_SERVICE_TICKETS.filter(t => t.projectId === project.id)
+      : [
+          {
+            id: `TKT-2026-0091`,
+            projectId: project.id,
+            customerName: project.customerName,
+            customerCode: project.customerCode || "CUST-SLM-0089",
+            phone: project.phone,
+            branch: project.branch || "Salem (HQ)",
+            consumerNumber: project.consumerNumber || "04-219-002-1482",
+            category: "inverter",
+            categoryLabel: "Inverter Issues",
+            title: "Routine Scheduled Generation Audit & Inverter Firmware Check",
+            description: "Semi-annual post-commissioning service check for grid frequency stability.",
+            priority: "Medium",
+            stage: "action",
+            assignedTechnician: project.assignedEngineer || "M. Saravanan (EPC Lead)",
+            createdDate: "05 Nov 2026, 10:00 IST",
+            targetResolutionDate: "07 Nov 2026, 18:00 IST",
+            slaStatus: "On Track",
+            actionNotes: "Technician inspecting inverter terminals and DC string combiner.",
+            resolutionDetails: "",
+            customerSignOff: null,
+            rating: null,
+            warrantyLink: "10-Year Inverter Warranty (Active)"
+          }
+        ]
+  );
+  const [isServiceModalOpen, setIsServiceModalOpen] = useState(false);
+  const [selectedServiceTicket, setSelectedServiceTicket] = useState(null);
   const [confirmedGovernance, setConfirmedGovernance] = useState({
     projectId: project.id,
     customerId: project.customerCode || "CUST-SLM-0089",
@@ -483,6 +520,7 @@ export default function ProjectDetailPage() {
           { id: "financials", label: "Financial Ledger (80/10/10)" },
           { id: "documents", label: `Document Locker (${project.documents?.length || 9})` },
           { id: "proposal", label: "Proposals & Revisions (Section 8)" },
+          { id: "service", label: `Service & O&M (${projectTickets.length})` },
           { id: "discom_subsidy", label: "DISCOM & Subsidy Sync" }
         ].map((tab) => (
           <button
@@ -1148,6 +1186,138 @@ export default function ProjectDetailPage() {
         <ProposalManager project={project} />
       )}
 
+      {/* TAB: SECTION 35 CUSTOMER SERVICE & COMPLAINT MANAGEMENT */}
+      {activeTab === "service" && (
+        <div className="space-y-6">
+          
+          {/* Plant Warranty & Lifetime O&M Overview Card */}
+          <div className="p-5 sm:p-6 bg-white rounded-3xl border border-slate-200/90 shadow-xs space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+              <div>
+                <div className="flex items-center space-x-2">
+                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-rose-50 text-rose-700 border border-rose-200 font-mono">
+                    Section 35 • Customer Service
+                  </span>
+                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200 font-mono">
+                    25-Year Plant Warranty Protection
+                  </span>
+                </div>
+                <h3 className="text-base font-bold text-slate-900 mt-1">
+                  Post-Commissioning O&M & Warranty Specifications
+                </h3>
+                <p className="text-xs text-slate-500">
+                  Customer support, generation monitoring, inverter error codes, and 6-stage lifecycle tracking.
+                </p>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={() => setIsServiceModalOpen(true)}
+                  className="apple-button px-4 py-2 rounded-xl text-xs font-bold bg-slate-900 text-white hover:bg-black flex items-center space-x-1.5 shadow-sm"
+                >
+                  <Plus className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Raise Ticket for this Plant</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Warranty Coverage Grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs font-mono">
+              <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100/80">
+                <span className="text-[9px] uppercase font-bold text-slate-400 block">Inverter Warranty</span>
+                <span className="font-bold text-slate-900 text-sm block">10 Years</span>
+                <span className="text-[10px] text-emerald-700 font-semibold">Sungrow OEM Active</span>
+              </div>
+
+              <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100/80">
+                <span className="text-[9px] uppercase font-bold text-slate-400 block">Module Linear Yield</span>
+                <span className="font-bold text-slate-900 text-sm block">25-30 Years</span>
+                <span className="text-[10px] text-emerald-700 font-semibold">Waaree TOPCon OEM</span>
+              </div>
+
+              <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100/80">
+                <span className="text-[9px] uppercase font-bold text-slate-400 block">MMS Anti-Corrosion</span>
+                <span className="font-bold text-slate-900 text-sm block">5 Years</span>
+                <span className="text-[10px] text-slate-500 font-semibold">80 Micron HDGI Pass</span>
+              </div>
+
+              <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100/80">
+                <span className="text-[9px] uppercase font-bold text-slate-400 block">NIRT O&M SLA</span>
+                <span className="font-bold text-blue-700 text-sm block">&lt; 48 Hours</span>
+                <span className="text-[10px] text-blue-600 font-semibold">Turnkey AMC Active</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Plant Service Tickets Ledger */}
+          <div className="space-y-3">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700 font-mono flex items-center space-x-1.5">
+              <span>Service Complaints & Maintenance History ({projectTickets.length})</span>
+            </h4>
+
+            <div className="grid grid-cols-1 gap-3">
+              {projectTickets.map(ticket => (
+                <div
+                  key={ticket.id}
+                  className="p-5 rounded-3xl bg-white border border-slate-200/90 shadow-2xs space-y-3"
+                >
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                    <div className="flex items-center space-x-2">
+                      <span className="font-mono text-blue-700 font-bold bg-blue-50 border border-blue-200 px-2 py-0.5 rounded text-[10px]">
+                        {ticket.id}
+                      </span>
+                      <span className="px-2 py-0.5 rounded text-[10px] font-bold font-mono bg-slate-100 text-slate-800 border border-slate-200">
+                        {ticket.categoryLabel}
+                      </span>
+                      <span className={`px-2 py-0.5 rounded text-[10px] font-bold font-mono ${
+                        ticket.priority === "Critical" ? "bg-rose-100 text-rose-800 border border-rose-300"
+                          : ticket.priority === "High" ? "bg-rose-50 text-rose-700 border border-rose-200"
+                          : "bg-blue-50 text-blue-700 border border-blue-200"
+                      }`}>
+                        {ticket.priority} Priority
+                      </span>
+                    </div>
+
+                    <div className="flex items-center space-x-2">
+                      <span className="text-[10px] font-mono text-slate-400">
+                        Logged: {ticket.createdDate}
+                      </span>
+                      <button
+                        onClick={() => setSelectedServiceTicket(ticket)}
+                        className="apple-button px-3 py-1 rounded-xl text-xs font-bold bg-slate-900 text-white hover:bg-black shadow-2xs"
+                      >
+                        Manage Stage (1-6)
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h5 className="font-bold text-slate-900 text-sm">{ticket.title}</h5>
+                    <p className="text-xs text-slate-600 mt-0.5">{ticket.description}</p>
+                  </div>
+
+                  {/* 6-Stage Progress Indicator */}
+                  <div className="p-3 rounded-2xl bg-slate-50 border border-slate-100 text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div className="flex items-center space-x-1.5">
+                      <span className="text-[10px] font-bold uppercase text-slate-400 font-mono">Current Stage:</span>
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold font-mono bg-blue-50 text-blue-700 border border-blue-200">
+                        {ticket.stage.toUpperCase()}
+                      </span>
+                    </div>
+                    <div className="flex items-center space-x-2 font-mono text-[10px] text-slate-500">
+                      <span>Assigned: <strong>{ticket.assignedTechnician}</strong></span>
+                      <span>•</span>
+                      <span className="text-emerald-700 font-bold">{ticket.slaStatus}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+        </div>
+      )}
+
       {activeTab === "discom_subsidy" && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="p-5 bg-white rounded-2xl border border-slate-200/90 shadow-xs space-y-4">
@@ -1413,6 +1583,26 @@ export default function ProjectDetailPage() {
         onClose={() => setShowConfirmationModal(false)}
         onConfirmConversion={(confirmedRecord) => {
           setConfirmedGovernance(confirmedRecord);
+        }}
+      />
+
+      {/* SECTION 35: SERVICE COMPLAINT MODALS */}
+      <ComplaintTicketModal
+        isOpen={isServiceModalOpen}
+        prefilledProject={project}
+        onClose={() => setIsServiceModalOpen(false)}
+        onSubmitTicket={(newTkt) => {
+          setProjectTickets([newTkt, ...projectTickets]);
+        }}
+      />
+
+      <TicketLifecycleModal
+        isOpen={!!selectedServiceTicket}
+        ticket={selectedServiceTicket}
+        onClose={() => setSelectedServiceTicket(null)}
+        onUpdateTicket={(updatedTkt) => {
+          setProjectTickets(projectTickets.map(t => t.id === updatedTkt.id ? updatedTkt : t));
+          setSelectedServiceTicket(updatedTkt);
         }}
       />
 

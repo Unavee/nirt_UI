@@ -14,7 +14,8 @@ import {
   Settings,
   Users,
   PanelLeftClose,
-  PanelLeftOpen
+  PanelLeftOpen,
+  Headset
 } from "lucide-react";
 
 export default function Sidebar() {
@@ -27,6 +28,7 @@ export default function Sidebar() {
     { label: "Dashboard", href: "/", icon: LayoutDashboard },
     { label: "5-Pipeline Board", href: "/pipelines", icon: Layers, badge: "20" },
     { label: "Projects Registry", href: "/projects", icon: FolderKanban },
+    { label: "Service & Complaints", href: "/service", icon: Headset, badge: "Sec 35" },
   ];
 
   const pipelineStages = [
