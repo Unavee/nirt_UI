@@ -8,6 +8,8 @@ import ComplaintTicketModal from "@/components/service/ComplaintTicketModal";
 import TicketLifecycleModal from "@/components/service/TicketLifecycleModal";
 import { INITIAL_SERVICE_TICKETS } from "@/data/serviceTicketsData";
 import { MASTER_AUDIT_LOGS } from "@/data/auditTrailData";
+import { INITIAL_APPROVAL_REQUESTS } from "@/data/approvalsData";
+import ApprovalDecisionModal from "@/components/approvals/ApprovalDecisionModal";
 import {
   Plus,
   Headset,
@@ -78,6 +80,12 @@ export default function ProjectDetailPage() {
   );
   const [isServiceModalOpen, setIsServiceModalOpen] = useState(false);
   const [selectedServiceTicket, setSelectedServiceTicket] = useState(null);
+  const [projectApprovals, setProjectApprovals] = useState(
+    INITIAL_APPROVAL_REQUESTS.filter(r => r.projectId === project.id).length > 0
+      ? INITIAL_APPROVAL_REQUESTS.filter(r => r.projectId === project.id)
+      : INITIAL_APPROVAL_REQUESTS.slice(0, 2).map(r => ({ ...r, projectId: project.id, customerName: project.customerName }))
+  );
+  const [selectedApprovalForDecision, setSelectedApprovalForDecision] = useState(null);
   const [confirmedGovernance, setConfirmedGovernance] = useState({
     projectId: project.id,
     customerId: project.customerCode || "CUST-SLM-0089",
@@ -522,6 +530,7 @@ export default function ProjectDetailPage() {
           { id: "documents", label: `Document Locker (${project.documents?.length || 9})` },
           { id: "proposal", label: "Proposals & Revisions (Section 8)" },
           { id: "service", label: `Service & O&M (${projectTickets.length})` },
+          { id: "approvals", label: `Approvals (Section 33)` },
           { id: "audit", label: "Audit Trail (Section 34)" },
           { id: "discom_subsidy", label: "DISCOM & Subsidy Sync" }
         ].map((tab) => (
@@ -1188,6 +1197,99 @@ export default function ProjectDetailPage() {
         <ProposalManager project={project} />
       )}
 
+      {/* TAB: SECTION 33 ROLE-BASED APPROVALS */}
+      {activeTab === "approvals" && (
+        <div className="space-y-6">
+          <div className="p-5 sm:p-6 bg-white rounded-3xl border border-slate-200/90 shadow-xs space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+              <div>
+                <div className="flex items-center space-x-2">
+                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-blue-50 text-blue-700 border border-blue-200 font-mono">
+                    Section 33 • Approval Workflows
+                  </span>
+                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200 font-mono">
+                    5-Point Traceable Sign-offs
+                  </span>
+                </div>
+                <h3 className="text-base font-bold text-slate-900 mt-1">
+                  Plant Approval Checkpoints for {project.customerName} ({project.id})
+                </h3>
+                <p className="text-xs text-slate-500">
+                  Traceable multi-tier decision tracking across Proposals, Procurement PRs, Subcontractor Payments, and Handover Verification.
+                </p>
+              </div>
+
+              <button
+                onClick={() => window.print()}
+                className="apple-button px-3.5 py-2 rounded-xl text-xs font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 flex items-center space-x-1.5 shadow-2xs"
+              >
+                <Printer className="w-3.5 h-3.5 text-slate-600" />
+                <span>Print Approvals Register</span>
+              </button>
+            </div>
+
+            {/* Approval Cards Grid */}
+            <div className="grid grid-cols-1 gap-4">
+              {projectApprovals.map(req => {
+                const isApproved = req.status === "Approved";
+                const isPending = req.status === "Pending Approval";
+
+                return (
+                  <div
+                    key={req.id}
+                    className="p-5 rounded-2xl bg-slate-50/60 border border-slate-200/90 space-y-3"
+                  >
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-2">
+                      <div className="flex items-center space-x-2">
+                        <span className="font-mono text-blue-700 font-bold bg-white border border-blue-200 px-2 py-0.5 rounded text-[10px]">
+                          {req.id}
+                        </span>
+                        <span className="font-bold text-slate-900 text-xs">{req.title}</span>
+                      </div>
+                      <span className={`px-2 py-0.5 rounded text-[10px] font-bold font-mono ${
+                        isApproved ? "bg-emerald-50 text-emerald-800 border border-emerald-200" : "bg-blue-50 text-blue-700 border border-blue-200 animate-pulse"
+                      }`}>
+                        {req.status}
+                      </span>
+                    </div>
+
+                    {/* Traceable Decision Block */}
+                    {req.history && req.history.length > 0 ? (
+                      <div className="p-3.5 rounded-xl bg-white border border-emerald-200 text-xs space-y-1.5 font-mono">
+                        <div className="flex justify-between items-center text-[10px] text-emerald-800 font-bold uppercase">
+                          <span>Traceable Decision Recorded</span>
+                          <span>{req.history[0].decision.toUpperCase()} ✓</span>
+                        </div>
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px] text-slate-700">
+                          <div>Approver: <strong>{req.history[0].approver}</strong></div>
+                          <div>Role: <span>{req.history[0].approverRole}</span></div>
+                          <div>Date: <strong>{req.history[0].date}</strong></div>
+                          <div>Time: <strong>{req.history[0].time}</strong></div>
+                        </div>
+                        <div className="pt-1.5 border-t border-slate-100 text-slate-700 font-sans text-xs italic">
+                          "{req.history[0].remarks}"
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="p-3 rounded-xl bg-white border border-slate-200 text-xs flex justify-between items-center">
+                        <span className="text-slate-500 font-mono">Awaiting management review and sign-off</span>
+                        <button
+                          onClick={() => setSelectedApprovalForDecision(req)}
+                          className="apple-button px-3 py-1 rounded-xl bg-slate-900 text-white font-bold text-xs"
+                        >
+                          Review & Decide
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+          </div>
+        </div>
+      )}
+
       {/* TAB: SECTION 34 AUDIT TRAIL */}
       {activeTab === "audit" && (
         <div className="space-y-6">
@@ -1699,6 +1801,25 @@ export default function ProjectDetailPage() {
         onUpdateTicket={(updatedTkt) => {
           setProjectTickets(projectTickets.map(t => t.id === updatedTkt.id ? updatedTkt : t));
           setSelectedServiceTicket(updatedTkt);
+        }}
+      />
+
+      {/* SECTION 33: APPROVAL DECISION MODAL */}
+      <ApprovalDecisionModal
+        isOpen={!!selectedApprovalForDecision}
+        request={selectedApprovalForDecision}
+        onClose={() => setSelectedApprovalForDecision(null)}
+        onSubmitDecision={(reqId, decisionRecord) => {
+          setProjectApprovals(prev => prev.map(r => {
+            if (r.id === reqId) {
+              return {
+                ...r,
+                status: decisionRecord.decision,
+                history: [decisionRecord, ...r.history]
+              };
+            }
+            return r;
+          }));
         }}
       />
 

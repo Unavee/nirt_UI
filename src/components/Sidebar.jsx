@@ -28,6 +28,7 @@ export default function Sidebar() {
     { label: "Dashboard", href: "/", icon: LayoutDashboard },
     { label: "5-Pipeline Board", href: "/pipelines", icon: Layers, badge: "20" },
     { label: "Projects Registry", href: "/projects", icon: FolderKanban },
+    { label: "Approvals Hub", href: "/approvals", icon: ShieldCheck, badge: "Sec 33" },
     { label: "Service & Complaints", href: "/service", icon: Headset, badge: "Sec 35" },
   ];
 

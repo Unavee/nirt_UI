@@ -14,6 +14,7 @@ import UserRolesPage from "@/pages/UserRolesPage";
 import LoginPage from "@/pages/LoginPage";
 import ServiceComplaintsPage from "@/pages/ServiceComplaintsPage";
 import AuditTrailPage from "@/pages/AuditTrailPage";
+import ApprovalsPage from "@/pages/ApprovalsPage";
 
 export default function App() {
   return (
@@ -30,6 +31,7 @@ export default function App() {
               <Route path="/settings/users" element={<UserRolesPage />} />
               <Route path="/service" element={<ServiceComplaintsPage />} />
               <Route path="/audit" element={<AuditTrailPage />} />
+              <Route path="/approvals" element={<ApprovalsPage />} />
               <Route path="/support" element={<Navigate to="/service" replace />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="*" element={<Navigate to="/" replace />} />
