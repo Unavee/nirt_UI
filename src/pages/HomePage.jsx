@@ -184,7 +184,7 @@ export default function DashboardPage() {
           <div className="flex items-center space-x-2">
             <div className="w-2 h-2 rounded-full bg-blue-600" />
             <h2 className="text-sm sm:text-base font-bold text-slate-900 uppercase tracking-wider text-[12px]">
-              TODAY • Action Pulse & Daily Tasks
+              TODAY • Action & Daily Tasks
             </h2>
           </div>
           <span className="text-xs text-slate-400 font-medium">Daily Target Realization</span>

@@ -33,8 +33,8 @@ export default function AppShell({ children }) {
         {/* Top Frosted Navbar */}
         <AppleNavbar />
 
-        {/* Viewport Content Container (Mobile-first tuned padding) */}
-        <main className="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-6 lg:p-8 pb-28 md:pb-12">
+        {/* Viewport Content Container (Fluid edge-to-edge on large/ultrawide displays) */}
+        <main className="flex-1 w-full p-3 sm:p-6 lg:p-8 pb-28 md:pb-12">
           {children}
         </main>
 
@@ -43,7 +43,7 @@ export default function AppShell({ children }) {
 
         {/* Desktop Footer (CIN removed, Powered by ACHISE added) */}
         <footer className="hidden md:block border-t border-slate-200/80 py-4 px-6 text-xs text-slate-500 bg-white/60 backdrop-blur-md">
-          <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
+          <div className="w-full flex flex-col sm:flex-row justify-between items-center gap-2">
             <span className="font-semibold text-slate-800 tracking-tight">
               NIRT RENEWABLE ENERGY PRIVATE LIMITED
             </span>

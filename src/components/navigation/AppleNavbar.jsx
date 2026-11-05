@@ -20,7 +20,7 @@ export function AppleNavbar() {
   return (
     <>
       <header className="sticky top-0 z-30 w-full glass-nav pt-safe">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+        <div className="w-full px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           
           {/* Left: Desktop Sidebar Toggle & Ticker */}
           <div className="hidden lg:flex items-center space-x-3">

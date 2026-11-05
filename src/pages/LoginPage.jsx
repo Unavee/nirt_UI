@@ -106,12 +106,7 @@ export default function LoginPage() {
           1. MOBILE FULL-SCREEN BACKGROUND IMAGE (assets/logScreen1.avif)
           ======================================================== */}
       <div className="lg:hidden fixed inset-0 z-0">
-        <img src={logScreen1}
-          alt="Solar Rooftop Installation"
-          fill
-          priority
-          className="object-cover object-center"
-         />
+        <img src={logScreen1} alt="Solar Rooftop Installation" className="absolute inset-0 w-full h-full object-cover object-center" />
         {/* Soft darkened scrim so text & glass elements pop with high contrast */}
         <div className="absolute inset-0 bg-slate-950/65 backdrop-blur-[3px]" />
       </div>
@@ -132,12 +127,7 @@ export default function LoginPage() {
                 : "opacity-0 scale-105 pointer-events-none"
             }`}
           >
-            <img src={slide.image}
-              alt={`NIRT Solar Installation ${idx + 1}`}
-              fill
-              priority={idx === 0}
-              className="object-cover object-center"
-             />
+            <img src={slide.image} alt={`NIRT Solar Installation ${idx + 1}`} className="absolute inset-0 w-full h-full object-cover object-center" />
             {/* Dark gradient scrim for clean branding contrast */}
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/35 to-slate-950/40" />
             <div className="absolute inset-0 bg-gradient-to-r from-slate-950/70 via-transparent to-transparent" />

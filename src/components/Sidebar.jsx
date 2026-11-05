@@ -45,7 +45,7 @@ export default function Sidebar() {
   return (
     <>
       <aside 
-        className={`hidden lg:flex h-screen fixed left-0 top-0 z-40 flex-col justify-between glass-surface border-r border-slate-200/80 bg-white/85 backdrop-blur-2xl select-none transition-all duration-300 ease-in-out ${
+        className={`hidden lg:flex h-screen fixed left-0 top-0 z-40 flex-col justify-between glass-surface border-r border-slate-200/80 bg-white/85 backdrop-blur-2xl select-none overflow-x-hidden transition-all duration-300 ease-in-out ${
           isCollapsed ? "w-20" : "w-64"
         }`}
       >
