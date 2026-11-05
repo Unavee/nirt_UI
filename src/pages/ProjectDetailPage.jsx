@@ -10,9 +10,16 @@ import { INITIAL_SERVICE_TICKETS } from "@/data/serviceTicketsData";
 import { MASTER_AUDIT_LOGS } from "@/data/auditTrailData";
 import { INITIAL_APPROVAL_REQUESTS } from "@/data/approvalsData";
 import ApprovalDecisionModal from "@/components/approvals/ApprovalDecisionModal";
+import { DOCUMENT_CATEGORIES, INITIAL_PROJECT_DOCUMENTS } from "@/data/projectDocumentsData";
+import DocumentVersionModal from "@/components/documents/DocumentVersionModal";
+import DocumentUploadModal from "@/components/documents/DocumentUploadModal";
+
 import {
   Plus,
   Headset,
+  GitCommit,
+  Search,
+  Filter,
   ArrowLeft, 
   Zap, 
   IndianRupee, 
@@ -47,6 +54,16 @@ export default function ProjectDetailPage() {
 
   const [activeTab, setActiveTab] = useState("overview");
   const [selectedDocPreview, setSelectedDocPreview] = useState(null);
+  const [projectDocs, setProjectDocs] = useState(
+    INITIAL_PROJECT_DOCUMENTS.filter(d => d.projectId === project.id).length > 0
+      ? INITIAL_PROJECT_DOCUMENTS.filter(d => d.projectId === project.id)
+      : INITIAL_PROJECT_DOCUMENTS.map(d => ({ ...d, projectId: project.id }))
+  );
+  const [selectedCategoryFilter, setSelectedCategoryFilter] = useState("all");
+  const [docSearchQuery, setDocSearchQuery] = useState("");
+  const [versionModalDoc, setVersionModalDoc] = useState(null);
+  const [uploadModalState, setUploadModalState] = useState({ isOpen: false, targetDoc: null, defaultCat: "customer" });
+
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [projectTickets, setProjectTickets] = useState(
     INITIAL_SERVICE_TICKETS.filter(t => t.projectId === project.id).length > 0
@@ -527,7 +544,7 @@ export default function ProjectDetailPage() {
           { id: "overview", label: "Customer Master Record" },
           { id: "responsibility", label: "Responsibility & Governance" },
           { id: "financials", label: "Financial Ledger (80/10/10)" },
-          { id: "documents", label: `Document Locker (${project.documents?.length || 9})` },
+          { id: "documents", label: `Document Locker (${projectDocs.length})` },
           { id: "proposal", label: "Proposals & Revisions (Section 8)" },
           { id: "service", label: `Service & O&M (${projectTickets.length})` },
           { id: "approvals", label: `Approvals (Section 33)` },
@@ -1129,65 +1146,319 @@ export default function ProjectDetailPage() {
         </div>
       )}
 
-      {/* TAB 4: UNIFIED CUSTOMER DOCUMENT LOCKER (3.2) */}
+      {/* TAB 4: SECTION 30 DIGITAL DOCUMENT MANAGEMENT SYSTEM */}
       {activeTab === "documents" && (
-        <div className="p-6 bg-white rounded-2xl border border-slate-200/90 shadow-xs space-y-4">
-          <div className="border-b border-zinc-200 pb-3 flex justify-between items-center">
+        <div className="p-6 bg-white rounded-2xl border border-slate-200/90 shadow-xs space-y-5">
+          {/* Header */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
             <div>
-              <h3 className="font-bold text-base text-black">Unified Customer Document Locker</h3>
-              <p className="text-xs text-zinc-500">Statutory documents and certificates permanently bound to Project ID {project.id}</p>
+              <div className="flex items-center gap-2">
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-700">
+                  Section 30
+                </span>
+                <span className="text-xs font-mono font-medium text-slate-500">
+                  Project: {project.id}
+                </span>
+              </div>
+              <h3 className="text-lg font-bold text-slate-900 mt-1">
+                Project Document Management & Version Control
+              </h3>
+              <p className="text-xs text-slate-500">
+                11 statutory and technical categories digitally archived with cryptographic SHA-256 integrity and revision histories.
+              </p>
             </div>
-            <button
-              onClick={() => alert("Upload dialog: Accepts PDF, JPG, PNG up to 25MB")}
-              className="bg-black hover:bg-zinc-800 text-white px-3 py-1.5 text-xs font-semibold transition-transform duration-160 ease-[cubic-bezier(0.23,1,0.32,1)] active:scale-[0.98] flex items-center space-x-1.5 shadow-xs"
-            >
-              <Upload className="w-3.5 h-3.5" />
-              <span>Upload Document</span>
-            </button>
+
+            <div className="flex items-center gap-2.5">
+              <button
+                onClick={() => setUploadModalState({
+                  isOpen: true,
+                  targetDoc: null,
+                  defaultCat: selectedCategoryFilter !== "all" ? selectedCategoryFilter : "customer"
+                })}
+                className="inline-flex items-center gap-2 px-4 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-sm transition-all"
+              >
+                <Upload className="w-3.5 h-3.5" />
+                <span>Upload Document</span>
+              </button>
+            </div>
           </div>
 
-          <div className="border border-zinc-200 overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-zinc-50 border-b border-zinc-200 font-semibold text-zinc-700">
-                <tr>
-                  <th className="p-3 border-r border-zinc-200">Document Specification</th>
-                  <th className="p-3 border-r border-zinc-200">Verification Status</th>
-                  <th className="p-3 border-r border-zinc-200">Filing Date</th>
-                  <th className="p-3 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y border-zinc-100">
-                {project.documents.map((doc, idx) => (
-                  <tr key={idx} className="hover:bg-white hover:shadow-xs transition-colors">
-                    <td className="p-3 border-r border-zinc-100 font-medium flex items-center space-x-2">
-                      <FileText className="w-4 h-4 text-zinc-500" />
-                      <span>{doc.name}</span>
-                    </td>
-                    <td className="p-3 border-r border-zinc-100">
-                      <span className={`px-2 py-0.5 text-[10px] font-semibold ${
-                        doc.status === "Verified"
-                          ? "bg-zinc-100 text-black border border-zinc-300"
-                          : "bg-zinc-50 text-zinc-500 border border-zinc-200"
-                      }`}>
-                        {doc.status}
-                      </span>
-                    </td>
-                    <td className="p-3 border-r border-zinc-100 text-zinc-500 font-mono">
-                      {doc.date || "Awaiting Verification"}
-                    </td>
-                    <td className="p-3 text-right">
-                      <button
-                        onClick={() => setSelectedDocPreview(doc)}
-                        className="text-xs text-black font-semibold hover:underline flex items-center justify-end space-x-1 ml-auto"
-                      >
-                        <Eye className="w-3.5 h-3.5" />
-                        <span>Inspect</span>
-                      </button>
-                    </td>
+          {/* Quick Stats Grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
+              <div className="text-[11px] font-medium text-slate-500 uppercase tracking-wider">Total Documents</div>
+              <div className="text-lg font-bold text-slate-900 mt-0.5">{projectDocs.length} Files</div>
+            </div>
+            <div className="p-3 bg-blue-50/50 rounded-xl border border-blue-200">
+              <div className="text-[11px] font-medium text-blue-600 uppercase tracking-wider">Categories Covered</div>
+              <div className="text-lg font-bold text-blue-900 mt-0.5">
+                {new Set(projectDocs.map(d => d.category)).size} / 11 Active
+              </div>
+            </div>
+            <div className="p-3 bg-emerald-50/50 rounded-xl border border-emerald-200">
+              <div className="text-[11px] font-medium text-emerald-700 uppercase tracking-wider">Verified Records</div>
+              <div className="text-lg font-bold text-emerald-900 mt-0.5">
+                {projectDocs.filter(d => d.status === "Verified").length} Documents
+              </div>
+            </div>
+            <div className="p-3 bg-indigo-50/50 rounded-xl border border-indigo-200">
+              <div className="text-[11px] font-medium text-indigo-700 uppercase tracking-wider">Version-Controlled</div>
+              <div className="text-lg font-bold text-indigo-900 mt-0.5">
+                {projectDocs.filter(d => d.hasVersions).length} Living Files
+              </div>
+            </div>
+          </div>
+
+          {/* 11 Categories Horizontal Scrollable Filters */}
+          <div>
+            <div className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2 flex items-center justify-between">
+              <span>Filter by Document Category</span>
+              <span className="text-slate-400 font-normal">11 Standardized EPC Folders</span>
+            </div>
+            <div className="flex gap-2 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              <button
+                onClick={() => setSelectedCategoryFilter("all")}
+                className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-colors flex items-center gap-1.5 ${
+                  selectedCategoryFilter === "all"
+                    ? "bg-slate-900 text-white"
+                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                }`}
+              >
+                <span>All Documents</span>
+                <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-white/20">
+                  {projectDocs.length}
+                </span>
+              </button>
+
+              {DOCUMENT_CATEGORIES.map((cat) => {
+                const count = projectDocs.filter(d => d.category === cat.id).length;
+                const isSelected = selectedCategoryFilter === cat.id;
+                return (
+                  <button
+                    key={cat.id}
+                    onClick={() => setSelectedCategoryFilter(cat.id)}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-colors flex items-center gap-1.5 ${
+                      isSelected
+                        ? "bg-blue-600 text-white shadow-sm"
+                        : "bg-slate-50 border border-slate-200 text-slate-700 hover:bg-slate-100"
+                    }`}
+                  >
+                    <span>{cat.label}</span>
+                    <span className={`px-1.5 py-0.2 rounded-full text-[10px] ${
+                      isSelected ? "bg-white/30 text-white" : "bg-slate-200 text-slate-700"
+                    }`}>
+                      {count}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Search & Actions Bar */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
+            <div className="relative w-full sm:w-80">
+              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                value={docSearchQuery}
+                onChange={(e) => setDocSearchQuery(e.target.value)}
+                placeholder="Search document name, file or author..."
+                className="w-full pl-9 pr-3 py-2 text-xs bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            <div className="text-xs text-slate-500 self-end sm:self-auto">
+              Showing{" "}
+              <strong className="text-slate-800">
+                {projectDocs.filter(doc => {
+                  const matchesCat = selectedCategoryFilter === "all" || doc.category === selectedCategoryFilter;
+                  const matchesSearch = !docSearchQuery ||
+                    doc.name.toLowerCase().includes(docSearchQuery.toLowerCase()) ||
+                    doc.fileName.toLowerCase().includes(docSearchQuery.toLowerCase()) ||
+                    doc.uploadedBy.toLowerCase().includes(docSearchQuery.toLowerCase());
+                  return matchesCat && matchesSearch;
+                }).length}
+              </strong>{" "}
+              of {projectDocs.length} documents
+            </div>
+          </div>
+
+          {/* Document Table */}
+          <div className="border border-slate-200 rounded-xl overflow-hidden bg-white shadow-2xs">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs">
+                <thead className="bg-slate-50 border-b border-slate-200 font-bold text-slate-700">
+                  <tr>
+                    <th className="p-3.5 border-r border-slate-200">Document Specification</th>
+                    <th className="p-3.5 border-r border-slate-200">Category</th>
+                    <th className="p-3.5 border-r border-slate-200">Version</th>
+                    <th className="p-3.5 border-r border-slate-200">Status</th>
+                    <th className="p-3.5 border-r border-slate-200">Author & Date</th>
+                    <th className="p-3.5 text-right">Actions</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {projectDocs
+                    .filter(doc => {
+                      const matchesCat = selectedCategoryFilter === "all" || doc.category === selectedCategoryFilter;
+                      const matchesSearch = !docSearchQuery ||
+                        doc.name.toLowerCase().includes(docSearchQuery.toLowerCase()) ||
+                        doc.fileName.toLowerCase().includes(docSearchQuery.toLowerCase()) ||
+                        doc.uploadedBy.toLowerCase().includes(docSearchQuery.toLowerCase());
+                      return matchesCat && matchesSearch;
+                    })
+                    .map((doc) => {
+                      const hasRevisionHistory = doc.hasVersions || (doc.versions && doc.versions.length > 1);
+                      return (
+                        <tr key={doc.id} className="hover:bg-slate-50/70 transition-colors">
+                          <td className="p-3.5 border-r border-slate-100">
+                            <div className="flex items-start gap-2.5">
+                              <div className="w-8 h-8 rounded-lg bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 flex-shrink-0 mt-0.5">
+                                <FileText className="w-4 h-4" />
+                              </div>
+                              <div>
+                                <div className="font-semibold text-slate-900">{doc.name}</div>
+                                <div className="text-[11px] text-slate-500 font-mono flex items-center gap-2 mt-0.5">
+                                  <span>{doc.fileName}</span>
+                                  <span>•</span>
+                                  <span>{doc.fileSize}</span>
+                                </div>
+                              </div>
+                            </div>
+                          </td>
+
+                          <td className="p-3.5 border-r border-slate-100 whitespace-nowrap">
+                            <span className="text-xs font-semibold px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 border border-slate-200">
+                              {doc.categoryLabel}
+                            </span>
+                          </td>
+
+                          <td className="p-3.5 border-r border-slate-100 whitespace-nowrap">
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-xs font-bold px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200">
+                                {doc.version}
+                              </span>
+                              {hasRevisionHistory && (
+                                <button
+                                  onClick={() => setVersionModalDoc(doc)}
+                                  className="text-[11px] font-semibold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 px-1.5 py-0.5 rounded border border-indigo-200 flex items-center gap-1 transition-colors"
+                                  title="View revision timeline"
+                                >
+                                  <GitCommit className="w-3 h-3 text-indigo-600" />
+                                  <span>{doc.versions?.length || 2} revs</span>
+                                </button>
+                              )}
+                            </div>
+                          </td>
+
+                          <td className="p-3.5 border-r border-slate-100 whitespace-nowrap">
+                            <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full border flex items-center gap-1 w-fit ${
+                              doc.status === "Verified"
+                                ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                                : "bg-slate-100 text-slate-600 border-slate-200"
+                            }`}>
+                              {doc.status === "Verified" && <CheckCircle2 className="w-3 h-3 text-emerald-600" />}
+                              <span>{doc.status}</span>
+                            </span>
+                          </td>
+
+                          <td className="p-3.5 border-r border-slate-100 text-slate-600 whitespace-nowrap">
+                            <div className="font-medium text-slate-800">{doc.uploadedBy}</div>
+                            <div className="text-[11px] text-slate-400 font-mono mt-0.5">{doc.date}</div>
+                          </td>
+
+                          <td className="p-3.5 text-right whitespace-nowrap">
+                            <div className="flex items-center justify-end gap-1.5">
+                              {/* Inspect details */}
+                              <button
+                                onClick={() => setSelectedDocPreview(doc)}
+                                className="px-2 py-1 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg font-semibold text-xs flex items-center gap-1 transition-colors"
+                                title="Inspect Document"
+                              >
+                                <Eye className="w-3.5 h-3.5" />
+                                <span>Inspect</span>
+                              </button>
+
+                              {/* Version History */}
+                              {hasRevisionHistory && (
+                                <button
+                                  onClick={() => setVersionModalDoc(doc)}
+                                  className="px-2 py-1 text-indigo-600 hover:text-indigo-800 hover:bg-indigo-50 rounded-lg font-semibold text-xs flex items-center gap-1 transition-colors"
+                                  title="Revision History & Previous Versions"
+                                >
+                                  <GitCommit className="w-3.5 h-3.5" />
+                                  <span>History</span>
+                                </button>
+                              )}
+
+                              {/* Upload New Revision */}
+                              <button
+                                onClick={() => setUploadModalState({
+                                  isOpen: true,
+                                  targetDoc: doc,
+                                  defaultCat: doc.category
+                                })}
+                                className="p-1 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors"
+                                title="Upload New Revision"
+                              >
+                                <Upload className="w-3.5 h-3.5" />
+                              </button>
+
+                              {/* Download */}
+                              <button
+                                onClick={() => alert(`Simulating download of ${doc.name} (${doc.fileName})`)}
+                                className="p-1 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
+                                title="Download"
+                              >
+                                <Download className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Empty state if search or filter yields nothing */}
+            {projectDocs.filter(doc => {
+              const matchesCat = selectedCategoryFilter === "all" || doc.category === selectedCategoryFilter;
+              const matchesSearch = !docSearchQuery ||
+                doc.name.toLowerCase().includes(docSearchQuery.toLowerCase()) ||
+                doc.fileName.toLowerCase().includes(docSearchQuery.toLowerCase()) ||
+                doc.uploadedBy.toLowerCase().includes(docSearchQuery.toLowerCase());
+              return matchesCat && matchesSearch;
+            }).length === 0 && (
+              <div className="p-8 text-center text-slate-500 space-y-2">
+                <FileText className="w-8 h-8 text-slate-300 mx-auto" />
+                <p className="text-xs font-semibold text-slate-700">No documents found matching this filter</p>
+                <button
+                  onClick={() => setUploadModalState({
+                    isOpen: true,
+                    targetDoc: null,
+                    defaultCat: selectedCategoryFilter !== "all" ? selectedCategoryFilter : "customer"
+                  })}
+                  className="px-3 py-1.5 text-xs font-semibold text-blue-600 hover:underline"
+                >
+                  + Upload document into this category
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Cryptographic Compliance Bar */}
+          <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-slate-500">
+            <div className="flex items-center gap-2">
+              <ShieldCheck className="w-4 h-4 text-emerald-600" />
+              <span>
+                All 11 category files are indexed under <strong className="text-slate-800 font-mono">Project {project.id}</strong> with immutable revision trails.
+              </span>
+            </div>
+            <span className="font-mono text-[11px] text-slate-400">
+              DISCOM & CEA Regulatory Audit Ready
+            </span>
           </div>
         </div>
       )}
@@ -1801,6 +2072,33 @@ export default function ProjectDetailPage() {
         onUpdateTicket={(updatedTkt) => {
           setProjectTickets(projectTickets.map(t => t.id === updatedTkt.id ? updatedTkt : t));
           setSelectedServiceTicket(updatedTkt);
+        }}
+      />
+
+
+      {/* SECTION 30: DOCUMENT VERSION & UPLOAD MODALS */}
+      <DocumentVersionModal
+        isOpen={!!versionModalDoc}
+        document={versionModalDoc}
+        onClose={() => setVersionModalDoc(null)}
+        onUploadNewVersion={(doc) => {
+          setVersionModalDoc(null);
+          setUploadModalState({ isOpen: true, targetDoc: doc, defaultCat: doc.category });
+        }}
+      />
+
+      <DocumentUploadModal
+        isOpen={uploadModalState.isOpen}
+        targetDocument={uploadModalState.targetDoc}
+        defaultCategory={uploadModalState.defaultCat}
+        projectId={project.id}
+        onClose={() => setUploadModalState({ isOpen: false, targetDoc: null, defaultCat: "customer" })}
+        onUploadSuccess={({ type, doc }) => {
+          if (type === "UPDATE_VERSION") {
+            setProjectDocs(prev => prev.map(d => d.id === doc.id ? doc : d));
+          } else {
+            setProjectDocs(prev => [doc, ...prev]);
+          }
         }}
       />
 
