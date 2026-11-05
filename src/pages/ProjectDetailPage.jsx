@@ -10,6 +10,10 @@ import { INITIAL_SERVICE_TICKETS } from "@/data/serviceTicketsData";
 import { MASTER_AUDIT_LOGS } from "@/data/auditTrailData";
 import { INITIAL_APPROVAL_REQUESTS } from "@/data/approvalsData";
 import ApprovalDecisionModal from "@/components/approvals/ApprovalDecisionModal";
+import { INITIAL_PROCUREMENT_ITEMS } from "@/data/procurementData";
+import ProcurementModal from "@/components/procurement/ProcurementModal";
+import GoodsReceiptModal from "@/components/procurement/GoodsReceiptModal";
+import ProcurementView from "@/components/procurement/ProcurementView";
 import { INITIAL_TECHNICAL_FEASIBILITY } from "@/data/technicalFeasibilityData";
 import FeasibilityAssessmentModal from "@/components/feasibility/FeasibilityAssessmentModal";
 import TechnicalFeasibilityView from "@/components/feasibility/TechnicalFeasibilityView";
@@ -93,6 +97,15 @@ export default function ProjectDetailPage() {
   );
   const [isFeasibilityModalOpen, setIsFeasibilityModalOpen] = useState(false);
   const [discomHubSubTab, setDiscomHubSubTab] = useState("feasibility");
+  const [procurementItems, setProcurementItems] = useState(
+    INITIAL_PROCUREMENT_ITEMS.filter(i => i.projectId === project.id).length > 0
+      ? INITIAL_PROCUREMENT_ITEMS.filter(i => i.projectId === project.id)
+      : INITIAL_PROCUREMENT_ITEMS.map(i => ({ ...i, projectId: project.id }))
+  );
+  const [selectedProcurementItem, setSelectedProcurementItem] = useState(null);
+  const [isProcurementModalOpen, setIsProcurementModalOpen] = useState(false);
+  const [isGRNModalOpen, setIsGRNModalOpen] = useState(false);
+
 
 
 
@@ -596,7 +609,8 @@ export default function ProjectDetailPage() {
           { id: "service", label: `Service & O&M (${projectTickets.length})` },
           { id: "approvals", label: `Approvals (Section 33)` },
           { id: "audit", label: "Audit Trail (Section 34)" },
-          { id: "discom_subsidy", label: "DISCOM & Feasibility (Sec 12-13)" }
+          { id: "discom_subsidy", label: "DISCOM & Feasibility (Sec 12-13)" },
+          { id: "procurement", label: "Procurement & BoM (Section 14)" }
         ].map((tab) => (
           <button
             key={tab.id}
@@ -1990,6 +2004,27 @@ export default function ProjectDetailPage() {
         </div>
       )}
 
+      
+      {/* TAB: SECTION 14 PROCUREMENT & BILL OF MATERIALS */}
+      {activeTab === "procurement" && (
+        <ProcurementView
+          procurementItems={procurementItems}
+          project={project}
+          onOpenAddModal={() => {
+            setSelectedProcurementItem(null);
+            setIsProcurementModalOpen(true);
+          }}
+          onOpenEditModal={(item) => {
+            setSelectedProcurementItem(item);
+            setIsProcurementModalOpen(true);
+          }}
+          onOpenGRNModal={(item) => {
+            setSelectedProcurementItem(item);
+            setIsGRNModalOpen(true);
+          }}
+        />
+      )}
+
       {activeTab === "discom_subsidy" && (
         <div className="space-y-6">
           {/* Segmented Sub-Tab Switcher between Section 13, Section 12, and Subsidy */}
@@ -2565,6 +2600,34 @@ export default function ProjectDetailPage() {
 
 
 
+
+
+      {/* SECTION 14: PROCUREMENT MODALS */}
+      <ProcurementModal
+        isOpen={isProcurementModalOpen}
+        targetItem={selectedProcurementItem}
+        projectId={project.id}
+        onClose={() => setIsProcurementModalOpen(false)}
+        onSaveItem={(savedItem) => {
+          setProcurementItems(prev => {
+            const exists = prev.some(i => i.id === savedItem.id);
+            if (exists) {
+              return prev.map(i => i.id === savedItem.id ? savedItem : i);
+            }
+            return [savedItem, ...prev];
+          });
+        }}
+      />
+
+      <GoodsReceiptModal
+        isOpen={isGRNModalOpen}
+        item={selectedProcurementItem}
+        projectId={project.id}
+        onClose={() => setIsGRNModalOpen(false)}
+        onConfirmReceipt={(updatedItem) => {
+          setProcurementItems(prev => prev.map(i => i.id === updatedItem.id ? updatedItem : i));
+        }}
+      />
 
       {/* SECTION 13: TECHNICAL FEASIBILITY MODAL */}
       <FeasibilityAssessmentModal
