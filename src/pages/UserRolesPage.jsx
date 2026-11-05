@@ -29,7 +29,14 @@ import {
   AlertCircle,
   Network,
   ArrowDown,
-  GitBranch
+  GitBranch,
+  Activity,
+  LogIn,
+  LogOut,
+  Laptop,
+  Smartphone,
+  Clock,
+  Radio
 } from "lucide-react";
 
 export default function UserRoleManagementPage() {
@@ -70,23 +77,323 @@ export default function UserRoleManagementPage() {
     { id: "customer", title: "Customer Portal", department: "End Consumer", pipelineScope: "Read-Only Overview", permissions: "Milestone Tracking, Live Progress & Handover Sign-off" },
   ]);
 
-  // Initial Team Directory - Complete 15 Role-to-Employee Mapping
+  // Initial Team Directory - Complete 15 Role-to-Employee Mapping with Live Telemetry & Activities
   const [users, setUsers] = useState([
-    { id: "NIRT-EMP-001", name: "Er. A. Syed", email: "admin@nirt.net", phone: "9655001122", roleId: "super_admin", roleTitle: "Super Admin", pipelineScope: "All 5 Pipelines", branch: "Salem (HQ)", status: "Active" },
-    { id: "NIRT-EMP-002", name: "Dr. G. Khaja Nazeemudin", email: "nazeemudin@nirt.net", phone: "9655046464", roleId: "management", roleTitle: "Management / Executive", pipelineScope: "All 5 Pipelines", branch: "Salem (HQ)", status: "Active" },
-    { id: "NIRT-EMP-003", name: "P. Vijayakumar", email: "vijayakumar.crm@nirt.net", phone: "9842100110", roleId: "crm_manager", roleTitle: "CRM Manager", pipelineScope: "All 5 Pipelines", branch: "Salem (HQ)", status: "Active" },
-    { id: "NIRT-EMP-004", name: "K. Anitha", email: "anitha.crm@nirt.net", phone: "9842100220", roleId: "crm_executive", roleTitle: "CRM Executive", pipelineScope: "Pipeline 1: Sales", branch: "Salem (HQ)", status: "Active" },
-    { id: "NIRT-EMP-005", name: "Rajkumar S", email: "rajkumar.sales@nirt.net", phone: "9842100412", roleId: "sales_team", roleTitle: "Sales Team", pipelineScope: "Pipeline 1: Sales", branch: "Salem (HQ)", status: "Active" },
-    { id: "NIRT-EMP-006", name: "K. Murali", email: "murali.survey@nirt.net", phone: "9842100891", roleId: "site_survey_team", roleTitle: "Site Survey Team", pipelineScope: "Pipeline 1: Sales", branch: "Namakkal", status: "Active" },
-    { id: "NIRT-EMP-007", name: "R. Prakash", email: "prakash.design@nirt.net", phone: "9443210042", roleId: "design_team", roleTitle: "Design / Engineering Team", pipelineScope: "Pipeline 1: Sales", branch: "Salem (HQ)", status: "Active" },
-    { id: "NIRT-EMP-008", name: "T. Balaji", email: "balaji.purchase@nirt.net", phone: "9443215588", roleId: "purchase_team", roleTitle: "Purchase Team", pipelineScope: "Pipeline 3: Stores", branch: "Salem (HQ)", status: "Active" },
-    { id: "NIRT-EMP-009", name: "D. Senthil", email: "senthil.stores@nirt.net", phone: "9842155661", roleId: "store_team", roleTitle: "Store Team", pipelineScope: "Pipeline 3: Stores", branch: "Salem (HQ)", status: "Active" },
-    { id: "NIRT-EMP-010", name: "S. Karthik", email: "karthik.pmo@nirt.net", phone: "9443299881", roleId: "project_manager", roleTitle: "Project Manager", pipelineScope: "Pipelines 3 & 4: EPC", branch: "Salem (HQ)", status: "Active" },
-    { id: "NIRT-EMP-011", name: "M. Saravanan", email: "saravanan.epc@nirt.net", phone: "9443218709", roleId: "installation_team", roleTitle: "Installation Team", pipelineScope: "Pipeline 4: EPC Execution", branch: "Salem (HQ)", status: "Active" },
-    { id: "NIRT-EMP-012", name: "A. Lakshmi", email: "accounts@nirt.net", phone: "9944008811", roleId: "accounts_team", roleTitle: "Accounts Team", pipelineScope: "P2 Approvals & P5 Subsidy", branch: "Salem (HQ)", status: "Active" },
-    { id: "NIRT-EMP-013", name: "V. Thangavel", email: "liaison.erd@nirt.net", phone: "9788114400", roleId: "liaison_team", roleTitle: "Liaisoning / Documentation Team", pipelineScope: "P2 Approvals & P4 EPC", branch: "Erode", status: "Active" },
-    { id: "NIRT-EMP-014", name: "S. Geetha", email: "geetha.subsidy@nirt.net", phone: "9788115599", roleId: "subsidy_team", roleTitle: "Subsidy Team", pipelineScope: "Pipeline 5: Subsidy", branch: "Salem (HQ)", status: "Active" },
-    { id: "NIRT-EMP-015", name: "K. R. Natarajan", email: "natarajan.consumer@gmail.com", phone: "9842000001", roleId: "customer", roleTitle: "Customer (Self-Service)", pipelineScope: "Portal View (Project NIRT-2603-0142)", branch: "Salem Circle", status: "Active" },
+    {
+      id: "NIRT-EMP-001",
+      name: "Er. A. Syed",
+      email: "admin@nirt.net",
+      phone: "9655001122",
+      roleId: "super_admin",
+      roleTitle: "Super Admin",
+      pipelineScope: "All 5 Pipelines",
+      branch: "Salem (HQ)",
+      status: "Active",
+      sessionStatus: "online",
+      lastLogin: "Today, 08:15 AM",
+      lastLogout: "Active Now",
+      device: "Chrome 131 • Windows 11",
+      deviceType: "laptop",
+      recentActivity: {
+        action: "Authorized Stage-Gate clearance for Project NIRT-2603-0142",
+        time: "14m ago",
+        step: "Gatekeeper"
+      }
+    },
+    {
+      id: "NIRT-EMP-002",
+      name: "Dr. G. Khaja Nazeemudin",
+      email: "nazeemudin@nirt.net",
+      phone: "9655046464",
+      roleId: "management",
+      roleTitle: "Management / Executive",
+      pipelineScope: "All 5 Pipelines",
+      branch: "Salem (HQ)",
+      status: "Active",
+      sessionStatus: "online",
+      lastLogin: "Today, 08:45 AM",
+      lastLogout: "Active Now",
+      device: "Safari 18 • macOS Sonoma",
+      deviceType: "laptop",
+      recentActivity: {
+        action: "Audited Q3 EPC Gross Margins & DBT Subsidy pipeline balance",
+        time: "32m ago",
+        step: "Executive"
+      }
+    },
+    {
+      id: "NIRT-EMP-003",
+      name: "P. Vijayakumar",
+      email: "vijayakumar.crm@nirt.net",
+      phone: "9842100110",
+      roleId: "crm_manager",
+      roleTitle: "CRM Manager",
+      pipelineScope: "All 5 Pipelines",
+      branch: "Salem (HQ)",
+      status: "Active",
+      sessionStatus: "online",
+      lastLogin: "Today, 08:30 AM",
+      lastLogout: "Active Now",
+      device: "Edge 130 • Windows 11",
+      deviceType: "laptop",
+      recentActivity: {
+        action: "Reallocated 4 commercial leads to Namakkal territory queue",
+        time: "25m ago",
+        step: "Pipeline 1"
+      }
+    },
+    {
+      id: "NIRT-EMP-004",
+      name: "K. Anitha",
+      email: "anitha.crm@nirt.net",
+      phone: "9842100220",
+      roleId: "crm_executive",
+      roleTitle: "CRM Executive",
+      pipelineScope: "Pipeline 1: Sales",
+      branch: "Salem (HQ)",
+      status: "Active",
+      sessionStatus: "online",
+      lastLogin: "Today, 09:05 AM",
+      lastLogout: "Active Now",
+      device: "Chrome 131 • Windows 11",
+      deviceType: "laptop",
+      recentActivity: {
+        action: "Logged customer follow-up call & scheduled site feasibility",
+        time: "18m ago",
+        step: "Step 02"
+      }
+    },
+    {
+      id: "NIRT-EMP-005",
+      name: "Rajkumar S",
+      email: "rajkumar.sales@nirt.net",
+      phone: "9842100412",
+      roleId: "sales_team",
+      roleTitle: "Sales Team",
+      pipelineScope: "Pipeline 1: Sales",
+      branch: "Salem (HQ)",
+      status: "Active",
+      sessionStatus: "online",
+      lastLogin: "Today, 09:20 AM",
+      lastLogout: "Active Now",
+      device: "Chrome Mobile • Android 14",
+      deviceType: "phone",
+      recentActivity: {
+        action: "Generated Proposal Revision v1.2 with 5.4 kWp TOPCon modules",
+        time: "42m ago",
+        step: "Step 08"
+      }
+    },
+    {
+      id: "NIRT-EMP-006",
+      name: "K. Murali",
+      email: "murali.survey@nirt.net",
+      phone: "9842100891",
+      roleId: "site_survey_team",
+      roleTitle: "Site Survey Team",
+      pipelineScope: "Pipeline 1: Sales",
+      branch: "Namakkal",
+      status: "Active",
+      sessionStatus: "offline",
+      lastLogin: "Yesterday, 02:15 PM",
+      lastLogout: "Yesterday, 06:45 PM",
+      device: "PWA Mobile • Android 14",
+      deviceType: "phone",
+      recentActivity: {
+        action: "Uploaded 4 geo-tagged roof survey photos & shadow analysis",
+        time: "Yesterday",
+        step: "Step 05"
+      }
+    },
+    {
+      id: "NIRT-EMP-007",
+      name: "R. Prakash",
+      email: "prakash.design@nirt.net",
+      phone: "9443210042",
+      roleId: "design_team",
+      roleTitle: "Design / Engineering Team",
+      pipelineScope: "Pipeline 1: Sales",
+      branch: "Salem (HQ)",
+      status: "Active",
+      sessionStatus: "online",
+      lastLogin: "Today, 08:50 AM",
+      lastLogout: "Active Now",
+      device: "Chrome 131 • Windows 11 CAD Station",
+      deviceType: "laptop",
+      recentActivity: {
+        action: "Uploaded Single Line Diagram (SLD) & 3D rooftop CAD layout",
+        time: "1h ago",
+        step: "Step 06"
+      }
+    },
+    {
+      id: "NIRT-EMP-008",
+      name: "T. Balaji",
+      email: "balaji.purchase@nirt.net",
+      phone: "9443215588",
+      roleId: "purchase_team",
+      roleTitle: "Purchase Team",
+      pipelineScope: "Pipeline 3: Stores",
+      branch: "Salem (HQ)",
+      status: "Active",
+      sessionStatus: "offline",
+      lastLogin: "Yesterday, 10:10 AM",
+      lastLogout: "Yesterday, 07:30 PM",
+      device: "Edge 130 • Windows 10",
+      deviceType: "laptop",
+      recentActivity: {
+        action: "Issued Purchase Order PO-9082 for Sungrow 5kW Inverter",
+        time: "Yesterday",
+        step: "Step 11"
+      }
+    },
+    {
+      id: "NIRT-EMP-009",
+      name: "D. Senthil",
+      email: "senthil.stores@nirt.net",
+      phone: "9842155661",
+      roleId: "store_team",
+      roleTitle: "Store Team",
+      pipelineScope: "Pipeline 3: Stores",
+      branch: "Salem (HQ)",
+      status: "Active",
+      sessionStatus: "online",
+      lastLogin: "Today, 08:00 AM",
+      lastLogout: "Active Now",
+      device: "Zebra Scanner • Android 13",
+      deviceType: "phone",
+      recentActivity: {
+        action: "Inwarded 48x Waaree 545W Mono PERC panels (QC Passed)",
+        time: "2h ago",
+        step: "Step 12"
+      }
+    },
+    {
+      id: "NIRT-EMP-010",
+      name: "S. Karthik",
+      email: "karthik.pmo@nirt.net",
+      phone: "9443299881",
+      roleId: "project_manager",
+      roleTitle: "Project Manager",
+      pipelineScope: "Pipelines 3 & 4: EPC",
+      branch: "Salem (HQ)",
+      status: "Active",
+      sessionStatus: "online",
+      lastLogin: "Today, 08:10 AM",
+      lastLogout: "Active Now",
+      device: "Chrome 131 • Windows 11",
+      deviceType: "laptop",
+      recentActivity: {
+        action: "Scheduled installation gang & dispatched MMS structures",
+        time: "48m ago",
+        step: "Step 13"
+      }
+    },
+    {
+      id: "NIRT-EMP-011",
+      name: "M. Saravanan",
+      email: "saravanan.epc@nirt.net",
+      phone: "9443218709",
+      roleId: "installation_team",
+      roleTitle: "Installation Team",
+      pipelineScope: "Pipeline 4: EPC Execution",
+      branch: "Salem (HQ)",
+      status: "Active",
+      sessionStatus: "offline",
+      lastLogin: "04 Nov, 08:30 AM",
+      lastLogout: "04 Nov, 05:40 PM",
+      device: "Samsung Galaxy • Android 13",
+      deviceType: "phone",
+      recentActivity: {
+        action: "Finished civil base foundations & earthing pit test (3.4 Ω)",
+        time: "2 days ago",
+        step: "Step 14"
+      }
+    },
+    {
+      id: "NIRT-EMP-012",
+      name: "A. Lakshmi",
+      email: "accounts@nirt.net",
+      phone: "9944008811",
+      roleId: "accounts_team",
+      roleTitle: "Accounts Team",
+      pipelineScope: "P2 Approvals & P5 Subsidy",
+      branch: "Salem (HQ)",
+      status: "Active",
+      sessionStatus: "online",
+      lastLogin: "Today, 09:15 AM",
+      lastLogout: "Active Now",
+      device: "Edge 130 • Windows 11 (Finance Desk)",
+      deviceType: "laptop",
+      recentActivity: {
+        action: "Verified 80% Advance payment ₹1,87,200 via NEFT (UTIB991)",
+        time: "10m ago",
+        step: "Step 09"
+      }
+    },
+    {
+      id: "NIRT-EMP-013",
+      name: "V. Thangavel",
+      email: "liaison.erd@nirt.net",
+      phone: "9788114400",
+      roleId: "liaison_team",
+      roleTitle: "Liaisoning / Documentation Team",
+      pipelineScope: "P2 Approvals & P4 EPC",
+      branch: "Erode",
+      status: "Active",
+      sessionStatus: "offline",
+      lastLogin: "Yesterday, 09:00 AM",
+      lastLogout: "Yesterday, 06:15 PM",
+      device: "Chrome 131 • Windows 10",
+      deviceType: "laptop",
+      recentActivity: {
+        action: "Lodged Net Metering application with TANGEDCO Erode Circle",
+        time: "Yesterday",
+        step: "Step 10"
+      }
+    },
+    {
+      id: "NIRT-EMP-014",
+      name: "S. Geetha",
+      email: "geetha.subsidy@nirt.net",
+      phone: "9788115599",
+      roleId: "subsidy_team",
+      roleTitle: "Subsidy Team",
+      pipelineScope: "Pipeline 5: Subsidy",
+      branch: "Salem (HQ)",
+      status: "Active",
+      sessionStatus: "online",
+      lastLogin: "Today, 09:30 AM",
+      lastLogout: "Active Now",
+      device: "Chrome 131 • Windows 11",
+      deviceType: "laptop",
+      recentActivity: {
+        action: "Submitted PM Surya Ghar DBT claim ₹78,000 on National Portal",
+        time: "20m ago",
+        step: "Step 17"
+      }
+    },
+    {
+      id: "NIRT-EMP-015",
+      name: "K. R. Natarajan",
+      email: "natarajan.consumer@gmail.com",
+      phone: "9842000001",
+      roleId: "customer",
+      roleTitle: "Customer (Self-Service)",
+      pipelineScope: "Portal View (Project NIRT-2603-0142)",
+      branch: "Salem Circle",
+      status: "Active",
+      sessionStatus: "offline",
+      lastLogin: "03 Nov, 07:15 PM",
+      lastLogout: "03 Nov, 07:42 PM",
+      device: "Safari • iPhone 15 Pro",
+      deviceType: "phone",
+      recentActivity: {
+        action: "Digitally signed Proposal v1.2 & approved layout via OTP",
+        time: "3 days ago",
+        step: "Portal"
+      }
+    },
   ]);
 
   // Form states for Provisioning & Editing
@@ -124,7 +431,17 @@ export default function UserRoleManagementPage() {
       roleTitle: roleObj ? roleObj.title : "Sales Team",
       pipelineScope: formData.pipelineScope || (roleObj ? roleObj.pipelineScope : "Pipeline 1: Sales"),
       branch: formData.branch,
-      status: "Active"
+      status: "Active",
+      sessionStatus: "online",
+      lastLogin: "Just now",
+      lastLogout: "Active Now",
+      device: "Web Browser • Windows",
+      deviceType: "laptop",
+      recentActivity: {
+        action: "Account provisioned & credentials generated",
+        time: "Just now",
+        step: "Provisioned"
+      }
     };
 
     setUsers([newUser, ...users]);
@@ -435,12 +752,13 @@ export default function UserRoleManagementPage() {
           {/* Users Table */}
           <div className="glass-surface rounded-3xl border border-slate-200/80 overflow-hidden shadow-xs">
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs">
+              <table className="w-full text-left text-xs min-w-[1000px]">
                 <thead>
                   <tr className="border-b border-slate-100 bg-slate-50/60 text-slate-400 uppercase tracking-wider text-[10px] font-bold">
                     <th className="py-3 px-4">Employee / ID</th>
-                    <th className="py-3 px-4">Assigned Role</th>
-                    <th className="py-3 px-4">Assigned Pipeline Scope</th>
+                    <th className="py-3 px-4">Role & Scope</th>
+                    <th className="py-3 px-4">Session & Login/Logout</th>
+                    <th className="py-3 px-4">Recent Activity</th>
                     <th className="py-3 px-4">Branch Circle</th>
                     <th className="py-3 px-4">Status</th>
                     <th className="py-3 px-4 text-right">Actions</th>
@@ -449,28 +767,88 @@ export default function UserRoleManagementPage() {
                 <tbody className="divide-y divide-slate-100 font-medium">
                   {filteredUsers.map((u) => (
                     <tr key={u.id} className="hover:bg-slate-50/50 transition-colors">
-                      <td className="py-3.5 px-4">
+                      <td className="py-3.5 px-4 whitespace-nowrap">
                         <div className="font-bold text-slate-900 text-sm">{u.name}</div>
                         <div className="text-[11px] text-slate-500 font-mono mt-0.5">{u.email} • {u.phone}</div>
                         <span className="text-[10px] font-mono text-blue-600 font-bold block">{u.id}</span>
                       </td>
 
                       <td className="py-3.5 px-4">
-                        <span className="font-bold text-slate-800 block">{u.roleTitle}</span>
-                        <span className="text-[10px] text-slate-400 font-mono">{u.roleId}</span>
-                      </td>
-
-                      <td className="py-3.5 px-4">
-                        <span className="px-2 py-0.5 rounded text-[10px] font-bold font-mono bg-blue-50 text-blue-700 border border-blue-200">
+                        <span className="font-bold text-slate-800 block text-xs">{u.roleTitle}</span>
+                        <span className="px-2 py-0.5 rounded text-[10px] font-bold font-mono bg-blue-50 text-blue-700 border border-blue-200 inline-block mt-1">
                           {u.pipelineScope}
                         </span>
                       </td>
 
-                      <td className="py-3.5 px-4 text-slate-700 font-semibold">
+                      <td className="py-3.5 px-4">
+                        {u.sessionStatus === "online" ? (
+                          <div className="space-y-1">
+                            <div className="inline-flex items-center space-x-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                              <span className="relative flex h-2 w-2">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                              </span>
+                              <span>Online Now</span>
+                            </div>
+                            <div className="text-[10px] font-mono text-slate-600 flex items-center space-x-1">
+                              <LogIn className="w-2.5 h-2.5 text-emerald-600 shrink-0" />
+                              <span>In: {u.lastLogin}</span>
+                            </div>
+                            <div className="text-[10px] font-mono text-slate-400 flex items-center space-x-1">
+                              {u.deviceType === "phone" ? (
+                                <Smartphone className="w-2.5 h-2.5 text-slate-400 shrink-0" />
+                              ) : (
+                                <Laptop className="w-2.5 h-2.5 text-slate-400 shrink-0" />
+                              )}
+                              <span className="truncate max-w-[150px]">{u.device}</span>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="space-y-1">
+                            <div className="inline-flex items-center space-x-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-slate-100 text-slate-500 border border-slate-200">
+                              <span className="h-1.5 w-1.5 rounded-full bg-slate-400"></span>
+                              <span>Offline</span>
+                            </div>
+                            <div className="text-[10px] font-mono text-slate-500 flex items-center space-x-1">
+                              <LogIn className="w-2.5 h-2.5 text-slate-400 shrink-0" />
+                              <span>In: {u.lastLogin}</span>
+                            </div>
+                            <div className="text-[10px] font-mono text-slate-500 flex items-center space-x-1">
+                              <LogOut className="w-2.5 h-2.5 text-slate-400 shrink-0" />
+                              <span>Out: {u.lastLogout}</span>
+                            </div>
+                            <div className="text-[10px] font-mono text-slate-400 flex items-center space-x-1">
+                              {u.deviceType === "phone" ? (
+                                <Smartphone className="w-2.5 h-2.5 text-slate-400 shrink-0" />
+                              ) : (
+                                <Laptop className="w-2.5 h-2.5 text-slate-400 shrink-0" />
+                              )}
+                              <span className="truncate max-w-[150px]">{u.device}</span>
+                            </div>
+                          </div>
+                        )}
+                      </td>
+
+                      <td className="py-3.5 px-4 max-w-[280px]">
+                        <div className="text-slate-800 font-semibold text-xs leading-snug">
+                          {u.recentActivity?.action || "No activity recorded"}
+                        </div>
+                        <div className="flex items-center space-x-2 mt-1.5">
+                          <span className="px-1.5 py-0.5 rounded text-[9px] font-bold font-mono bg-blue-50 text-blue-700 border border-blue-200">
+                            {u.recentActivity?.step || "System"}
+                          </span>
+                          <span className="text-[10px] text-slate-400 font-mono inline-flex items-center">
+                            <Clock className="w-2.5 h-2.5 mr-1 text-slate-400 shrink-0" />
+                            {u.recentActivity?.time || "Recently"}
+                          </span>
+                        </div>
+                      </td>
+
+                      <td className="py-3.5 px-4 text-slate-700 font-semibold whitespace-nowrap">
                         {u.branch}
                       </td>
 
-                      <td className="py-3.5 px-4">
+                      <td className="py-3.5 px-4 whitespace-nowrap">
                         <span className={`px-2 py-0.5 rounded text-[10px] font-bold font-mono ${
                           u.status === "Active"
                             ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
@@ -480,7 +858,7 @@ export default function UserRoleManagementPage() {
                         </span>
                       </td>
 
-                      <td className="py-3.5 px-4 text-right space-x-1.5">
+                      <td className="py-3.5 px-4 text-right space-x-1.5 whitespace-nowrap">
                         <button
                           onClick={() => handleOpenEditUser(u)}
                           className="apple-button px-2.5 py-1 rounded-lg text-xs font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-900 hover:text-white shadow-2xs transition-all"
@@ -505,7 +883,7 @@ export default function UserRoleManagementPage() {
 
                   {filteredUsers.length === 0 && (
                     <tr>
-                      <td colSpan={6} className="py-8 text-center text-slate-400">
+                      <td colSpan={7} className="py-8 text-center text-slate-400">
                         No team members match the search query.
                       </td>
                     </tr>
