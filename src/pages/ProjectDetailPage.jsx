@@ -10,6 +10,9 @@ import { INITIAL_SERVICE_TICKETS } from "@/data/serviceTicketsData";
 import { MASTER_AUDIT_LOGS } from "@/data/auditTrailData";
 import { INITIAL_APPROVAL_REQUESTS } from "@/data/approvalsData";
 import ApprovalDecisionModal from "@/components/approvals/ApprovalDecisionModal";
+import { INITIAL_PAYMENTS } from "@/data/paymentsData";
+import RecordPaymentModal from "@/components/payments/RecordPaymentModal";
+import PaymentReceiptModal from "@/components/payments/PaymentReceiptModal";
 import { DOCUMENT_CATEGORIES, INITIAL_PROJECT_DOCUMENTS } from "@/data/projectDocumentsData";
 import DocumentVersionModal from "@/components/documents/DocumentVersionModal";
 import DocumentUploadModal from "@/components/documents/DocumentUploadModal";
@@ -54,6 +57,19 @@ export default function ProjectDetailPage() {
 
   const [activeTab, setActiveTab] = useState("overview");
   const [selectedDocPreview, setSelectedDocPreview] = useState(null);
+  const [payments, setPayments] = useState(
+    INITIAL_PAYMENTS.filter(p => p.projectId === project.id).length > 0
+      ? INITIAL_PAYMENTS.filter(p => p.projectId === project.id)
+      : INITIAL_PAYMENTS.map(p => ({ ...p, projectId: project.id }))
+  );
+  const [isRecordPaymentOpen, setIsRecordPaymentOpen] = useState(false);
+  const [selectedReceiptPayment, setSelectedReceiptPayment] = useState(null);
+
+  const totalReceived = payments.reduce((acc, curr) => acc + (curr.paymentStatus !== "Bounced" ? curr.amount : 0), 0);
+  const calculatedBalance = Math.max(0, project.totalValue - totalReceived);
+  const advance80PercentRequired = Math.round(project.totalValue * 0.8);
+  const is80PercentCleared = totalReceived >= advance80PercentRequired;
+
   const [projectDocs, setProjectDocs] = useState(
     INITIAL_PROJECT_DOCUMENTS.filter(d => d.projectId === project.id).length > 0
       ? INITIAL_PROJECT_DOCUMENTS.filter(d => d.projectId === project.id)
@@ -543,7 +559,7 @@ export default function ProjectDetailPage() {
         {[
           { id: "overview", label: "Customer Master Record" },
           { id: "responsibility", label: "Responsibility & Governance" },
-          { id: "financials", label: "Financial Ledger (80/10/10)" },
+          { id: "financials", label: "Advance & Payments (Section 10)" },
           { id: "documents", label: `Document Locker (${projectDocs.length})` },
           { id: "proposal", label: "Proposals & Revisions (Section 8)" },
           { id: "service", label: `Service & O&M (${projectTickets.length})` },
@@ -1068,80 +1084,236 @@ export default function ProjectDetailPage() {
         </div>
       )}
 
-      {/* TAB 3: 80/10/10 FINANCIAL LEDGER */}
+      {/* TAB 3: SECTION 10 ADVANCE PAYMENT MANAGEMENT & FINANCIAL LEDGER */}
       {activeTab === "financials" && (
         <div className="p-6 bg-white rounded-2xl border border-slate-200/90 shadow-xs space-y-6">
-          <div className="border-b border-zinc-200 pb-3 flex justify-between items-center">
+          {/* Header */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
             <div>
-              <h3 className="font-bold text-base text-black">80/10/10 Milestone Financial Ledger</h3>
-              <p className="text-xs text-zinc-500">Working capital security structure per NIRT commercial policy</p>
+              <div className="flex items-center gap-2">
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-700">
+                  Section 10
+                </span>
+                <span className="text-xs font-mono font-medium text-slate-500">
+                  Project: {project.id}
+                </span>
+              </div>
+              <h3 className="text-lg font-bold text-slate-900 mt-1">
+                Advance Payment Management & Milestone Ledger
+              </h3>
+              <p className="text-xs text-slate-500">
+                Automatic calculation of balances, GST statutory breakdown, and digitally retrievable payment receipts.
+              </p>
             </div>
-            <div className="text-right">
-              <span className="text-xs text-zinc-500">Total Contract Value:</span>
-              <div className="text-xl font-bold text-black font-mono">₹{project.totalValue.toLocaleString("en-IN")}</div>
+
+            <button
+              onClick={() => setIsRecordPaymentOpen(true)}
+              className="inline-flex items-center gap-2 px-4 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-sm transition-all self-start sm:self-auto"
+            >
+              <IndianRupee className="w-3.5 h-3.5" />
+              <span>Record Advance Payment</span>
+            </button>
+          </div>
+
+          {/* Automatic Calculation KPI Summary Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-4 gap-3.5">
+            <div className="p-4 rounded-xl border border-slate-200 bg-slate-50">
+              <span className="text-slate-500 block text-[11px] font-bold uppercase tracking-wider">
+                Total Contract Value
+              </span>
+              <div className="text-xl font-black text-slate-900 font-mono mt-1">
+                ₹{project.totalValue.toLocaleString("en-IN")}
+              </div>
+              <span className="text-[11px] text-slate-400 mt-0.5 block">Approved turnkey quote</span>
+            </div>
+
+            <div className="p-4 rounded-xl border border-emerald-200 bg-emerald-50/50">
+              <span className="text-emerald-700 block text-[11px] font-bold uppercase tracking-wider">
+                Total Amount Received
+              </span>
+              <div className="text-xl font-black text-emerald-800 font-mono mt-1">
+                ₹{totalReceived.toLocaleString("en-IN")}
+              </div>
+              <div className="text-[11px] text-emerald-600 mt-0.5 font-semibold">
+                {Math.round((totalReceived / project.totalValue) * 100)}% of total value realized
+              </div>
+            </div>
+
+            <div className="p-4 rounded-xl border border-blue-200 bg-blue-50/50">
+              <span className="text-blue-700 block text-[11px] font-bold uppercase tracking-wider">
+                Balance Amount Due (Auto)
+              </span>
+              <div className="text-xl font-black text-blue-900 font-mono mt-1">
+                ₹{calculatedBalance.toLocaleString("en-IN")}
+              </div>
+              <div className="text-[11px] text-blue-600 mt-0.5">
+                Total Value &minus; Received = Balance
+              </div>
+            </div>
+
+            <div className={`p-4 rounded-xl border ${
+              is80PercentCleared
+                ? "border-emerald-200 bg-emerald-50/40"
+                : "border-slate-200 bg-slate-50"
+            }`}>
+              <span className="text-slate-500 block text-[11px] font-bold uppercase tracking-wider">
+                80% Hard Lock Advance
+              </span>
+              <div className="flex items-center gap-1.5 mt-1">
+                {is80PercentCleared ? (
+                  <span className="text-xs font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full flex items-center gap-1">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                    Hard Lock 1 Cleared
+                  </span>
+                ) : (
+                  <span className="text-xs font-bold text-slate-700 bg-slate-200 px-2 py-0.5 rounded-full">
+                    ₹{(advance80PercentRequired - totalReceived).toLocaleString("en-IN")} Required
+                  </span>
+                )}
+              </div>
+              <span className="text-[11px] text-slate-400 mt-1 block">
+                Target: ₹{advance80PercentRequired.toLocaleString("en-IN")} (80%)
+              </span>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
-            <div className="border border-zinc-200 p-3 bg-zinc-50">
-              <span className="text-zinc-500 block text-[11px]">80% Upfront Advance Required:</span>
-              <strong className="text-base text-black font-mono">₹{Math.round(project.totalValue * 0.8).toLocaleString("en-IN")}</strong>
+          {/* Section 10 Payment Information Ledger Table */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <h4 className="text-sm font-bold text-slate-900">Payment Transactions & Tax Slips</h4>
+                <p className="text-xs text-slate-500">Every installment recorded with UTR, GST split, and retrievable receipt counterfoil</p>
+              </div>
+              <span className="text-xs font-mono text-slate-400">
+                {payments.length} Transaction{payments.length > 1 ? "s" : ""} Recorded
+              </span>
             </div>
-            <div className="border border-zinc-200 p-3 bg-zinc-50">
-              <span className="text-zinc-500 block text-[11px]">Total Realized to Date:</span>
-              <strong className="text-base text-emerald-700 font-mono">₹{project.advancePaid.toLocaleString("en-IN")}</strong>
-            </div>
-            <div className="border border-zinc-200 p-3 bg-zinc-50">
-              <span className="text-zinc-500 block text-[11px]">Remaining Receivables:</span>
-              <strong className="text-base text-blue-700 font-mono">₹{project.balanceDue.toLocaleString("en-IN")}</strong>
+
+            <div className="border border-slate-200 rounded-xl overflow-hidden bg-white shadow-2xs">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs">
+                  <thead className="bg-slate-50 border-b border-slate-200 font-bold text-slate-700">
+                    <tr>
+                      <th className="p-3.5 border-r border-slate-200">Receipt & Invoice #</th>
+                      <th className="p-3.5 border-r border-slate-200">Date & Mode</th>
+                      <th className="p-3.5 border-r border-slate-200">UTR / Ref & Bank Details</th>
+                      <th className="p-3.5 border-r border-slate-200">GST Breakdown (18%)</th>
+                      <th className="p-3.5 border-r border-slate-200">Amount Paid</th>
+                      <th className="p-3.5 border-r border-slate-200">Payment Status</th>
+                      <th className="p-3.5 text-right">Receipt Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {payments.map((pmt) => (
+                      <tr key={pmt.id} className="hover:bg-slate-50/70 transition-colors">
+                        <td className="p-3.5 border-r border-slate-100">
+                          <div className="font-bold text-slate-900 font-mono">{pmt.id}</div>
+                          <div className="text-[11px] text-blue-700 font-mono mt-0.5">Inv: {pmt.invoiceNumber}</div>
+                          <div className="text-[10px] text-slate-400 mt-0.5">{pmt.milestoneTag}</div>
+                        </td>
+
+                        <td className="p-3.5 border-r border-slate-100 whitespace-nowrap">
+                          <div className="font-semibold text-slate-800">{pmt.paymentDate}</div>
+                          <div className="text-[11px] text-slate-500 mt-0.5">{pmt.paymentTime || "11:30 IST"}</div>
+                          <span className="inline-block mt-1 text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-700">
+                            {pmt.paymentMode}
+                          </span>
+                        </td>
+
+                        <td className="p-3.5 border-r border-slate-100">
+                          <div className="font-mono font-bold text-slate-900">{pmt.referenceNumber}</div>
+                          <div className="text-[11px] text-slate-600 mt-0.5">{pmt.bankDetails?.bankName} ({pmt.bankDetails?.branch})</div>
+                          <div className="text-[10px] text-slate-400 font-mono">IFSC: {pmt.bankDetails?.ifsc}</div>
+                        </td>
+
+                        <td className="p-3.5 border-r border-slate-100 font-mono">
+                          <div className="text-[11px] text-slate-700">Base: ₹{Math.round(pmt.gstDetails?.taxableAmount || (pmt.amount / 1.18)).toLocaleString("en-IN")}</div>
+                          <div className="text-[10px] text-slate-500">CGST (9%): ₹{Math.round(pmt.gstDetails?.cgst || ((pmt.amount - (pmt.amount / 1.18))/2)).toLocaleString("en-IN")}</div>
+                          <div className="text-[10px] text-slate-500">SGST (9%): ₹{Math.round(pmt.gstDetails?.sgst || ((pmt.amount - (pmt.amount / 1.18))/2)).toLocaleString("en-IN")}</div>
+                        </td>
+
+                        <td className="p-3.5 border-r border-slate-100 whitespace-nowrap">
+                          <div className="font-black text-sm text-emerald-700 font-mono">
+                            ₹{pmt.amount.toLocaleString("en-IN")}
+                          </div>
+                          <div className="text-[10px] text-slate-400 font-mono mt-0.5">
+                            Bal: ₹{pmt.balanceAmount.toLocaleString("en-IN")}
+                          </div>
+                        </td>
+
+                        <td className="p-3.5 border-r border-slate-100 whitespace-nowrap">
+                          <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full border bg-emerald-50 text-emerald-800 border-emerald-200 flex items-center gap-1 w-fit">
+                            <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                            <span>{pmt.paymentStatus}</span>
+                          </span>
+                        </td>
+
+                        <td className="p-3.5 text-right whitespace-nowrap">
+                          <div className="flex items-center justify-end gap-1.5">
+                            <button
+                              onClick={() => setSelectedReceiptPayment(pmt)}
+                              className="px-2.5 py-1 text-xs font-semibold text-blue-700 bg-blue-50 hover:bg-blue-100 rounded-lg border border-blue-200 transition-colors flex items-center gap-1"
+                              title="Retrieve Official Tax Receipt"
+                            >
+                              <FileText className="w-3.5 h-3.5" />
+                              <span>Retrieve Receipt</span>
+                            </button>
+                            <button
+                              onClick={() => alert(`Downloading bank slip counterfoil for ${pmt.id}`)}
+                              className="p-1 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
+                              title="Download Counterfoil"
+                            >
+                              <Download className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
 
-          <div className="border border-zinc-200 overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-zinc-50 border-b border-zinc-200 font-semibold text-zinc-700">
-                <tr>
-                  <th className="p-3 border-r border-zinc-200">Milestone Stage</th>
-                  <th className="p-3 border-r border-zinc-200">Ratio</th>
-                  <th className="p-3 border-r border-zinc-200">Milestone Amount</th>
-                  <th className="p-3 border-r border-zinc-200">Settlement Status</th>
-                  <th className="p-3">Audit Reference & UTR</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y border-zinc-100 font-mono">
-                <tr>
-                  <td className="p-3 border-r border-zinc-100 font-sans font-semibold">1. Booking Advance & Feasibility Approval</td>
-                  <td className="p-3 border-r border-zinc-100">80%</td>
-                  <td className="p-3 border-r border-zinc-100">₹{Math.round(project.totalValue * 0.8).toLocaleString("en-IN")}</td>
-                  <td className="p-3 border-r border-zinc-100 font-sans">
-                    <span className="bg-emerald-100 text-emerald-900 border border-emerald-300 px-2 py-0.5 text-[10px] font-semibold">
-                      RECONCILED
-                    </span>
-                  </td>
-                  <td className="p-3 text-[10px] text-zinc-600">UTR: ICIC202610190042 • Receipt #REC-SLM-041</td>
-                </tr>
-                <tr>
-                  <td className="p-3 border-r border-zinc-100 font-sans font-semibold">2. Structural Assembly & Module Mounting</td>
-                  <td className="p-3 border-r border-zinc-100">10%</td>
-                  <td className="p-3 border-r border-zinc-100">₹{Math.round(project.totalValue * 0.1).toLocaleString("en-IN")}</td>
-                  <td className="p-3 border-r border-zinc-100 font-sans">
-                    <span className="border border-zinc-300 px-2 py-0.5 text-[10px] text-zinc-600">
-                      INVOICE DISPATCHED
-                    </span>
-                  </td>
-                  <td className="p-3 text-[10px] text-zinc-500">Invoice #INV-26-089 (Due at physical installation)</td>
-                </tr>
-                <tr>
-                  <td className="p-3 border-r border-zinc-100 font-sans font-semibold">3. TANGEDCO Net-Meter Synchronization</td>
-                  <td className="p-3 border-r border-zinc-100">10%</td>
-                  <td className="p-3 border-r border-zinc-100">₹{Math.round(project.totalValue * 0.1).toLocaleString("en-IN")}</td>
-                  <td className="p-3 border-r border-zinc-100 font-sans">
-                    <span className="text-zinc-400 text-[10px]">UPON NET-METER SYNC</span>
-                  </td>
-                  <td className="p-3 text-[10px] text-zinc-400">Triggered on bidirectional meter install</td>
-                </tr>
-              </tbody>
-            </table>
+          {/* 80/10/10 Milestone Progression Matrix */}
+          <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/60 space-y-3">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700">
+              Commercial 80/10/10 Milestone Progress Tracking
+            </h4>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+              <div className="p-3 rounded-lg bg-white border border-slate-200 space-y-1">
+                <div className="flex justify-between items-center">
+                  <span className="font-bold text-slate-900">1. Booking Advance</span>
+                  <span className="font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded text-[10px] border border-emerald-200">
+                    80% • CLEARED
+                  </span>
+                </div>
+                <div className="text-slate-500 text-[11px]">Required prior to engineering drawings & DISCOM filing.</div>
+                <div className="text-sm font-bold font-mono text-slate-800 pt-1">₹{advance80PercentRequired.toLocaleString("en-IN")}</div>
+              </div>
+
+              <div className="p-3 rounded-lg bg-white border border-slate-200 space-y-1">
+                <div className="flex justify-between items-center">
+                  <span className="font-bold text-slate-900">2. Material Dispatch</span>
+                  <span className="font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded text-[10px] border border-blue-200">
+                    10% • DUE AT SITE
+                  </span>
+                </div>
+                <div className="text-slate-500 text-[11px]">Triggered on module & inverter dispatch from warehouse.</div>
+                <div className="text-sm font-bold font-mono text-slate-800 pt-1">₹{Math.round(project.totalValue * 0.1).toLocaleString("en-IN")}</div>
+              </div>
+
+              <div className="p-3 rounded-lg bg-white border border-slate-200 space-y-1">
+                <div className="flex justify-between items-center">
+                  <span className="font-bold text-slate-900">3. Net-Meter Sync</span>
+                  <span className="font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded text-[10px] border border-slate-200">
+                    10% • ON GRID SYNC
+                  </span>
+                </div>
+                <div className="text-slate-500 text-[11px]">Final settlement upon TANGEDCO bidirectional meter sync.</div>
+                <div className="text-sm font-bold font-mono text-slate-800 pt-1">₹{Math.round(project.totalValue * 0.1).toLocaleString("en-IN")}</div>
+              </div>
+            </div>
           </div>
         </div>
       )}
@@ -2075,6 +2247,25 @@ export default function ProjectDetailPage() {
         }}
       />
 
+
+
+      {/* SECTION 10: ADVANCE PAYMENT MODALS */}
+      <RecordPaymentModal
+        isOpen={isRecordPaymentOpen}
+        project={project}
+        totalReceived={totalReceived}
+        onClose={() => setIsRecordPaymentOpen(false)}
+        onSubmitPayment={(newPayment) => {
+          setPayments([newPayment, ...payments]);
+        }}
+      />
+
+      <PaymentReceiptModal
+        isOpen={!!selectedReceiptPayment}
+        payment={selectedReceiptPayment}
+        project={project}
+        onClose={() => setSelectedReceiptPayment(null)}
+      />
 
       {/* SECTION 30: DOCUMENT VERSION & UPLOAD MODALS */}
       <DocumentVersionModal
