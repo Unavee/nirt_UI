@@ -379,7 +379,7 @@ export default function ProjectDetailPage() {
   const currentActiveStep = responsibilityActivities.find((a) => a.status === "IN PROGRESS") || responsibilityActivities[13];
 
   return (
-    <div className="space-y-6 bg-white pb-12">
+    <div className="p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8 max-w-full pb-16">
       
       {/* Back Breadcrumb */}
       <div>
@@ -392,7 +392,7 @@ export default function ProjectDetailPage() {
       </div>
 
       {/* Top Banner Card: Section 3.2 One Project – One Complete Digital File */}
-      <div className="p-5 sm:p-6 bg-white border border-zinc-200 shadow-xs space-y-4">
+      <div className="p-6 sm:p-7 bg-white rounded-2xl border border-slate-200/90 shadow-xs space-y-5">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div className="space-y-1">
             <div className="flex items-center space-x-2.5 flex-wrap gap-y-1">
@@ -424,14 +424,14 @@ export default function ProjectDetailPage() {
                 const message = encodeURIComponent(`NIRT Energy Update for ${project.customerName} (Project ${project.id}): Current Stage is ${project.stageName}.`);
                 window.open(`https://wa.me/91${project.phone.replace(/[^0-9]/g, "")}?text=${message}`, "_blank");
               }}
-              className="border border-zinc-300 hover:bg-zinc-50 px-3 py-1.5 text-xs font-semibold text-black transition-transform duration-160 ease-[cubic-bezier(0.23,1,0.32,1)] active:scale-[0.98] flex items-center space-x-1.5 shadow-2xs"
+              className="border border-slate-200 bg-slate-50/60 hover:bg-white hover:shadow-xs hover:border-slate-300 px-3 py-1.5 rounded-xl text-xs font-semibold text-black transition-transform duration-160 ease-[cubic-bezier(0.23,1,0.32,1)] active:scale-[0.98] flex items-center space-x-1.5 shadow-2xs"
             >
               <Share2 className="w-3.5 h-3.5 text-emerald-600" />
               <span>WhatsApp Dispatch</span>
             </button>
             <button
               onClick={() => setShowPrintModal(true)}
-              className="bg-black hover:bg-zinc-800 text-white px-3.5 py-1.5 text-xs font-semibold transition-transform duration-160 ease-[cubic-bezier(0.23,1,0.32,1)] active:scale-[0.98] flex items-center space-x-1.5 shadow-xs"
+              className="bg-slate-900 hover:bg-black text-white px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-transform duration-160 ease-[cubic-bezier(0.23,1,0.32,1)] active:scale-[0.98] flex items-center space-x-1.5 shadow-xs"
             >
               <Printer className="w-3.5 h-3.5" />
               <span>Print Project Summary</span>
@@ -475,10 +475,10 @@ export default function ProjectDetailPage() {
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`pb-3 whitespace-nowrap transition-colors border-b-2 -mb-[1px] ${
+            className={`px-3.5 py-2 rounded-xl whitespace-nowrap transition-all text-xs font-semibold ${
               activeTab === tab.id
-                ? "border-slate-900 text-slate-900 font-bold"
-                : "border-transparent text-slate-400 hover:text-slate-900"
+                ? "bg-slate-900 text-white shadow-xs font-bold"
+                : "text-slate-500 hover:text-slate-900 hover:bg-white hover:shadow-2xs"
             }`}
           >
             {tab.label}
@@ -492,7 +492,7 @@ export default function ProjectDetailPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             
             {/* 1. Identity & Contact Information */}
-            <div className="p-5 bg-white border border-zinc-200 shadow-xs space-y-3">
+            <div className="p-5 bg-white rounded-2xl border border-slate-200/90 shadow-xs space-y-3">
               <h3 className="font-bold text-xs uppercase tracking-wider text-black border-b border-zinc-200 pb-2 flex items-center space-x-2">
                 <User className="w-3.5 h-3.5 text-blue-600" />
                 <span>Customer Identity & Contact</span>
@@ -522,7 +522,7 @@ export default function ProjectDetailPage() {
             </div>
 
             {/* 2. Site Address & EB Connection Details */}
-            <div className="p-5 bg-white border border-zinc-200 shadow-xs space-y-3">
+            <div className="p-5 bg-white rounded-2xl border border-slate-200/90 shadow-xs space-y-3">
               <h3 className="font-bold text-xs uppercase tracking-wider text-black border-b border-zinc-200 pb-2 flex items-center space-x-2">
                 <MapPin className="w-3.5 h-3.5 text-indigo-600" />
                 <span>Site Address & EB Connection</span>
@@ -552,7 +552,7 @@ export default function ProjectDetailPage() {
             </div>
 
             {/* 3. Engineering BOM & Project Details */}
-            <div className="p-5 bg-white border border-zinc-200 shadow-xs space-y-3">
+            <div className="p-5 bg-white rounded-2xl border border-slate-200/90 shadow-xs space-y-3">
               <h3 className="font-bold text-xs uppercase tracking-wider text-black border-b border-zinc-200 pb-2 flex items-center space-x-2">
                 <Zap className="w-3.5 h-3.5 text-blue-600" />
                 <span>Project Specifications & BOM</span>
@@ -582,7 +582,7 @@ export default function ProjectDetailPage() {
             </div>
 
             {/* 4. Subsidy & Communication History */}
-            <div className="p-5 bg-white border border-zinc-200 shadow-xs space-y-3">
+            <div className="p-5 bg-white rounded-2xl border border-slate-200/90 shadow-xs space-y-3">
               <h3 className="font-bold text-xs uppercase tracking-wider text-black border-b border-zinc-200 pb-2 flex items-center space-x-2">
                 <Activity className="w-3.5 h-3.5 text-emerald-600" />
                 <span>Subsidy & Communication Trail</span>
@@ -612,7 +612,7 @@ export default function ProjectDetailPage() {
             </div>
 
             {/* 5. Complete Customer Communication History (Section 3.1) */}
-            <div className="md:col-span-2 p-5 bg-white border border-zinc-200 shadow-xs space-y-4">
+            <div className="md:col-span-2 p-5 bg-white rounded-2xl border border-slate-200/90 shadow-xs space-y-4">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-zinc-200 gap-2">
                 <div>
                   <h3 className="font-bold text-xs uppercase tracking-wider text-black flex items-center space-x-2">
@@ -629,7 +629,7 @@ export default function ProjectDetailPage() {
                       const msg = encodeURIComponent(`NIRT Solar Update for ${project.customerName} (Project ${project.id}): Work is in progress on Step 14.`);
                       window.open(`https://wa.me/91${project.phone.replace(/[^0-9]/g, "")}?text=${msg}`, "_blank");
                     }}
-                    className="border border-zinc-300 hover:bg-zinc-50 px-2.5 py-1 text-xs font-semibold text-black flex items-center space-x-1.5 shadow-2xs"
+                    className="border border-zinc-300 hover:bg-white hover:shadow-xs px-2.5 py-1 text-xs font-semibold text-black flex items-center space-x-1.5 shadow-2xs"
                   >
                     <Share2 className="w-3 h-3 text-emerald-600" />
                     <span>Quick WhatsApp</span>
@@ -646,7 +646,7 @@ export default function ProjectDetailPage() {
               {/* Timeline Items */}
               <div className="space-y-3">
                 {communicationLogs.map((log) => (
-                  <div key={log.id} className="p-3.5 rounded-xl border border-zinc-100 bg-zinc-50/60 hover:bg-zinc-50 transition-colors flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+                  <div key={log.id} className="p-3.5 rounded-xl border border-zinc-100 bg-zinc-50/60 hover:bg-white hover:shadow-xs transition-colors flex flex-col sm:flex-row sm:items-start justify-between gap-3">
                     <div className="space-y-1">
                       <div className="flex items-center space-x-2">
                         <span className={`px-2 py-0.5 rounded text-[10px] font-bold font-mono ${
@@ -803,7 +803,7 @@ export default function ProjectDetailPage() {
                       className={`apple-button shrink-0 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center space-x-1.5 ${
                         isSelected
                           ? "bg-slate-900 text-white shadow-xs"
-                          : "bg-white text-zinc-600 hover:text-black border border-zinc-200 hover:bg-zinc-100/80"
+                          : "bg-white text-zinc-600 hover:text-black border border-zinc-200 hover:bg-white hover:shadow-xs"
                       }`}
                     >
                       <span>{proc.label}</span>
@@ -842,7 +842,7 @@ export default function ProjectDetailPage() {
                       <tr 
                         key={act.step}
                         className={`transition-colors ${
-                          isInProgress ? "bg-blue-50/50 font-medium" : "hover:bg-zinc-50/70"
+                          isInProgress ? "bg-blue-50/50 font-medium" : "hover:bg-white"
                         }`}
                       >
                         <td className="p-3 border-r border-zinc-100 font-mono font-bold text-black">
@@ -915,7 +915,7 @@ export default function ProjectDetailPage() {
 
       {/* TAB 3: 80/10/10 FINANCIAL LEDGER */}
       {activeTab === "financials" && (
-        <div className="p-6 bg-white border border-zinc-200 shadow-xs space-y-6">
+        <div className="p-6 bg-white rounded-2xl border border-slate-200/90 shadow-xs space-y-6">
           <div className="border-b border-zinc-200 pb-3 flex justify-between items-center">
             <div>
               <h3 className="font-bold text-base text-black">80/10/10 Milestone Financial Ledger</h3>
@@ -993,7 +993,7 @@ export default function ProjectDetailPage() {
 
       {/* TAB 4: UNIFIED CUSTOMER DOCUMENT LOCKER (3.2) */}
       {activeTab === "documents" && (
-        <div className="p-6 bg-white border border-zinc-200 shadow-xs space-y-4">
+        <div className="p-6 bg-white rounded-2xl border border-slate-200/90 shadow-xs space-y-4">
           <div className="border-b border-zinc-200 pb-3 flex justify-between items-center">
             <div>
               <h3 className="font-bold text-base text-black">Unified Customer Document Locker</h3>
@@ -1020,7 +1020,7 @@ export default function ProjectDetailPage() {
               </thead>
               <tbody className="divide-y border-zinc-100">
                 {project.documents.map((doc, idx) => (
-                  <tr key={idx} className="hover:bg-zinc-50/80 transition-colors">
+                  <tr key={idx} className="hover:bg-white hover:shadow-xs transition-colors">
                     <td className="p-3 border-r border-zinc-100 font-medium flex items-center space-x-2">
                       <FileText className="w-4 h-4 text-zinc-500" />
                       <span>{doc.name}</span>
@@ -1061,7 +1061,7 @@ export default function ProjectDetailPage() {
 
       {activeTab === "discom_subsidy" && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="p-5 bg-white border border-zinc-200 shadow-xs space-y-4">
+          <div className="p-5 bg-white rounded-2xl border border-slate-200/90 shadow-xs space-y-4">
             <div className="border-b border-zinc-200 pb-2 flex justify-between items-center">
               <div>
                 <h3 className="font-bold text-sm text-black">DISCOM & Net-Metering Sub-Track</h3>
@@ -1096,7 +1096,7 @@ export default function ProjectDetailPage() {
             </div>
           </div>
 
-          <div className="p-5 bg-white border border-zinc-200 shadow-xs space-y-4">
+          <div className="p-5 bg-white rounded-2xl border border-slate-200/90 shadow-xs space-y-4">
             <div className="border-b border-zinc-200 pb-2 flex justify-between items-center">
               <div>
                 <h3 className="font-bold text-sm text-black">PM Surya Ghar Subsidy Sub-Track</h3>
@@ -1201,7 +1201,7 @@ export default function ProjectDetailPage() {
             <div className="flex justify-end space-x-2 pt-2">
               <button
                 onClick={() => setShowPrintModal(false)}
-                className="border border-zinc-300 px-4 py-1.5 text-xs font-semibold text-black hover:bg-zinc-50"
+                className="border border-zinc-300 px-4 py-1.5 text-xs font-semibold text-black hover:bg-white hover:shadow-xs"
               >
                 Close
               </button>
@@ -1284,7 +1284,7 @@ export default function ProjectDetailPage() {
                 <button
                   type="button"
                   onClick={() => setShowAddLogModal(false)}
-                  className="border border-zinc-300 px-3.5 py-1.5 text-xs font-semibold text-black hover:bg-zinc-50"
+                  className="border border-zinc-300 px-3.5 py-1.5 text-xs font-semibold text-black hover:bg-white hover:shadow-xs"
                 >
                   Cancel
                 </button>

@@ -5,21 +5,17 @@ import { useSidebar } from "@/context/SidebarContext";
 import { 
   Bell, 
   ChevronDown, 
-  Plus,
   PanelLeftClose,
   PanelLeftOpen
 } from "lucide-react";
-import { QuickActionSheet } from "@/components/dashboard/QuickActionSheet";
 
 export function AppleNavbar() {
   const { activeRole, switchRole, allRoles } = useRole();
   const { isCollapsed, toggleSidebar } = useSidebar();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isActionOpen, setIsActionOpen] = useState(false);
 
   return (
-    <>
-      <header className="sticky top-0 z-30 w-full glass-nav pt-safe">
+    <header className="sticky top-0 z-30 w-full glass-nav pt-safe">
         <div className="w-full px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           
           {/* Left: Desktop Sidebar Toggle & Ticker */}
@@ -68,15 +64,6 @@ export function AppleNavbar() {
           {/* Right side items & Role Dropdown */}
           <div className="flex items-center space-x-2.5">
             
-            {/* Quick Action Button on Desktop Top Bar */}
-            <button
-              onClick={() => setIsActionOpen(true)}
-              className="apple-button hidden sm:flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-slate-900 text-white text-xs font-semibold hover:bg-black shadow-xs"
-            >
-              <Plus className="w-3.5 h-3.5" />
-              <span>Step Action</span>
-            </button>
-
             {/* Quick Role Trigger Pill */}
             <div className="relative">
               <button
@@ -142,11 +129,5 @@ export function AppleNavbar() {
 
         </div>
       </header>
-
-      <QuickActionSheet
-        isOpen={isActionOpen}
-        onClose={() => setIsActionOpen(false)}
-      />
-    </>
   );
 }
