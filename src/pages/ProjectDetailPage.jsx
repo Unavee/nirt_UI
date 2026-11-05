@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { MOCK_PROJECTS } from "@/data/mockProjects";
 import SiteSurveyModal from "@/components/SiteSurveyModal";
+import ProposalManager from "@/components/proposal/ProposalManager";
 import { 
   ArrowLeft, 
   Zap, 
@@ -468,6 +469,7 @@ export default function ProjectDetailPage() {
           { id: "responsibility", label: "Responsibility & Governance" },
           { id: "financials", label: "Financial Ledger (80/10/10)" },
           { id: "documents", label: `Document Locker (${project.documents?.length || 9})` },
+          { id: "proposal", label: "Proposals & Revisions (Section 8)" },
           { id: "discom_subsidy", label: "DISCOM & Subsidy Sync" }
         ].map((tab) => (
           <button
@@ -1053,6 +1055,10 @@ export default function ProjectDetailPage() {
       )}
 
       {/* TAB 5: PARALLEL DISCOM & SUBSIDY SUB-TRACKS */}
+      {activeTab === "proposal" && (
+        <ProposalManager project={project} />
+      )}
+
       {activeTab === "discom_subsidy" && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="p-5 bg-white border border-zinc-200 shadow-xs space-y-4">
