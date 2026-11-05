@@ -10,6 +10,9 @@ import { INITIAL_SERVICE_TICKETS } from "@/data/serviceTicketsData";
 import { MASTER_AUDIT_LOGS } from "@/data/auditTrailData";
 import { INITIAL_APPROVAL_REQUESTS } from "@/data/approvalsData";
 import ApprovalDecisionModal from "@/components/approvals/ApprovalDecisionModal";
+import { INITIAL_DISCOM_APPLICATIONS, DISCOM_STATUS_STAGES } from "@/data/discomApplicationsData";
+import DISCOMStatusModal from "@/components/discom/DISCOMStatusModal";
+import DISCOMSanctionCertificateModal from "@/components/discom/DISCOMSanctionCertificateModal";
 import { INITIAL_PAYMENTS } from "@/data/paymentsData";
 import RecordPaymentModal from "@/components/payments/RecordPaymentModal";
 import PaymentReceiptModal from "@/components/payments/PaymentReceiptModal";
@@ -64,6 +67,18 @@ export default function ProjectDetailPage() {
   );
   const [isRecordPaymentOpen, setIsRecordPaymentOpen] = useState(false);
   const [selectedReceiptPayment, setSelectedReceiptPayment] = useState(null);
+  const [discomApp, setDiscomApp] = useState(
+    INITIAL_DISCOM_APPLICATIONS.find(d => d.projectId === project.id) || {
+      ...INITIAL_DISCOM_APPLICATIONS[0],
+      projectId: project.id,
+      customerName: project.customerName,
+      consumerNumber: project.consumerNumber || "04-219-002-1482",
+      appliedCapacityKw: project.capacityKw || 3.3
+    }
+  );
+  const [isDiscomStatusModalOpen, setIsDiscomStatusModalOpen] = useState(false);
+  const [isSanctionCertModalOpen, setIsSanctionCertModalOpen] = useState(false);
+
 
   const totalReceived = payments.reduce((acc, curr) => acc + (curr.paymentStatus !== "Bounced" ? curr.amount : 0), 0);
   const calculatedBalance = Math.max(0, project.totalValue - totalReceived);
@@ -565,7 +580,7 @@ export default function ProjectDetailPage() {
           { id: "service", label: `Service & O&M (${projectTickets.length})` },
           { id: "approvals", label: `Approvals (Section 33)` },
           { id: "audit", label: "Audit Trail (Section 34)" },
-          { id: "discom_subsidy", label: "DISCOM & Subsidy Sync" }
+          { id: "discom_subsidy", label: "DISCOM Management (Section 12)" }
         ].map((tab) => (
           <button
             key={tab.id}
@@ -1960,54 +1975,281 @@ export default function ProjectDetailPage() {
       )}
 
       {activeTab === "discom_subsidy" && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="p-5 bg-white rounded-2xl border border-slate-200/90 shadow-xs space-y-4">
-            <div className="border-b border-zinc-200 pb-2 flex justify-between items-center">
-              <div>
-                <h3 className="font-bold text-sm text-black">DISCOM & Net-Metering Sub-Track</h3>
-                <span className="text-[10px] text-zinc-500 font-mono">TANGEDCO {project.branch} Circle</span>
+        <div className="space-y-6">
+          {/* SECTION 12: DISCOM APPLICATION MANAGEMENT CONSOLE */}
+          <div className="p-6 bg-white rounded-2xl border border-slate-200/90 shadow-xs space-y-6">
+            {/* Header */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600 font-bold text-lg flex-shrink-0 mt-0.5">
+                  ⚡
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-700">
+                      Section 12
+                    </span>
+                    <span className="text-xs font-mono font-medium text-slate-500">
+                      App No: {discomApp.applicationNumber}
+                    </span>
+                    <span className={`text-[11px] font-bold px-2 py-0.5 rounded-full border ${
+                      discomApp.applicationStatus === "approved"
+                        ? "bg-emerald-50 text-emerald-800 border-emerald-200"
+                        : discomApp.applicationStatus === "rejected"
+                        ? "bg-rose-50 text-rose-800 border-rose-200"
+                        : "bg-blue-50 text-blue-800 border-blue-200"
+                    }`}>
+                      {DISCOM_STATUS_STAGES.find(s => s.id === discomApp.applicationStatus)?.label || discomApp.applicationStatus}
+                    </span>
+                  </div>
+                  <h3 className="text-lg font-bold text-slate-900 mt-1">
+                    DISCOM Application & Technical Feasibility Management
+                  </h3>
+                  <p className="text-xs text-slate-500">
+                    Statutory LT Solar portal filing, 7-stage approval workflow, application fee remittance, and feasibility sanction orders.
+                  </p>
+                </div>
               </div>
-              <span className="bg-zinc-100 text-zinc-700 text-[10px] font-mono px-2 py-0.5 border border-zinc-200">
-                PARALLEL
-              </span>
+
+              <div className="flex items-center gap-2.5 self-start sm:self-auto">
+                {discomApp.applicationStatus === "approved" && (
+                  <button
+                    onClick={() => setIsSanctionCertModalOpen(true)}
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-xl shadow-xs transition-colors"
+                  >
+                    <FileText className="w-3.5 h-3.5 text-emerald-700" />
+                    <span>View Sanction Order</span>
+                  </button>
+                )}
+                <button
+                  onClick={() => setIsDiscomStatusModalOpen(true)}
+                  className="inline-flex items-center gap-2 px-4 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-sm transition-all"
+                >
+                  <Building2 className="w-3.5 h-3.5" />
+                  <span>Update DISCOM Status</span>
+                </button>
+              </div>
             </div>
 
-            <div className="space-y-3">
-              {[
-                { stage: "Portal Application Submitted", status: "Done", date: "2026-10-14", appNo: project.discomAppNo },
-                { stage: "Technical Feasibility Sanctioned", status: "Done", date: "2026-10-18", appNo: "TF-8941" },
-                { stage: "Work Execution & Plant Readiness", status: "In Progress", date: "2026-10-24", appNo: "-" },
-                { stage: "DISCOM AE Field Inspection", status: "Upcoming", date: "Target: Nov 05", appNo: "-" },
-                { stage: "Bidirectional Net Meter Installed", status: "Pending", date: "-", appNo: "-" },
-              ].map((step, idx) => (
-                <div key={idx} className="flex items-start space-x-3 text-xs border-l-2 border-zinc-200 pl-3 py-1">
-                  <div className={`w-2 h-2 rounded-full mt-1.5 ${step.status === "Done" ? "bg-black" : "bg-zinc-300"}`} />
-                  <div className="flex-1">
-                    <div className="flex justify-between">
-                      <span className="font-semibold text-black">{step.stage}</span>
-                      <span className="text-zinc-400 text-[10px] font-mono">{step.date}</span>
+            {/* 7-Stage Visual Lifecycle Stepper */}
+            <div>
+              <div className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2.5 flex items-center justify-between">
+                <span>7-Stage DISCOM Statutory Lifecycle Workflow</span>
+                <span className="text-[11px] text-slate-400 font-normal">Section 12 Regulatory Progression</span>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-7 gap-2">
+                {DISCOM_STATUS_STAGES.map((st) => {
+                  const currentStageObj = DISCOM_STATUS_STAGES.find(s => s.id === discomApp.applicationStatus);
+                  const currentStep = currentStageObj ? currentStageObj.step : 5;
+                  const isCurrent = discomApp.applicationStatus === st.id;
+                  const isCompleted = st.step < currentStep && discomApp.applicationStatus !== "rejected";
+
+                  let cardStyle = "bg-slate-50 border-slate-200 text-slate-500";
+                  if (isCurrent) {
+                    if (st.id === "approved") {
+                      cardStyle = "bg-emerald-50 border-emerald-300 ring-2 ring-emerald-100 text-emerald-900 font-bold";
+                    } else if (st.id === "rejected") {
+                      cardStyle = "bg-rose-50 border-rose-300 ring-2 ring-rose-100 text-rose-900 font-bold";
+                    } else {
+                      cardStyle = "bg-blue-50 border-blue-300 ring-2 ring-blue-100 text-blue-900 font-bold";
+                    }
+                  } else if (isCompleted) {
+                    cardStyle = "bg-emerald-50/60 border-emerald-200 text-emerald-800 font-medium";
+                  }
+
+                  return (
+                    <div key={st.id} className={`p-2.5 rounded-xl border text-xs transition-all ${cardStyle}`}>
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-mono opacity-60">0{st.step}</span>
+                        {isCompleted && <CheckCircle2 className="w-3 h-3 text-emerald-600" />}
+                        {isCurrent && st.id === "approved" && <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />}
+                      </div>
+                      <div className="font-semibold mt-1 leading-tight">{st.label}</div>
                     </div>
-                    {step.appNo !== "-" && (
-                      <span className="text-[10px] text-zinc-500 font-mono">Ref: {step.appNo}</span>
-                    )}
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Metric KPI Cards (4 Parameters) */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
+              <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Applied Capacity</span>
+                <div className="text-base font-bold text-slate-900 font-mono mt-0.5">
+                  {discomApp.appliedCapacityKw} kWp
+                </div>
+                <div className="text-[11px] text-slate-500 mt-0.5">{discomApp.phase}</div>
+              </div>
+
+              <div className="p-3.5 bg-blue-50/50 rounded-xl border border-blue-200">
+                <span className="text-[10px] font-bold text-blue-600 uppercase tracking-wider block">Application Number</span>
+                <div className="text-base font-bold text-blue-900 font-mono mt-0.5 truncate">
+                  {discomApp.applicationNumber}
+                </div>
+                <div className="text-[11px] text-blue-700 mt-0.5">Filed: {discomApp.applicationDate}</div>
+              </div>
+
+              <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Application Fee</span>
+                <div className="text-base font-bold text-slate-900 font-mono mt-0.5">
+                  ₹{discomApp.applicationFee.toLocaleString("en-IN")}
+                </div>
+                <div className="text-[11px] text-emerald-700 font-medium mt-0.5">
+                  Paid ({discomApp.feePayment?.mode})
+                </div>
+              </div>
+
+              <div className="p-3.5 bg-emerald-50/50 rounded-xl border border-emerald-200">
+                <span className="text-[10px] font-bold text-emerald-700 uppercase tracking-wider block">Feasibility Sanction</span>
+                <div className="text-base font-bold text-emerald-900 font-mono mt-0.5">
+                  {discomApp.approvalDate ? discomApp.approvalDate : "In Process"}
+                </div>
+                <div className="text-[11px] text-emerald-700 font-mono truncate mt-0.5">
+                  {discomApp.sanctionOrderNumber ? discomApp.sanctionOrderNumber.slice(0, 24) + "..." : "Awaiting Inspection"}
+                </div>
+              </div>
+            </div>
+
+            {/* Rejection Alert Banner if status is rejected */}
+            {discomApp.applicationStatus === "rejected" && (
+              <div className="p-4 rounded-xl border border-rose-200 bg-rose-50 text-xs text-rose-900 space-y-1.5">
+                <div className="flex items-center gap-2 font-bold">
+                  <AlertCircle className="w-4 h-4 text-rose-600" />
+                  <span>DISCOM Application Deficiency Notice Issued</span>
+                </div>
+                <p className="text-[11px] text-rose-800">
+                  <strong>Reason:</strong> {discomApp.rejectionDetails?.reasonCode || "Transformer capacity quota exhausted on DT"}.
+                  {discomApp.rejectionDetails?.remarks && ` ${discomApp.rejectionDetails.remarks}`}
+                </p>
+                <div className="text-[11px] text-rose-700 font-medium pt-1">
+                  Corrective Action: Review transformer quota on adjacent feeder or revise Single Line Diagram for immediate resubmission.
+                </div>
+              </div>
+            )}
+
+            {/* Detailed 2-Column Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              {/* Left Column: DISCOM Application Parameters & Documents */}
+              <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-4">
+                <div>
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+                    <Building2 className="w-3.5 h-3.5 text-blue-600" />
+                    <span>DISCOM Authority & Connection Parameters</span>
+                  </h4>
+                </div>
+
+                <div className="space-y-2 text-xs">
+                  <div className="flex justify-between py-1 border-b border-slate-200">
+                    <span className="text-slate-500">DISCOM:</span>
+                    <strong className="text-slate-900">{discomApp.discom}</strong>
+                  </div>
+                  <div className="flex justify-between py-1 border-b border-slate-200">
+                    <span className="text-slate-500">Service Consumer No:</span>
+                    <strong className="font-mono text-blue-700">{discomApp.consumerNumber}</strong>
+                  </div>
+                  <div className="flex justify-between py-1 border-b border-slate-200">
+                    <span className="text-slate-500">Division / Section:</span>
+                    <span className="text-slate-800">{discomApp.divisionSection}</span>
+                  </div>
+                  <div className="flex justify-between py-1 border-b border-slate-200">
+                    <span className="text-slate-500">Distribution Transformer (DT):</span>
+                    <span className="text-slate-800 text-[11px] font-mono">{discomApp.substationTransformer}</span>
+                  </div>
+                  <div className="flex justify-between py-1 border-b border-slate-200">
+                    <span className="text-slate-500">Fee Payment Reference:</span>
+                    <span className="font-mono text-slate-800">{discomApp.feePayment?.utr}</span>
                   </div>
                 </div>
-              ))}
+
+                {/* Submitted Documents Checklist */}
+                <div>
+                  <span className="text-[11px] font-bold text-slate-600 block uppercase tracking-wider mb-2">
+                    Submitted Statutory Documents Checklist (5/5)
+                  </span>
+                  <div className="space-y-1.5">
+                    {discomApp.documentsSubmitted?.map((doc, idx) => (
+                      <div key={idx} className="flex items-center justify-between p-2 rounded-lg bg-white border border-slate-200 text-xs">
+                        <div className="flex items-center gap-2">
+                          <FileText className="w-3.5 h-3.5 text-slate-400" />
+                          <span className="text-slate-800 font-medium">{doc.name}</span>
+                        </div>
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-1">
+                          <CheckCircle2 className="w-2.5 h-2.5 text-emerald-600" />
+                          {doc.status}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Column: Feasibility Sanction & Field Remarks */}
+              <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-4">
+                <div>
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                    <span>Technical Feasibility & Quota Status</span>
+                  </h4>
+                </div>
+
+                <div className="p-3.5 rounded-xl bg-white border border-slate-200 space-y-2 text-xs">
+                  <div className="flex justify-between">
+                    <span className="text-slate-500">Sanction Order:</span>
+                    <strong className="font-mono text-blue-700">{discomApp.sanctionOrderNumber || "In Progress"}</strong>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-500">Sanctioned Date:</span>
+                    <strong className="text-slate-800">{discomApp.approvalDate || "-"}</strong>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-500">Inspecting Officer:</span>
+                    <span className="text-slate-800">{discomApp.officerInCharge}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-500">Feasibility Order Validity:</span>
+                    <span className="font-bold text-emerald-700">180 Days from Sanction</span>
+                  </div>
+                </div>
+
+                <div className="p-3.5 rounded-xl bg-white border border-slate-200 space-y-1.5 text-xs">
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+                    Official Field Liaison Remarks
+                  </span>
+                  <p className="text-slate-700 text-xs leading-relaxed">
+                    {discomApp.remarks}
+                  </p>
+                </div>
+
+                {discomApp.applicationStatus === "approved" && (
+                  <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-between">
+                    <div className="text-xs text-emerald-900 font-semibold">
+                      Official Feasibility Sanction Memo Ready
+                    </div>
+                    <button
+                      onClick={() => setIsSanctionCertModalOpen(true)}
+                      className="px-3 py-1.5 text-xs font-bold text-emerald-800 bg-white hover:bg-emerald-100 rounded-lg border border-emerald-300 transition-colors shadow-2xs"
+                    >
+                      Print Sanction Order
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
-          <div className="p-5 bg-white rounded-2xl border border-slate-200/90 shadow-xs space-y-4">
-            <div className="border-b border-zinc-200 pb-2 flex justify-between items-center">
+          {/* PM Surya Ghar National Portal Sub-Track */}
+          <div className="p-6 bg-white rounded-2xl border border-slate-200/90 shadow-xs space-y-4">
+            <div className="border-b border-zinc-200 pb-3 flex justify-between items-center">
               <div>
                 <h3 className="font-bold text-sm text-black">PM Surya Ghar Subsidy Sub-Track</h3>
-                <span className="text-[10px] text-zinc-500 font-mono">National Solar Portal</span>
+                <span className="text-[11px] text-zinc-500 font-mono">National Solar Portal Direct Benefit Transfer (DBT)</span>
               </div>
-              <span className="bg-zinc-100 text-zinc-700 text-[10px] font-mono px-2 py-0.5 border border-zinc-200">
-                ₹{project.subsidyEligible.toLocaleString("en-IN")}
+              <span className="bg-emerald-50 text-emerald-800 text-xs font-mono font-bold px-2.5 py-1 rounded-full border border-emerald-200">
+                ₹{project.subsidyEligible.toLocaleString("en-IN")} Eligible Subsidy
               </span>
             </div>
 
-            <div className="space-y-3">
+            <div className="grid grid-cols-1 sm:grid-cols-5 gap-3">
               {[
                 { stage: "National Portal Registration", status: "Done", date: "2026-10-15" },
                 { stage: "Customer Bank Verification (DBT)", status: "Done", date: "2026-10-16" },
@@ -2015,14 +2257,17 @@ export default function ProjectDetailPage() {
                 { stage: "MNRE Portal Verification", status: "Pending", date: "-" },
                 { stage: "Direct Benefit Transfer (DBT Credit)", status: "Pending", date: "Est: 30 days post-sync" },
               ].map((step, idx) => (
-                <div key={idx} className="flex items-start space-x-3 text-xs border-l-2 border-zinc-200 pl-3 py-1">
-                  <div className={`w-2 h-2 rounded-full mt-1.5 ${step.status === "Done" ? "bg-black" : "bg-zinc-300"}`} />
-                  <div className="flex-1">
-                    <div className="flex justify-between">
-                      <span className="font-semibold text-black">{step.stage}</span>
-                      <span className="text-zinc-400 text-[10px] font-mono">{step.date}</span>
-                    </div>
+                <div key={idx} className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-mono text-slate-400">Step 0{idx + 1}</span>
+                    <span className={`text-[10px] font-bold px-1.5 py-0.2 rounded ${
+                      step.status === "Done" ? "bg-emerald-100 text-emerald-800" : "bg-slate-200 text-slate-600"
+                    }`}>
+                      {step.status}
+                    </span>
                   </div>
+                  <div className="font-semibold text-slate-900 leading-snug">{step.stage}</div>
+                  <div className="text-[10px] text-slate-400 font-mono pt-1">{step.date}</div>
                 </div>
               ))}
             </div>
@@ -2248,6 +2493,25 @@ export default function ProjectDetailPage() {
       />
 
 
+
+
+      {/* SECTION 12: DISCOM APPLICATION MODALS */}
+      <DISCOMStatusModal
+        isOpen={isDiscomStatusModalOpen}
+        discomApp={discomApp}
+        project={project}
+        onClose={() => setIsDiscomStatusModalOpen(false)}
+        onUpdateDISCOM={(updatedApp) => {
+          setDiscomApp(updatedApp);
+        }}
+      />
+
+      <DISCOMSanctionCertificateModal
+        isOpen={isSanctionCertModalOpen}
+        discomApp={discomApp}
+        project={project}
+        onClose={() => setIsSanctionCertModalOpen(false)}
+      />
 
       {/* SECTION 10: ADVANCE PAYMENT MODALS */}
       <RecordPaymentModal
