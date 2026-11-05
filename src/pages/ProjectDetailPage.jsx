@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { MOCK_PROJECTS } from "@/data/mockProjects";
 import SiteSurveyModal from "@/components/SiteSurveyModal";
 import ProposalManager from "@/components/proposal/ProposalManager";
+import CustomerConfirmationModal from "@/components/confirmation/CustomerConfirmationModal";
 import { 
   ArrowLeft, 
   Zap, 
@@ -38,6 +39,18 @@ export default function ProjectDetailPage() {
 
   const [activeTab, setActiveTab] = useState("overview");
   const [selectedDocPreview, setSelectedDocPreview] = useState(null);
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+  const [confirmedGovernance, setConfirmedGovernance] = useState({
+    projectId: project.id,
+    customerId: project.customerCode || "CUST-SLM-0089",
+    registrationDate: project.createdDate || "2026-10-12",
+    confirmedCapacity: `${project.capacityKw || 5.4} kWp`,
+    projectValue: project.totalValue || 275396,
+    customerPayable: project.balanceDue || 197396,
+    salesperson: project.salesRep || "Rajkumar S",
+    projectManager: project.assignedEngineer || "S. Karthik (PMO)",
+    expectedCompletionDate: "12 Nov 2026 (30 Days SLA)"
+  });
   const [showPrintModal, setShowPrintModal] = useState(false);
   const [isSurveyModalOpen, setIsSurveyModalOpen] = useState(false);
 
@@ -489,6 +502,82 @@ export default function ProjectDetailPage() {
       {/* TAB 1: 3.1 ONE CUSTOMER – ONE MASTER RECORD */}
       {activeTab === "overview" && (
         <div className="space-y-6">
+          
+          {/* SECTION 9: CONFIRMED PROJECT GOVERNANCE & HANDOVER RECORD */}
+          <div className="p-5 sm:p-6 bg-white rounded-3xl border border-slate-200/90 shadow-xs space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+              <div>
+                <div className="flex items-center space-x-2">
+                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200 font-mono">
+                    Section 9 • Customer Confirmed Project
+                  </span>
+                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-blue-50 text-blue-700 border border-blue-200 font-mono">
+                    8-Point Governance Standard
+                  </span>
+                </div>
+                <h3 className="text-base font-bold text-slate-900 mt-1">
+                  Master Project Handover & Execution Specification
+                </h3>
+                <p className="text-xs text-slate-500">
+                  Confirmed commercial parameters locked from accepted proposal with assigned PMO execution leads.
+                </p>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={() => setShowConfirmationModal(true)}
+                  className="apple-button px-3.5 py-2 rounded-xl text-xs font-bold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 flex items-center space-x-1.5 shadow-2xs"
+                >
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>Confirmation Certificate (Sec 9)</span>
+                </button>
+              </div>
+            </div>
+
+            {/* The 8 Parameters Grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+              <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100/80">
+                <span className="text-[10px] uppercase font-bold text-slate-400 block font-mono">1. Unique Project ID</span>
+                <span className="font-mono font-bold text-blue-700 text-sm block truncate">{confirmedGovernance.projectId}</span>
+              </div>
+
+              <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100/80">
+                <span className="text-[10px] uppercase font-bold text-slate-400 block font-mono">2. Customer ID</span>
+                <span className="font-mono font-bold text-slate-800 text-sm block truncate">{confirmedGovernance.customerId}</span>
+              </div>
+
+              <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100/80">
+                <span className="text-[10px] uppercase font-bold text-slate-400 block font-mono">3. Registration Date</span>
+                <span className="font-mono font-semibold text-slate-800 text-xs block">{confirmedGovernance.registrationDate}</span>
+              </div>
+
+              <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100/80">
+                <span className="text-[10px] uppercase font-bold text-slate-400 block font-mono">4. Confirmed Capacity</span>
+                <span className="font-mono font-bold text-emerald-700 text-sm block">{confirmedGovernance.confirmedCapacity}</span>
+              </div>
+
+              <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100/80">
+                <span className="text-[10px] uppercase font-bold text-slate-400 block font-mono">5. Project Value</span>
+                <span className="font-mono font-bold text-slate-900 text-sm block">₹{confirmedGovernance.projectValue?.toLocaleString()}</span>
+              </div>
+
+              <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100/80">
+                <span className="text-[10px] uppercase font-bold text-slate-400 block font-mono">6. Salesperson</span>
+                <span className="font-semibold text-slate-800 text-xs block truncate">{confirmedGovernance.salesperson}</span>
+              </div>
+
+              <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100/80">
+                <span className="text-[10px] uppercase font-bold text-slate-400 block font-mono">7. Project Manager</span>
+                <span className="font-semibold text-slate-800 text-xs block truncate">{confirmedGovernance.projectManager}</span>
+              </div>
+
+              <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100/80">
+                <span className="text-[10px] uppercase font-bold text-slate-400 block font-mono">8. Expected Completion</span>
+                <span className="font-mono font-bold text-emerald-800 text-xs block truncate">{confirmedGovernance.expectedCompletionDate}</span>
+              </div>
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             
             {/* 1. Identity & Contact Information */}
@@ -1307,6 +1396,23 @@ export default function ProjectDetailPage() {
         onClose={() => setIsSurveyModalOpen(false)}
         onSurveyCompleted={(projId, data) => {
           setIsSurveyModalOpen(false);
+        }}
+      />
+
+      {/* SECTION 9: CUSTOMER ORDER CONFIRMATION MODAL */}
+      <CustomerConfirmationModal
+        isOpen={showConfirmationModal}
+        proposal={{
+          capacityKw: project.capacityKw,
+          totalProjectValue: project.totalValue,
+          customerPayable: project.balanceDue,
+          version: "v1.2",
+          subsidy: project.subsidyEligible
+        }}
+        project={project}
+        onClose={() => setShowConfirmationModal(false)}
+        onConfirmConversion={(confirmedRecord) => {
+          setConfirmedGovernance(confirmedRecord);
         }}
       />
 

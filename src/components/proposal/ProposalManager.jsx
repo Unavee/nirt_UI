@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import { 
   FileText, Plus, History, CheckCircle2, Clock, 
   ArrowRight, Download, Printer, Shield, Eye, AlertCircle, 
-  RefreshCw, X, Layers, Zap, IndianRupee, Save, Split
+  RefreshCw, X, Layers, Zap, IndianRupee, Save, Split, ShieldCheck
 } from "lucide-react";
+import CustomerConfirmationModal from "@/components/confirmation/CustomerConfirmationModal";
 import Portal from "@/components/Portal";
 
 export default function ProposalManager({ project, onProposalUpdate }) {
@@ -11,6 +12,7 @@ export default function ProposalManager({ project, onProposalUpdate }) {
   const [showNewRevisionModal, setShowNewRevisionModal] = useState(false);
   const [showPrintModal, setShowPrintModal] = useState(false);
   const [showCompareModal, setShowCompareModal] = useState(false);
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   
   // 19 BFRD Proposal Parameters with Complete Multi-Revision History
   const [revisions, setRevisions] = useState([
@@ -262,6 +264,14 @@ export default function ProposalManager({ project, onProposalUpdate }) {
         </div>
 
         <div className="flex items-center space-x-2">
+          <button
+            onClick={() => setShowConfirmationModal(true)}
+            className="apple-button px-3.5 py-2 rounded-xl text-xs font-bold bg-emerald-600 text-white hover:bg-emerald-700 flex items-center space-x-1.5 shadow-sm"
+          >
+            <ShieldCheck className="w-3.5 h-3.5 text-white" />
+            <span>Customer Confirmation (Sec 9)</span>
+          </button>
+
           <button
             onClick={() => setShowCompareModal(true)}
             className="apple-button px-3 py-2 rounded-xl text-xs font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 flex items-center space-x-1.5 shadow-2xs"
@@ -893,6 +903,18 @@ export default function ProposalManager({ project, onProposalUpdate }) {
           </div>
         </Portal>
       )}
+
+      {/* SECTION 9: CUSTOMER CONFIRMATION MODAL */}
+      <CustomerConfirmationModal
+        isOpen={showConfirmationModal}
+        proposal={currentProp}
+        project={project}
+        onClose={() => setShowConfirmationModal(false)}
+        onConfirmConversion={(confirmedData) => {
+          setRevisions(prev => prev.map(r => r.version === currentProp.version ? { ...r, status: "Accepted & Confirmed" } : r));
+          if (onProposalUpdate) onProposalUpdate(confirmedData);
+        }}
+      />
 
     </div>
   );

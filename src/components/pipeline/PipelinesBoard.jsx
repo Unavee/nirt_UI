@@ -14,6 +14,7 @@ import SiteSurveyModal from "@/components/SiteSurveyModal";
 import EditWithReasonModal from "./EditWithReasonModal";
 import QualificationModal from "./QualificationModal";
 import StageGateModal from "./StageGateModal";
+import CustomerConfirmationModal from "@/components/confirmation/CustomerConfirmationModal";
 import PipelineLane from "./PipelineLane";
 import { PIPELINES } from "@/data/pipelineStages";
 import { MOCK_PROJECTS } from "@/data/mockProjects";
@@ -46,6 +47,7 @@ export default function PipelinesBoard() {
   const [surveyProject, setSurveyProject] = useState(null);
   const [advanceProject, setAdvanceProject] = useState(null);
   const [advanceTargetStage, setAdvanceTargetStage] = useState(null);
+  const [confirmConvertProject, setConfirmConvertProject] = useState(null);
 
   const currentPipeline = PIPELINES[activePipelineKey] || PIPELINES.sales;
   const totalPipelineValue = projectsList.reduce((acc, p) => acc + (p.totalValue || 0), 0);
@@ -232,7 +234,7 @@ export default function PipelinesBoard() {
       <div className="overflow-x-auto pb-6">
         <div className="flex space-x-4 min-w-[1280px]">
           {currentPipeline.stages.map((stage, sIdx) => {
-            const nextStage = currentPipeline.stages[sIdx + 1];
+            const nextStage = currentPipeline.stages[sIdx + 1] || (activePipelineKey === "sales" && sIdx === 5 ? PIPELINES.approvals.stages[0] : null);
 
             const stageProjects = projectsList.filter((p) => {
               if (selectedDistrict !== "All Circles" && p.district !== selectedDistrict) return false;
@@ -268,8 +270,12 @@ export default function PipelinesBoard() {
                 onOpenQualify={(p) => setQualifyProject(p)}
                 onOpenSurvey={(p) => setSurveyProject(p)}
                 onOpenAdvance={(p, next) => {
-                  setAdvanceProject(p);
-                  setAdvanceTargetStage(next);
+                  if (next?.id === "step_07" || (activePipelineKey === "sales" && stage.id === "step_06")) {
+                    setConfirmConvertProject(p);
+                  } else {
+                    setAdvanceProject(p);
+                    setAdvanceTargetStage(next);
+                  }
                 }}
               />
             );
@@ -292,6 +298,61 @@ export default function PipelinesBoard() {
         onClose={() => setQualifyProject(null)}
         onQualifySuccess={handleQualifySuccess}
         onDropLead={handleDropLead}
+      />
+
+      {/* Section 9: Customer Order Confirmation Modal */}
+      <CustomerConfirmationModal
+        isOpen={!!confirmConvertProject}
+        proposal={{
+          capacityKw: confirmConvertProject?.capacityKw || 5.4,
+          totalProjectValue: confirmConvertProject?.totalValue || 275396,
+          customerPayable: confirmConvertProject?.balanceDue || 197396,
+          version: "v1.2",
+          subsidy: confirmConvertProject?.subsidyEligible || 78000
+        }}
+        project={confirmConvertProject}
+        onClose={() => setConfirmConvertProject(null)}
+        onConfirmConversion={(confirmedRecord) => {
+          setProjectsList((prev) =>
+            prev.map((p) => {
+              if (p.id === confirmConvertProject.id) {
+                return {
+                  ...p,
+                  id: confirmedRecord.projectId,
+                  customerCode: confirmedRecord.customerId,
+                  createdDate: confirmedRecord.registrationDate,
+                  capacityKw: parseFloat(confirmedRecord.confirmedCapacity) || p.capacityKw,
+                  totalValue: confirmedRecord.projectValue,
+                  salesRep: confirmedRecord.salesperson,
+                  assignedEngineer: confirmedRecord.projectManager,
+                  expectedCompletionDate: confirmedRecord.expectedCompletionDate,
+                  pipeline: "approvals",
+                  stage: "step_07",
+                  stageName: "80% Advance Receipt Gatekeeper",
+                  status: "Confirmed Project"
+                };
+              }
+              return p;
+            })
+          );
+
+          setPmoAuditLogs((prev) => [
+            {
+              id: `AUDIT-${Date.now()}`,
+              timestamp: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
+              staffName: confirmedRecord.salesperson,
+              role: "Sales Executive",
+              projectId: confirmedRecord.projectId,
+              action: "Section 9: Customer Confirmation & Lead-to-Project Conversion",
+              reason: `Converted to Confirmed Project. Assigned PM: ${confirmedRecord.projectManager}. Advanced to Stage 7 (80% Advance Gatekeeper).`,
+              stage: "Step 06 -> Step 07"
+            },
+            ...prev
+          ]);
+
+          setActivePipelineKey("approvals");
+          setConfirmConvertProject(null);
+        }}
       />
 
       {/* Stage Gatekeeper Verification Modal */}
