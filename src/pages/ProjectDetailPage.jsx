@@ -7,6 +7,7 @@ import CustomerConfirmationModal from "@/components/confirmation/CustomerConfirm
 import ComplaintTicketModal from "@/components/service/ComplaintTicketModal";
 import TicketLifecycleModal from "@/components/service/TicketLifecycleModal";
 import { INITIAL_SERVICE_TICKETS } from "@/data/serviceTicketsData";
+import { MASTER_AUDIT_LOGS } from "@/data/auditTrailData";
 import {
   Plus,
   Headset,
@@ -521,6 +522,7 @@ export default function ProjectDetailPage() {
           { id: "documents", label: `Document Locker (${project.documents?.length || 9})` },
           { id: "proposal", label: "Proposals & Revisions (Section 8)" },
           { id: "service", label: `Service & O&M (${projectTickets.length})` },
+          { id: "audit", label: "Audit Trail (Section 34)" },
           { id: "discom_subsidy", label: "DISCOM & Subsidy Sync" }
         ].map((tab) => (
           <button
@@ -1184,6 +1186,100 @@ export default function ProjectDetailPage() {
       {/* TAB 5: PARALLEL DISCOM & SUBSIDY SUB-TRACKS */}
       {activeTab === "proposal" && (
         <ProposalManager project={project} />
+      )}
+
+      {/* TAB: SECTION 34 AUDIT TRAIL */}
+      {activeTab === "audit" && (
+        <div className="space-y-6">
+          <div className="p-5 sm:p-6 bg-white rounded-3xl border border-slate-200/90 shadow-xs space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+              <div>
+                <div className="flex items-center space-x-2">
+                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-blue-50 text-blue-700 border border-blue-200 font-mono">
+                    Section 34 • Governance & Accountability
+                  </span>
+                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200 font-mono">
+                    Plant Mutation History
+                  </span>
+                </div>
+                <h3 className="text-base font-bold text-slate-900 mt-1">
+                  Granular Audit Trail for {project.customerName} ({project.id})
+                </h3>
+                <p className="text-xs text-slate-500">
+                  Permanent forensic ledger recording who created, who modified, what changed, date, time, and previous vs. new values.
+                </p>
+              </div>
+
+              <button
+                onClick={() => window.print()}
+                className="apple-button px-3.5 py-2 rounded-xl text-xs font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 flex items-center space-x-1.5 shadow-2xs"
+              >
+                <Printer className="w-3.5 h-3.5 text-slate-600" />
+                <span>Print Audit Certificate</span>
+              </button>
+            </div>
+
+            {/* Audit Table with 7 Parameters */}
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs min-w-[1000px]">
+                <thead>
+                  <tr className="border-b border-slate-100 bg-slate-50/60 text-slate-400 uppercase tracking-wider text-[10px] font-bold">
+                    <th className="py-3 px-4">1. Created By</th>
+                    <th className="py-3 px-4">2. Modified By</th>
+                    <th className="py-3 px-4">3. What Was Modified</th>
+                    <th className="py-3 px-4">4. Date & 5. Time</th>
+                    <th className="py-3 px-4">6. Previous Value</th>
+                    <th className="py-3 px-4">7. New Value</th>
+                    <th className="py-3 px-4">Reason / Justification</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 font-medium">
+                  {MASTER_AUDIT_LOGS.filter(l => l.projectId === project.id).map(log => (
+                    <tr key={log.id} className="hover:bg-slate-50/50 transition-colors">
+                      <td className="py-3.5 px-4">
+                        <span className="font-bold text-slate-900 block">{log.createdBy.name}</span>
+                        <span className="text-[10px] text-slate-400 font-mono">{log.createdBy.role}</span>
+                        <span className="text-[9px] text-slate-400 font-mono block mt-0.5">{log.createdBy.date}</span>
+                      </td>
+
+                      <td className="py-3.5 px-4">
+                        <span className="font-bold text-slate-900 block">{log.modifiedBy.name}</span>
+                        <span className="text-[10px] text-slate-400 font-mono">{log.modifiedBy.role}</span>
+                        <span className="text-[9px] text-slate-400 font-mono block mt-0.5">{log.modifiedBy.branch}</span>
+                      </td>
+
+                      <td className="py-3.5 px-4 font-bold text-slate-800">
+                        {log.fieldModified}
+                      </td>
+
+                      <td className="py-3.5 px-4 font-mono whitespace-nowrap">
+                        <div className="font-semibold text-slate-800">{log.date}</div>
+                        <div className="text-[10px] text-slate-400">{log.time}</div>
+                      </td>
+
+                      <td className="py-3.5 px-4">
+                        <span className="px-2 py-0.5 rounded text-[10px] font-mono text-rose-700 bg-rose-50 border border-rose-200 line-through block w-fit">
+                          {log.previousValue}
+                        </span>
+                      </td>
+
+                      <td className="py-3.5 px-4">
+                        <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 block w-fit">
+                          {log.newValue}
+                        </span>
+                      </td>
+
+                      <td className="py-3.5 px-4 text-slate-600 max-w-[220px]">
+                        {log.reason}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </div>
       )}
 
       {/* TAB: SECTION 35 CUSTOMER SERVICE & COMPLAINT MANAGEMENT */}

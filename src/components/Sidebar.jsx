@@ -161,18 +161,18 @@ export default function Sidebar() {
                 Governance & Safety
               </span>
             )}
-            {canViewAudit && (
-              <Link
-                to="/#audit"
-                className={`apple-button flex items-center space-x-3 px-3 py-2 rounded-xl text-xs text-rose-700 bg-rose-50/60 border border-rose-200/60 hover:bg-rose-100/80 font-medium transition-all ${
-                  isCollapsed ? "justify-center px-2" : ""
-                }`}
-                title={isCollapsed ? "Audit Log" : ""}
-              >
-                <Activity className="w-4 h-4 text-rose-600 shrink-0" />
-                {!isCollapsed && <span className="truncate">Audit Log</span>}
-              </Link>
-            )}
+            <Link
+              to="/audit"
+              className={`apple-button flex items-center space-x-3 px-3 py-2 rounded-xl text-xs font-medium transition-all ${
+                pathname === "/audit"
+                  ? "bg-slate-900 text-white shadow-xs font-semibold"
+                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-100/70"
+              } ${isCollapsed ? "justify-center px-2" : ""}`}
+              title={isCollapsed ? "Audit Trail & Compliance (Sec 34)" : ""}
+            >
+              <ShieldCheck className={`w-4 h-4 shrink-0 ${pathname === "/audit" ? "text-emerald-400" : "text-emerald-600"}`} />
+              {!isCollapsed && <span className="truncate">Audit Trail (Sec 34)</span>}
+            </Link>
             <Link
               to="/settings/users"
               className={`apple-button flex items-center space-x-3 px-3 py-2 rounded-xl text-xs font-medium transition-all ${
