@@ -17,6 +17,7 @@ import AuditTrailPage from "@/pages/AuditTrailPage";
 import ApprovalsPage from "@/pages/ApprovalsPage";
 import MobileFieldHub from "@/pages/MobileFieldHub";
 import ManagementDashboardPage from "@/pages/ManagementDashboardPage";
+import MISReportsPage from "@/pages/MISReportsPage";
 
 export default function App() {
   return (
@@ -27,6 +28,7 @@ export default function App() {
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/dashboards" element={<ManagementDashboardPage />} />
+              <Route path="/reports" element={<MISReportsPage />} />
               <Route path="/pipelines" element={<PipelinesPage />} />
               <Route path="/projects" element={<ProjectsPage />} />
               <Route path="/projects/:id" element={<ProjectDetailPage />} />
