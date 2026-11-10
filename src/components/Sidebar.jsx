@@ -16,7 +16,8 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   Headset,
-  Smartphone
+  Smartphone,
+  BarChart3
 } from "lucide-react";
 
 export default function Sidebar() {
@@ -27,6 +28,7 @@ export default function Sidebar() {
 
   const mainNavigation = [
     { label: "Dashboard", href: "/", icon: LayoutDashboard },
+    { label: "Executive Dashboards", href: "/dashboards", icon: BarChart3, badge: "Sec 26" },
     { label: "5-Pipeline Board", href: "/pipelines", icon: Layers, badge: "20" },
     { label: "Projects Registry", href: "/projects", icon: FolderKanban },
     { label: "Approvals Hub", href: "/approvals", icon: ShieldCheck, badge: "Sec 33" },

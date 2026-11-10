@@ -27,7 +27,8 @@ import {
   ChevronRight,
   TrendingUp,
   Sparkles,
-  AlertTriangle
+  AlertTriangle,
+  BarChart3
 } from "lucide-react";
 
 export default function DashboardPage() {
@@ -168,6 +169,13 @@ export default function DashboardPage() {
             <option value="Dharmapuri">Dharmapuri Circle</option>
             <option value="Coimbatore">Coimbatore Circle</option>
           </select>
+
+          <Link to="/dashboards"
+            className="apple-button flex items-center space-x-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-blue-50 border border-blue-200 text-blue-700 hover:bg-blue-100 shadow-2xs"
+          >
+            <BarChart3 className="w-3.5 h-3.5" />
+            <span>5-Pillar Dashboards (Sec 26)</span>
+          </Link>
 
           <Link to="/pipelines"
             className="apple-button flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-slate-900 text-white hover:bg-black shadow-md shadow-slate-900/10"
