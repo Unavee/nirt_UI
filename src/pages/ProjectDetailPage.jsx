@@ -34,6 +34,10 @@ import FinalPaymentManagementView from "@/components/finalpayment/FinalPaymentMa
 import RecordFinalPaymentModal from "@/components/finalpayment/RecordFinalPaymentModal";
 import SendReminderModal from "@/components/finalpayment/SendReminderModal";
 import NoDuesCertificateModal from "@/components/finalpayment/NoDuesCertificateModal";
+import { INITIAL_SUBSIDY_DATA } from "@/data/subsidyData";
+import SubsidyManagementView from "@/components/subsidy/SubsidyManagementView";
+import UpdateSubsidyModal from "@/components/subsidy/UpdateSubsidyModal";
+import SubsidySanctionModal from "@/components/subsidy/SubsidySanctionModal";
 import { INITIAL_PROCUREMENT_ITEMS } from "@/data/procurementData";
 import ProcurementModal from "@/components/procurement/ProcurementModal";
 import GoodsReceiptModal from "@/components/procurement/GoodsReceiptModal";
@@ -200,6 +204,18 @@ export default function ProjectDetailPage() {
   const [isRecordFinalPayModalOpen, setIsRecordFinalPayModalOpen] = useState(false);
   const [isSendReminderModalOpen, setIsSendReminderModalOpen] = useState(false);
   const [isNoDuesModalOpen, setIsNoDuesModalOpen] = useState(false);
+
+  const [subsidyState, setSubsidyState] = useState(
+    INITIAL_SUBSIDY_DATA[project.id] || {
+      ...INITIAL_SUBSIDY_DATA["NIRT-26-0042"],
+      projectId: project.id,
+      projectName: project.name,
+      customerName: project.customerName || "Customer",
+      capacity: project.capacity || "50 kWp"
+    }
+  );
+  const [isUpdateSubsidyModalOpen, setIsUpdateSubsidyModalOpen] = useState(false);
+  const [isSubsidySanctionModalOpen, setIsSubsidySanctionModalOpen] = useState(false);
 
 
 
@@ -712,7 +728,8 @@ export default function ProjectDetailPage() {
           { id: "progress_tracker", label: "Progress Tracker (Section 17)" },
           { id: "inspection", label: "Inspection & Commissioning (Section 18)" },
           { id: "net_metering", label: "Net Metering (Section 19)" },
-          { id: "final_payment", label: "Final Payment (Section 20)" }
+          { id: "final_payment", label: "Final Payment (Section 20)" },
+          { id: "subsidy_management", label: "Subsidy DBT (Section 21)" }
         ].map((tab) => (
           <button
             key={tab.id}
@@ -2220,6 +2237,15 @@ export default function ProjectDetailPage() {
         />
       )}
 
+      {/* TAB: SECTION 21 SUBSIDY MANAGEMENT */}
+      {activeTab === "subsidy_management" && (
+        <SubsidyManagementView
+          subsidyData={subsidyState}
+          onOpenUpdateModal={() => setIsUpdateSubsidyModalOpen(true)}
+          onOpenSanctionModal={() => setIsSubsidySanctionModalOpen(true)}
+        />
+      )}
+
       {activeTab === "discom_subsidy" && (
         <div className="space-y-6">
           {/* Segmented Sub-Tab Switcher between Section 13, Section 12, and Subsidy */}
@@ -2797,6 +2823,20 @@ export default function ProjectDetailPage() {
 
 
 
+
+      {/* SECTION 21: SUBSIDY MODALS */}
+      <UpdateSubsidyModal
+        isOpen={isUpdateSubsidyModalOpen}
+        onClose={() => setIsUpdateSubsidyModalOpen(false)}
+        subsidyData={subsidyState}
+        onUpdateSubsidy={(updated) => setSubsidyState(updated)}
+      />
+
+      <SubsidySanctionModal
+        isOpen={isSubsidySanctionModalOpen}
+        onClose={() => setIsSubsidySanctionModalOpen(false)}
+        subsidyData={subsidyState}
+      />
 
       {/* SECTION 20: FINAL PAYMENT MODALS */}
       <RecordFinalPaymentModal
