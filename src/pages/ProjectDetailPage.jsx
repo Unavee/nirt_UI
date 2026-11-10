@@ -25,6 +25,10 @@ import { INITIAL_INSPECTIONS_DATA } from "@/data/inspectionData";
 import InspectionManagementView from "@/components/inspection/InspectionManagementView";
 import InspectionStatusModal from "@/components/inspection/InspectionStatusModal";
 import CommissioningReportModal from "@/components/inspection/CommissioningReportModal";
+import { INITIAL_NET_METERING_DATA } from "@/data/netMeteringData";
+import NetMeteringManagementView from "@/components/netmetering/NetMeteringManagementView";
+import UpdateNetMeterModal from "@/components/netmetering/UpdateNetMeterModal";
+import NetMeterCertificateModal from "@/components/netmetering/NetMeterCertificateModal";
 import { INITIAL_PROCUREMENT_ITEMS } from "@/data/procurementData";
 import ProcurementModal from "@/components/procurement/ProcurementModal";
 import GoodsReceiptModal from "@/components/procurement/GoodsReceiptModal";
@@ -166,6 +170,18 @@ export default function ProjectDetailPage() {
   );
   const [isInspectionStatusModalOpen, setIsInspectionStatusModalOpen] = useState(false);
   const [isCommissioningReportModalOpen, setIsCommissioningReportModalOpen] = useState(false);
+
+  const [netMeterState, setNetMeterState] = useState(
+    INITIAL_NET_METERING_DATA[project.id] || {
+      ...INITIAL_NET_METERING_DATA["NIRT-26-0042"],
+      projectId: project.id,
+      projectName: project.name,
+      customerName: project.customerName || "Customer",
+      capacity: project.capacity || "50 kWp"
+    }
+  );
+  const [isUpdateMeterModalOpen, setIsUpdateMeterModalOpen] = useState(false);
+  const [isNetMeterCertModalOpen, setIsNetMeterCertModalOpen] = useState(false);
 
 
 
@@ -676,7 +692,8 @@ export default function ProjectDetailPage() {
           { id: "store", label: "Store & Inventory (Section 15)" },
           { id: "installation", label: "Installation & Site (Section 16)" },
           { id: "progress_tracker", label: "Progress Tracker (Section 17)" },
-          { id: "inspection", label: "Inspection & Commissioning (Section 18)" }
+          { id: "inspection", label: "Inspection & Commissioning (Section 18)" },
+          { id: "net_metering", label: "Net Metering (Section 19)" }
         ].map((tab) => (
           <button
             key={tab.id}
@@ -2165,6 +2182,15 @@ export default function ProjectDetailPage() {
         />
       )}
 
+      {/* TAB: SECTION 19 NET METERING */}
+      {activeTab === "net_metering" && (
+        <NetMeteringManagementView
+          meterData={netMeterState}
+          onOpenUpdateModal={() => setIsUpdateMeterModalOpen(true)}
+          onOpenCertModal={() => setIsNetMeterCertModalOpen(true)}
+        />
+      )}
+
       {activeTab === "discom_subsidy" && (
         <div className="space-y-6">
           {/* Segmented Sub-Tab Switcher between Section 13, Section 12, and Subsidy */}
@@ -2742,6 +2768,20 @@ export default function ProjectDetailPage() {
 
 
 
+
+      {/* SECTION 19: NET METERING MODALS */}
+      <UpdateNetMeterModal
+        isOpen={isUpdateMeterModalOpen}
+        onClose={() => setIsUpdateMeterModalOpen(false)}
+        meterData={netMeterState}
+        onUpdateMeter={(updated) => setNetMeterState(updated)}
+      />
+
+      <NetMeterCertificateModal
+        isOpen={isNetMeterCertModalOpen}
+        onClose={() => setIsNetMeterCertModalOpen(false)}
+        meterData={netMeterState}
+      />
 
       {/* SECTION 18: INSPECTION & COMMISSIONING MODALS */}
       <InspectionStatusModal
