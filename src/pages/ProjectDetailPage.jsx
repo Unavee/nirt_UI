@@ -14,6 +14,10 @@ import { INITIAL_STORE_INVENTORY } from "@/data/storeInventoryData";
 import MaterialIssueModal from "@/components/store/MaterialIssueModal";
 import MaterialReturnModal from "@/components/store/MaterialReturnModal";
 import StoreManagementView from "@/components/store/StoreManagementView";
+import { INITIAL_INSTALLATION_DATA } from "@/data/installationData";
+import InstallationManagementView from "@/components/installation/InstallationManagementView";
+import UpdateInstallationModal from "@/components/installation/UpdateInstallationModal";
+import InstallationSignOffModal from "@/components/installation/InstallationSignOffModal";
 import { INITIAL_PROCUREMENT_ITEMS } from "@/data/procurementData";
 import ProcurementModal from "@/components/procurement/ProcurementModal";
 import GoodsReceiptModal from "@/components/procurement/GoodsReceiptModal";
@@ -117,6 +121,19 @@ export default function ProjectDetailPage() {
   const [selectedStoreItem, setSelectedStoreItem] = useState(null);
   const [isIssueModalOpen, setIsIssueModalOpen] = useState(false);
   const [isReturnModalOpen, setIsReturnModalOpen] = useState(false);
+
+  const [installationState, setInstallationState] = useState(
+    INITIAL_INSTALLATION_DATA[project.id] || {
+      ...INITIAL_INSTALLATION_DATA["NIRT-26-0042"],
+      projectId: project.id,
+      projectName: project.name,
+      customerName: project.customerName || "Customer",
+      systemCapacity: project.capacity || "50 kWp",
+      siteAddress: project.address || "Project Site"
+    }
+  );
+  const [isUpdateInstallModalOpen, setIsUpdateInstallModalOpen] = useState(false);
+  const [isInstallSignOffModalOpen, setIsInstallSignOffModalOpen] = useState(false);
 
 
 
@@ -624,7 +641,8 @@ export default function ProjectDetailPage() {
           { id: "audit", label: "Audit Trail (Section 34)" },
           { id: "discom_subsidy", label: "DISCOM & Feasibility (Sec 12-13)" },
           { id: "procurement", label: "Procurement & BoM (Section 14)" },
-          { id: "store", label: "Store & Inventory (Section 15)" }
+          { id: "store", label: "Store & Inventory (Section 15)" },
+          { id: "installation", label: "Installation & Site (Section 16)" }
         ].map((tab) => (
           <button
             key={tab.id}
@@ -2056,6 +2074,15 @@ export default function ProjectDetailPage() {
         />
       )}
 
+      {/* TAB: SECTION 16 INSTALLATION MANAGEMENT */}
+      {activeTab === "installation" && (
+        <InstallationManagementView
+          installationData={installationState}
+          onOpenUpdateModal={() => setIsUpdateInstallModalOpen(true)}
+          onOpenSignOffModal={() => setIsInstallSignOffModalOpen(true)}
+        />
+      )}
+
       {activeTab === "discom_subsidy" && (
         <div className="space-y-6">
           {/* Segmented Sub-Tab Switcher between Section 13, Section 12, and Subsidy */}
@@ -2633,6 +2660,20 @@ export default function ProjectDetailPage() {
 
 
 
+
+      {/* SECTION 16: INSTALLATION MODALS */}
+      <UpdateInstallationModal
+        isOpen={isUpdateInstallModalOpen}
+        onClose={() => setIsUpdateInstallModalOpen(false)}
+        installationData={installationState}
+        onUpdateInstallation={(updated) => setInstallationState(updated)}
+      />
+
+      <InstallationSignOffModal
+        isOpen={isInstallSignOffModalOpen}
+        onClose={() => setIsInstallSignOffModalOpen(false)}
+        installationData={installationState}
+      />
 
       {/* SECTION 15: STORE MANAGEMENT MODALS */}
       <MaterialIssueModal
