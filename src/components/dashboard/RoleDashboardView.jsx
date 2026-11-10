@@ -158,12 +158,39 @@ export function RoleDashboardView() {
               valueKey="value"
               subtitle="TANGEDCO Grid Phase Verification"
             />
-            <div className="lg:col-span-2">
-              <AppleDonutChart 
-                title={activeRole.charts.feasibilityApproval.title}
-                segments={activeRole.charts.feasibilityApproval.ratios}
-                subtitle="Technical Approval vs Structural Rejections"
-              />
+            <AppleDonutChart 
+              title={activeRole.charts.feasibilityApproval.title}
+              segments={activeRole.charts.feasibilityApproval.ratios}
+              subtitle="Technical Approval vs Structural Rejections"
+            />
+            {/* Feasibility Criteria Scoreboard to complete the balanced 2x2 grid */}
+            <div className="glass-surface rounded-2xl sm:rounded-3xl p-4 sm:p-5 shadow-xs border border-slate-200/80 flex flex-col justify-between">
+              <div>
+                <h4 className="text-xs sm:text-sm font-bold text-slate-900 tracking-tight">Technical Feasibility Criteria</h4>
+                <p className="text-[11px] text-slate-500 mt-0.5">Civil & Electrical Load Verification Parameters</p>
+              </div>
+              <div className="grid grid-cols-2 gap-2.5 sm:gap-3 my-auto pt-3">
+                <div className="p-3 bg-emerald-50/70 rounded-2xl border border-emerald-100">
+                  <div className="text-[10px] font-bold text-emerald-800 uppercase tracking-wider">Avg Feasible Ratio</div>
+                  <div className="text-lg font-bold text-emerald-900 mt-0.5">91.4%</div>
+                  <div className="text-[10px] text-emerald-700 mt-0.5 font-medium">Clear for Engineering SLD</div>
+                </div>
+                <div className="p-3 bg-blue-50/70 rounded-2xl border border-blue-100">
+                  <div className="text-[10px] font-bold text-blue-800 uppercase tracking-wider">Avg Shadow-Free Area</div>
+                  <div className="text-lg font-bold text-blue-900 mt-0.5">850 sq.ft</div>
+                  <div className="text-[10px] text-blue-700 mt-0.5 font-medium">Standard 3–5 kWp Capacity</div>
+                </div>
+                <div className="p-3 bg-indigo-50/70 rounded-2xl border border-indigo-100">
+                  <div className="text-[10px] font-bold text-indigo-800 uppercase tracking-wider">Transformer Headroom</div>
+                  <div className="text-lg font-bold text-indigo-900 mt-0.5">&lt; 70% DT Load</div>
+                  <div className="text-[10px] text-indigo-700 mt-0.5 font-medium">TANGEDCO Approved</div>
+                </div>
+                <div className="p-3 bg-slate-50 rounded-2xl border border-slate-200">
+                  <div className="text-[10px] font-bold text-slate-700 uppercase tracking-wider">Surveys Completed</div>
+                  <div className="text-lg font-bold text-slate-900 mt-0.5">38 Sites</div>
+                  <div className="text-[10px] text-slate-500 mt-0.5 font-medium">This month (Salem Circle)</div>
+                </div>
+              </div>
             </div>
           </>
         )}

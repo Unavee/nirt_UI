@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { MOCK_PROJECTS } from "@/data/mockProjects";
 import SiteSurveyModal from "@/components/SiteSurveyModal";
@@ -109,6 +109,16 @@ export default function ProjectDetailPage() {
   const project = MOCK_PROJECTS.find((p) => p.id === projectId) || MOCK_PROJECTS[0];
   const { activeRole, isExecutive, isCoordinator } = useRole();
   const [tabFilterMode, setTabFilterMode] = useState("role"); // "role" | "all"
+
+  useEffect(() => {
+    // Explicitly guarantee window and body vertical scrolling is enabled
+    document.body.style.overflow = "";
+    document.documentElement.style.overflow = "";
+    return () => {
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+    };
+  }, []);
 
   const [activeTab, setActiveTab] = useState("overview");
   const [selectedDocPreview, setSelectedDocPreview] = useState(null);

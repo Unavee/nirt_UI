@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import Sidebar from "@/components/Sidebar";
 import { AppleNavbar } from "@/components/navigation/AppleNavbar";
@@ -9,6 +10,12 @@ export default function AppShell({ children }) {
   const pathname = location.pathname;
   const { isCollapsed } = useSidebar();
   const isLoginPage = pathname === "/login";
+
+  useEffect(() => {
+    // Ensure body and html overflow is never locked after route change or HMR
+    document.body.style.overflow = "";
+    document.documentElement.style.overflow = "";
+  }, [pathname]);
 
   if (isLoginPage) {
     return (

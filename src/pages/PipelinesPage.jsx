@@ -373,11 +373,11 @@ export default function PipelinesPage() {
             onClick={() => setViewMode("dropped")}
             className={`apple-button px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center space-x-2 ${
               viewMode === "dropped"
-                ? "bg-white text-rose-700 shadow-xs"
-                : "text-slate-600 hover:text-rose-600"
+                ? "bg-white text-slate-900 shadow-xs"
+                : "text-slate-600 hover:text-slate-900"
             }`}
           >
-            <Ban className="w-3.5 h-3.5 text-rose-600" />
+            <Archive className="w-3.5 h-3.5 text-slate-500" />
             <span>Dropped Leads Archive ({droppedProjects.length})</span>
           </button>
         </div>
@@ -621,26 +621,26 @@ export default function PipelinesPage() {
         </>
       )}
 
-      {/* VIEW 2: DROPPED & LOST LEADS ARCHIVE (BFRD §6) */}
+      {/* VIEW 2: DROPPED & LOST LEADS ARCHIVE */}
       {viewMode === "dropped" && (
         <div className="space-y-4">
           
-          {/* Governance Notice Banner */}
-          <div className="p-4 rounded-3xl bg-rose-50 border border-rose-200/80 text-rose-950 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xs">
+          {/* Governance Notice Banner - Refined Executive Slate */}
+          <div className="p-4 rounded-3xl bg-slate-900 text-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-md shadow-slate-900/10">
             <div className="flex items-start space-x-3">
-              <div className="w-8 h-8 rounded-2xl bg-rose-600 text-white flex items-center justify-center shrink-0">
-                <Ban className="w-4 h-4" />
+              <div className="w-8 h-8 rounded-2xl bg-white/10 text-slate-200 flex items-center justify-center shrink-0 border border-white/10">
+                <Archive className="w-4 h-4 text-slate-300" />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-rose-900">
-                  BFRD §6 Lead Qualification: Dropped, Rejected &amp; Lost Archive
+                <h3 className="text-sm font-bold text-white">
+                  Lead Qualification: Dropped, Rejected &amp; Lost Archive
                 </h3>
-                <p className="text-xs text-rose-700 mt-0.5">
+                <p className="text-xs text-slate-300 mt-0.5">
                   All unqualified or lost leads (price issues, technical constraints, competitor selected, postponed) are permanently logged here with written audit justification. They are strictly blocked from progressing to Step 03 (Site Survey).
                 </p>
               </div>
             </div>
-            <div className="text-[11px] font-mono text-rose-800 bg-rose-100/80 px-3 py-1.5 rounded-xl border border-rose-200 shrink-0">
+            <div className="text-[11px] font-mono text-slate-300 bg-white/10 px-3 py-1.5 rounded-xl border border-white/10 shrink-0">
               Total Archived: {droppedProjects.length} Leads
             </div>
           </div>
@@ -655,7 +655,7 @@ export default function PipelinesPage() {
                     <th className="py-3 px-4">Client Name</th>
                     <th className="py-3 px-4">District &amp; Capacity</th>
                     <th className="py-3 px-4">Lifecycle Status</th>
-                    <th className="py-3 px-4">BFRD §6 Reason</th>
+                    <th className="py-3 px-4">Archive Reason</th>
                     <th className="py-3 px-4 min-w-[220px]">Logged Audit Remarks</th>
                     <th className="py-3 px-4">Logged By / Date</th>
                     <th className="py-3 px-4 text-right">Governance Action</th>
@@ -679,7 +679,7 @@ export default function PipelinesPage() {
                         </span>
                       </td>
                       <td className="py-3.5 px-4">
-                        <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200">
+                        <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-200">
                           {lead.dropReason}
                         </span>
                       </td>

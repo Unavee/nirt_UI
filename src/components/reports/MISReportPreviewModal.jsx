@@ -17,14 +17,11 @@ export default function MISReportPreviewModal({ isOpen, onClose, report }) {
   const [downloadSuccess, setDownloadSuccess] = useState(false);
 
   React.useEffect(() => {
-    const originalOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
     const handleKeyDown = (e) => {
       if (e.key === "Escape") onClose();
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => {
-      document.body.style.overflow = originalOverflow;
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [onClose]);
