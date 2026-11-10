@@ -31,6 +31,18 @@ button, nav, [role="button"] {
 }
 
 /* Apple Dynamic Translucent Glass Materials */
+.modal-backdrop-root {
+  position: fixed !important;
+  inset: 0 !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 99999 !important;
+}
+
 .glass-surface {
   background: rgba(255, 255, 255, 0.78);
   backdrop-filter: blur(20px) saturate(180%);

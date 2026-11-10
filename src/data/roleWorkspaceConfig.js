@@ -13,7 +13,7 @@ export const ROLE_WORKSPACES = {
     pipelineCode: "P1",
     menuItems: [
       { label: "Sales Workspace", href: "/", icon: "Users" },
-      { label: "P1: Sales Pipeline", href: "/pipelines", icon: "Layers", badge: "P1" },
+      { label: "P1: Sales Pipeline", href: "/pipelines?pipeline=sales", icon: "Layers", badge: "P1" },
       { label: "Projects Registry", href: "/projects", icon: "FolderKanban" },
       { label: "Customer Master Record", href: "/projects/NIRT-26-0042", icon: "Building2" },
       { label: "Customer Communication", href: "/projects/NIRT-26-0042", icon: "MessageSquare", tabTarget: "communication" },
@@ -37,7 +37,7 @@ export const ROLE_WORKSPACES = {
     pipelineCode: "P1",
     menuItems: [
       { label: "Survey Workspace", href: "/", icon: "Compass" },
-      { label: "P1: Feasibility Pipeline", href: "/pipelines", icon: "Layers", badge: "P1" },
+      { label: "P1: Feasibility Pipeline", href: "/pipelines?pipeline=sales", icon: "Layers", badge: "P1" },
       { label: "Mobile Field Hub", href: "/field", icon: "Smartphone", badge: "Offline" },
       { label: "Projects Registry", href: "/projects", icon: "FolderKanban" },
       { label: "Site Survey & Layout", href: "/projects/NIRT-26-0042", icon: "MapPin", tabTarget: "overview" },
@@ -59,7 +59,7 @@ export const ROLE_WORKSPACES = {
     pipelineCode: "P3",
     menuItems: [
       { label: "Store & Inventory Desk", href: "/", icon: "Truck" },
-      { label: "P3: Stores & BoM Pipeline", href: "/pipelines", icon: "Layers", badge: "P3" },
+      { label: "P3: Stores & BoM Pipeline", href: "/pipelines?pipeline=procurement", icon: "Layers", badge: "P3" },
       { label: "Procurement & BoM", href: "/projects/NIRT-26-0042", icon: "Package", tabTarget: "procurement" },
       { label: "Store & Inventory", href: "/projects/NIRT-26-0042", icon: "Warehouse", tabTarget: "store" },
       { label: "Material Pending Report", href: "/reports", icon: "FileSpreadsheet" }
@@ -81,7 +81,7 @@ export const ROLE_WORKSPACES = {
     pipelineCode: "P4",
     menuItems: [
       { label: "EPC Site Operations", href: "/", icon: "Wrench" },
-      { label: "P4: Site Execution Pipeline", href: "/pipelines", icon: "Layers", badge: "P4" },
+      { label: "P4: Site Execution Pipeline", href: "/pipelines?pipeline=execution", icon: "Layers", badge: "P4" },
       { label: "Installation & Site Erection", href: "/projects/NIRT-26-0042", icon: "Activity", tabTarget: "installation" },
       { label: "Inspection & Commissioning", href: "/projects/NIRT-26-0042", icon: "ShieldCheck", tabTarget: "inspection" },
       { label: "Net Metering Synchronisation", href: "/projects/NIRT-26-0042", icon: "Zap", tabTarget: "net_metering" },
@@ -105,7 +105,7 @@ export const ROLE_WORKSPACES = {
     pipelineCode: "P2",
     menuItems: [
       { label: "DISCOM & Liaison Desk", href: "/", icon: "Building2" },
-      { label: "P2: Approvals Pipeline", href: "/pipelines", icon: "Layers", badge: "P2" },
+      { label: "P2: Approvals Pipeline", href: "/pipelines?pipeline=approvals", icon: "Layers", badge: "P2" },
       { label: "DISCOM & Feasibility", href: "/projects/NIRT-26-0042", icon: "FileText", tabTarget: "discom_subsidy" },
       { label: "Net Metering Synchronisation", href: "/projects/NIRT-26-0042", icon: "Zap", tabTarget: "net_metering" },
       { label: "Statutory Approvals Hub", href: "/approvals", icon: "ShieldCheck" }
@@ -151,7 +151,7 @@ export const ROLE_WORKSPACES = {
     pipelineCode: "P5",
     menuItems: [
       { label: "PM Surya Ghar Desk", href: "/", icon: "Landmark" },
-      { label: "P5: Subsidy & Closure Pipeline", href: "/pipelines", icon: "Layers", badge: "P5" },
+      { label: "P5: Subsidy & Closure Pipeline", href: "/pipelines?pipeline=subsidy", icon: "Layers", badge: "P5" },
       { label: "Subsidy DBT Management", href: "/projects/NIRT-26-0042", icon: "Landmark", tabTarget: "subsidy_management" },
       { label: "Project Closure & Handover", href: "/projects/NIRT-26-0042", icon: "Award", tabTarget: "project_closure" },
       { label: "Subsidy Status Report", href: "/reports", icon: "FileSpreadsheet" }
@@ -175,7 +175,7 @@ export const ROLE_WORKSPACES = {
       { label: "Executive Command Home", href: "/", icon: "LayoutDashboard" },
       { label: "Executive Dashboards", href: "/dashboards", icon: "BarChart3" },
       { label: "Management MIS Reports", href: "/reports", icon: "FileSpreadsheet", badge: "22" },
-      { label: "Master 5-Pipeline", href: "/pipelines", icon: "Layers", badge: "20 Steps" },
+      { label: "Master 5-Pipeline", href: "/pipelines?pipeline=sales", icon: "Layers", badge: "20 Steps" },
       { label: "Projects Master Registry", href: "/projects", icon: "FolderKanban" },
       { label: "Approvals Governance Hub", href: "/approvals", icon: "ShieldCheck" },
       { label: "Forensic Audit Trail", href: "/audit", icon: "ShieldAlert" },
@@ -203,7 +203,7 @@ export const ROLE_WORKSPACES = {
       { label: "PMO Coordination Home", href: "/", icon: "LayoutDashboard" },
       { label: "Executive Dashboards", href: "/dashboards", icon: "BarChart3" },
       { label: "Management MIS Reports", href: "/reports", icon: "FileSpreadsheet", badge: "22" },
-      { label: "Master 5-Pipeline", href: "/pipelines", icon: "Layers", badge: "20 Steps" },
+      { label: "Master 5-Pipeline", href: "/pipelines?pipeline=sales", icon: "Layers", badge: "20 Steps" },
       { label: "Projects Master Registry", href: "/projects", icon: "FolderKanban" },
       { label: "Approvals Governance Hub", href: "/approvals", icon: "ShieldCheck" },
       { label: "Forensic Audit Trail", href: "/audit", icon: "ShieldAlert" },

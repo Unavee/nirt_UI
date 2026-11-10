@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import { MOCK_PROJECTS } from "@/data/mockProjects";
 import SiteSurveyModal from "@/components/SiteSurveyModal";
 import ProposalManager from "@/components/proposal/ProposalManager";
@@ -106,6 +106,7 @@ import {
 
 export default function ProjectDetailPage() {
   const { id: projectId } = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const project = MOCK_PROJECTS.find((p) => p.id === projectId) || MOCK_PROJECTS[0];
   const { activeRole, isExecutive, isCoordinator } = useRole();
   const [tabFilterMode, setTabFilterMode] = useState("role"); // "role" | "all"
@@ -120,7 +121,28 @@ export default function ProjectDetailPage() {
     };
   }, []);
 
-  const [activeTab, setActiveTab] = useState("overview");
+  const [activeTab, setActiveTab] = useState(() => searchParams.get("tab") || "overview");
+
+  // Synchronize tab when URL search parameter changes
+  useEffect(() => {
+    const tabParam = searchParams.get("tab");
+    if (tabParam) {
+      setActiveTab(tabParam);
+      // Auto-unlock role filter mode if tab is not in role's spotlight tabs
+      const currentRoleWorkspace = ROLE_WORKSPACES[activeRole?.id] || ROLE_WORKSPACES.managing_director;
+      if (currentRoleWorkspace.spotlightTabs !== "ALL" && !currentRoleWorkspace.spotlightTabs?.includes(tabParam)) {
+        setTabFilterMode("all");
+      }
+      // Smooth scroll down to tab content container
+      const timer = setTimeout(() => {
+        const el = document.getElementById("project-tab-content");
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [searchParams, activeRole]);
   const [selectedDocPreview, setSelectedDocPreview] = useState(null);
   const [payments, setPayments] = useState(
     INITIAL_PAYMENTS.filter(p => p.projectId === project.id).length > 0
@@ -877,7 +899,10 @@ export default function ProjectDetailPage() {
               {displayedTabs.map((tab) => (
                 <button
                   key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
+                  onClick={() => {
+                    setActiveTab(tab.id);
+                    setSearchParams({ tab: tab.id });
+                  }}
                   className={`px-3.5 py-2 rounded-xl whitespace-nowrap transition-all text-xs font-semibold ${
                     activeTab === tab.id
                       ? "bg-slate-900 text-white shadow-xs font-bold"
@@ -891,6 +916,9 @@ export default function ProjectDetailPage() {
           </div>
         );
       })()}
+
+      {/* Main Tab Content Container with anchor id for smooth scrolling */}
+      <div id="project-tab-content" className="pt-1">
 
       {/* TAB 1: 3.1 ONE CUSTOMER – ONE MASTER RECORD */}
       {activeTab === "overview" && (
@@ -3081,6 +3109,8 @@ export default function ProjectDetailPage() {
           </div>
         </div>
       )}
+
+      </div>
 
       {/* BFRD §7 Site Survey Task & Field Audit Modal */}
       <SiteSurveyModal

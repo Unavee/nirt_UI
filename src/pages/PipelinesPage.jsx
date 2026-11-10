@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { PIPELINES } from "@/data/pipelineStages";
 import { useRole } from "@/context/RoleContext";
 import { RoleSwitcherPill } from "@/components/navigation/RoleSwitcherPill";
@@ -105,12 +106,57 @@ const INITIAL_DROPPED_PROJECTS = [
 
 export default function PipelinesPage() {
   const { activeRole, isExecutive, isCoordinator, addAuditEntry } = useRole();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const pipelineParam = searchParams.get("pipeline");
+  const stepParam = searchParams.get("step");
+
+  const PIPELINE_KEY_MAP = {
+    p1: "sales",
+    sales: "sales",
+    p2: "approvals",
+    approvals: "approvals",
+    p3: "procurement",
+    procurement: "procurement",
+    p4: "execution",
+    execution: "execution",
+    p5: "subsidy",
+    subsidy: "subsidy"
+  };
+
+  const initialKey = (pipelineParam && PIPELINE_KEY_MAP[pipelineParam.toLowerCase()]) || "sales";
   const [projects, setProjects] = useState(INITIAL_PROJECTS);
   const [droppedProjects, setDroppedProjects] = useState(INITIAL_DROPPED_PROJECTS);
   const [viewMode, setViewMode] = useState("active"); // "active" | "dropped"
-  const [selectedPipelineKey, setSelectedPipelineKey] = useState("sales");
+  const [selectedPipelineKey, setSelectedPipelineKey] = useState(initialKey);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("All");
+
+  // Synchronize pipeline tab with URL query parameter
+  useEffect(() => {
+    if (pipelineParam && PIPELINE_KEY_MAP[pipelineParam.toLowerCase()]) {
+      const mappedKey = PIPELINE_KEY_MAP[pipelineParam.toLowerCase()];
+      if (mappedKey !== selectedPipelineKey) {
+        setSelectedPipelineKey(mappedKey);
+      }
+    }
+  }, [pipelineParam]);
+
+  // When stepParam is present, scroll smoothly to the corresponding stage lane card
+  useEffect(() => {
+    if (stepParam) {
+      const timer = setTimeout(() => {
+        const cleanStepNum = parseInt(stepParam.replace(/^[^0-9]+/, ""), 10);
+        const targetId = !isNaN(cleanStepNum)
+          ? `step-lane-${cleanStepNum < 10 ? `0${cleanStepNum}` : cleanStepNum}`
+          : `step-lane-${stepParam}`;
+        const el = document.getElementById(targetId);
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+        }
+      }, 150);
+      return () => clearTimeout(timer);
+    }
+  }, [stepParam, selectedPipelineKey]);
   
   // Modals state
   const [isActionSheetOpen, setIsActionSheetOpen] = useState(false);
@@ -415,7 +461,15 @@ export default function PipelinesPage() {
                 return (
                   <button
                     key={key}
-                    onClick={() => setSelectedPipelineKey(key)}
+                    onClick={() => {
+                      setSelectedPipelineKey(key);
+                      setSearchParams((prev) => {
+                        const next = new URLSearchParams(prev);
+                        next.set("pipeline", key);
+                        next.delete("step");
+                        return next;
+                      });
+                    }}
                     className={`apple-button w-full text-left p-2.5 sm:p-3 rounded-xl sm:rounded-2xl transition-all flex flex-col justify-between ${
                       isSelected
                         ? "bg-slate-900 text-white font-bold shadow-md shadow-slate-900/15"
@@ -484,11 +538,21 @@ export default function PipelinesPage() {
                 const stageStepNum = stage.stepNumber < 10 ? `0${stage.stepNumber}` : `${stage.stepNumber}`;
                 const matchedProjects = filteredProjects.filter((p) => p.stage === stage.id);
                 const isRoleAuthorized = activeRole.ownedSteps?.includes(stage.stepNumber);
+                const isTargetStep = Boolean(stepParam && (
+                  stepParam === stageStepNum || 
+                  parseInt(stepParam.replace(/^[^0-9]+/, ""), 10) === stage.stepNumber || 
+                  stepParam.toLowerCase() === stage.id.toLowerCase()
+                ));
 
                 return (
                   <div
                     key={stage.id}
-                    className="w-80 shrink-0 glass-surface rounded-3xl border border-slate-200/80 p-4 flex flex-col justify-between shadow-xs"
+                    id={`step-lane-${stageStepNum}`}
+                    className={`w-80 shrink-0 glass-surface rounded-3xl p-4 flex flex-col justify-between shadow-xs transition-all duration-300 ${
+                      isTargetStep
+                        ? "border-2 border-blue-600 ring-4 ring-blue-500/20 shadow-lg scale-[1.01]"
+                        : "border border-slate-200/80"
+                    }`}
                   >
                     {/* Lane Header */}
                     <div className="pb-3 border-b border-slate-100 space-y-1.5">

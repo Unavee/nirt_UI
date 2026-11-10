@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { createPortal } from "react-dom";
 import { useRole } from "@/context/RoleContext";
 import { X, ShieldAlert, ArrowRight, Check } from "lucide-react";
 
@@ -51,8 +52,8 @@ export function EditWithReasonModal({
     }, 1000);
   };
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200">
+  return createPortal(
+    <div className="modal-backdrop-root flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-150">
       <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl border border-slate-200/80 p-6 overflow-hidden animate-in zoom-in-95 duration-200">
         
         <div className="flex items-start justify-between pb-3 border-b border-slate-100">
@@ -155,6 +156,7 @@ export function EditWithReasonModal({
         </form>
 
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

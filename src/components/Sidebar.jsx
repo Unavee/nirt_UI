@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useSearchParams } from "react-router-dom";
 import { useRole } from "@/context/RoleContext";
 import { useSidebar } from "@/context/SidebarContext";
 import { ROLE_WORKSPACES } from "@/data/roleWorkspaceConfig";
@@ -75,6 +75,7 @@ const ICON_MAP = {
 
 export default function Sidebar() {
   const location = useLocation();
+  const [searchParams] = useSearchParams();
   const pathname = location.pathname;
   const { activeRole, switchRole, allRoles, isExecutive, isCoordinator } = useRole();
   const { isCollapsed, toggleSidebar } = useSidebar();
@@ -194,11 +195,27 @@ export default function Sidebar() {
 
           {currentWorkspace.menuItems.map((item, idx) => {
             const Icon = ICON_MAP[item.icon] || LayoutDashboard;
-            const isActive = pathname === item.href && !item.tabTarget;
+            const targetUrl = item.tabTarget 
+              ? `${item.href.split("?")[0]}?tab=${item.tabTarget}` 
+              : item.href;
+
+            const currentTab = searchParams.get("tab");
+            const currentPipe = searchParams.get("pipeline");
+            
+            let isActive = false;
+            if (item.tabTarget) {
+              isActive = pathname.startsWith("/projects/") && currentTab === item.tabTarget;
+            } else if (item.href.includes("?pipeline=")) {
+              const targetPipe = new URLSearchParams(item.href.split("?")[1]).get("pipeline");
+              isActive = pathname === "/pipelines" && (currentPipe === targetPipe || (!currentPipe && targetPipe === "sales"));
+            } else {
+              isActive = pathname === item.href && !currentTab;
+            }
+
             return (
               <Link
                 key={idx}
-                to={item.href}
+                to={targetUrl}
                 className={`apple-button flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-all ${
                   isActive
                     ? "bg-slate-900 text-white font-semibold shadow-xs"
@@ -237,28 +254,59 @@ export default function Sidebar() {
             </div>
           )}
 
-          {currentWorkspace.assignedSteps.map((step, idx) => (
-            <Link
-              key={idx}
-              to="/pipelines"
-              className={`apple-button flex items-center justify-between px-3 py-1.5 rounded-xl text-xs text-slate-600 hover:text-slate-900 hover:bg-slate-100/70 transition-all group ${
-                isCollapsed ? "justify-center px-2" : ""
-              }`}
-              title={isCollapsed ? `Step ${step.step}: ${step.name}` : ""}
-            >
-              <div className="flex items-center space-x-2 min-w-0">
-                <span className="w-5 h-5 rounded-md bg-blue-50 text-blue-700 font-mono font-bold text-[10px] flex items-center justify-center shrink-0 border border-blue-200/70">
-                  {step.step}
-                </span>
-                {!isCollapsed && <span className="truncate text-[11px] font-medium">{step.name}</span>}
-              </div>
-              {!isCollapsed && (
-                <span className="text-[9px] font-mono text-slate-400 group-hover:text-slate-600 shrink-0">
-                  {step.pipeline}
-                </span>
-              )}
-            </Link>
-          ))}
+          {currentWorkspace.assignedSteps.map((step, idx) => {
+            let pipeKey = "sales";
+            if (step.pipeline === "P1" || step.step === "P1") pipeKey = "sales";
+            else if (step.pipeline === "P2" || step.step === "P2") pipeKey = "approvals";
+            else if (step.pipeline === "P3" || step.step === "P3") pipeKey = "procurement";
+            else if (step.pipeline === "P4" || step.step === "P4") pipeKey = "execution";
+            else if (step.pipeline === "P5" || step.step === "P5") pipeKey = "subsidy";
+            else {
+              const num = parseInt(step.step, 10);
+              if (!isNaN(num)) {
+                if (num <= 6) pipeKey = "sales";
+                else if (num <= 10) pipeKey = "approvals";
+                else if (num <= 13) pipeKey = "procurement";
+                else if (num <= 17) pipeKey = "execution";
+                else pipeKey = "subsidy";
+              }
+            }
+
+            const stepUrl = `/pipelines?pipeline=${pipeKey}&step=${step.step}`;
+            const currentPipe = searchParams.get("pipeline") || "sales";
+            const isStepActive = pathname === "/pipelines" && currentPipe === pipeKey && searchParams.get("step") === step.step;
+
+            return (
+              <Link
+                key={idx}
+                to={stepUrl}
+                className={`apple-button flex items-center justify-between px-3 py-1.5 rounded-xl text-xs transition-all group ${
+                  isStepActive
+                    ? "bg-blue-50 text-blue-900 font-semibold border border-blue-200/80 shadow-2xs"
+                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-100/70"
+                } ${isCollapsed ? "justify-center px-2" : ""}`}
+                title={isCollapsed ? `Step ${step.step}: ${step.name}` : ""}
+              >
+                <div className="flex items-center space-x-2 min-w-0">
+                  <span className={`w-5 h-5 rounded-md font-mono font-bold text-[10px] flex items-center justify-center shrink-0 border ${
+                    isStepActive
+                      ? "bg-blue-600 text-white border-blue-600"
+                      : "bg-blue-50 text-blue-700 border-blue-200/70"
+                  }`}>
+                    {step.step}
+                  </span>
+                  {!isCollapsed && <span className="truncate text-[11px] font-medium">{step.name}</span>}
+                </div>
+                {!isCollapsed && (
+                  <span className={`text-[9px] font-mono shrink-0 ${
+                    isStepActive ? "text-blue-700 font-semibold" : "text-slate-400 group-hover:text-slate-600"
+                  }`}>
+                    {step.pipeline}
+                  </span>
+                )}
+              </Link>
+            );
+          })}
         </div>
 
         {/* Section 3: Governance / Mode Switcher */}

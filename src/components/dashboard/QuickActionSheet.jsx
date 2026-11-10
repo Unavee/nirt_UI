@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { useRole } from "@/context/RoleContext";
 import { 
   X, 
@@ -499,19 +500,16 @@ export function QuickActionSheet({ isOpen, onClose, defaultAction = null, projec
     }, 1200);
   };
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200">
+  return createPortal(
+    <div className="modal-backdrop-root flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-150">
       {/* Tap backdrop to close */}
       <div className="fixed inset-0" onClick={onClose} />
 
       {/* Sheet Modal Container */}
-      <div className="relative w-full sm:max-w-xl bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl border border-slate-200/80 overflow-hidden flex flex-col max-h-[92dvh] pb-safe z-10 animate-in slide-in-from-bottom-6 duration-300">
+      <div className="relative w-full sm:max-w-xl max-h-[88vh] bg-white rounded-3xl shadow-2xl border border-slate-200/80 overflow-hidden flex flex-col z-10 animate-in zoom-in-95 duration-150">
         
-        {/* iOS Drag Handle indicator on mobile */}
-        <div className="sm:hidden w-12 h-1 bg-slate-200 rounded-full mx-auto mt-2.5 mb-1" />
-
         {/* Modal Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
+        <div className="shrink-0 flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/80">
           <div className="flex items-center space-x-2.5">
             <span className={`w-2.5 h-2.5 rounded-full ${isCatDSelected ? "bg-rose-500 animate-pulse" : "bg-blue-600"}`} />
             <div>
@@ -537,7 +535,8 @@ export function QuickActionSheet({ isOpen, onClose, defaultAction = null, projec
         </div>
 
         {/* Form Body */}
-        <form onSubmit={handleSubmit} className="p-6 overflow-y-auto space-y-4">
+        <form onSubmit={handleSubmit} className="flex-1 min-h-0 flex flex-col">
+          <div className="flex-1 min-h-0 overflow-y-auto p-5 sm:p-6 space-y-4">
           
           {/* Progressive Next Step Preview Banner */}
           <div className={`p-3.5 rounded-2xl border text-xs flex items-start space-x-2.5 ${
@@ -671,36 +670,38 @@ export function QuickActionSheet({ isOpen, onClose, defaultAction = null, projec
               )}
             </div>
           </div>
+        </div>
 
-          {/* Submit Action Button */}
-          <div className="pt-2">
-            <button
-              type="submit"
-              disabled={submitted}
-              className={`apple-button w-full py-3 px-4 rounded-2xl text-sm font-semibold text-white shadow-md flex items-center justify-center space-x-2 transition-all ${
-                submitted 
-                  ? "bg-emerald-600 shadow-emerald-600/20" 
-                  : isCatDSelected
-                  ? "bg-rose-600 hover:bg-rose-700 shadow-rose-600/20"
-                  : "bg-slate-900 hover:bg-black shadow-slate-900/20"
-              }`}
-            >
-              {submitted ? (
-                <>
-                  <Check className="w-4 h-4" />
-                  <span>{isCatDSelected ? "Lead Formally Dropped & Closed" : "Milestone Signed & Logged"}</span>
-                </>
-              ) : (
-                <>
-                  <span>{milestone.buttonText}</span>
-                  <ArrowRight className="w-4 h-4" />
-                </>
-              )}
-            </button>
-          </div>
-        </form>
+        {/* Pinned Submit Action Footer */}
+        <div className="shrink-0 p-4 border-t border-slate-100 bg-slate-50/90 flex items-center justify-end">
+          <button
+            type="submit"
+            disabled={submitted}
+            className={`apple-button w-full sm:w-auto min-w-[220px] py-3 px-6 rounded-2xl text-sm font-semibold text-white shadow-md flex items-center justify-center space-x-2 transition-all ${
+              submitted 
+                ? "bg-emerald-600 shadow-emerald-600/20" 
+                : isCatDSelected
+                ? "bg-rose-600 hover:bg-rose-700 shadow-rose-600/20"
+                : "bg-slate-900 hover:bg-black shadow-slate-900/20"
+            }`}
+          >
+            {submitted ? (
+              <>
+                <Check className="w-4 h-4" />
+                <span>{isCatDSelected ? "Lead Formally Dropped & Closed" : "Milestone Signed & Logged"}</span>
+              </>
+            ) : (
+              <>
+                <span>{milestone.buttonText}</span>
+                <ArrowRight className="w-4 h-4" />
+              </>
+            )}
+          </button>
+        </div>
+      </form>
 
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
