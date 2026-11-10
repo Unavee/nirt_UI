@@ -42,6 +42,14 @@ import { INITIAL_PROJECT_CLOSURE_DATA } from "@/data/projectClosureData";
 import ProjectClosureView from "@/components/closure/ProjectClosureView";
 import UpdateClosureChecklistModal from "@/components/closure/UpdateClosureChecklistModal";
 import ProjectClosureCertificateModal from "@/components/closure/ProjectClosureCertificateModal";
+import { INITIAL_COMMUNICATION_LOGS } from "@/data/communicationData";
+import CustomerCommunicationView from "@/components/communication/CustomerCommunicationView";
+import LogCommunicationModal from "@/components/communication/LogCommunicationModal";
+import { INITIAL_PROJECT_TASKS } from "@/data/taskManagementData";
+import TaskManagementView from "@/components/tasks/TaskManagementView";
+import CreateTaskModal from "@/components/tasks/CreateTaskModal";
+import { INITIAL_ALERTS_DATA } from "@/data/alertsData";
+import AlertsNotificationView from "@/components/alerts/AlertsNotificationView";
 import { INITIAL_PROCUREMENT_ITEMS } from "@/data/procurementData";
 import ProcurementModal from "@/components/procurement/ProcurementModal";
 import GoodsReceiptModal from "@/components/procurement/GoodsReceiptModal";
@@ -232,6 +240,55 @@ export default function ProjectDetailPage() {
   );
   const [isUpdateClosureModalOpen, setIsUpdateClosureModalOpen] = useState(false);
   const [isClosureCertModalOpen, setIsClosureCertModalOpen] = useState(false);
+
+  // Section 23: Customer Communication Management
+  const [commHistoryLogs, setCommHistoryLogs] = useState(
+    INITIAL_COMMUNICATION_LOGS[project.id] || INITIAL_COMMUNICATION_LOGS["NIRT-26-0042"] || []
+  );
+  const [isLogCommModalOpen, setIsLogCommModalOpen] = useState(false);
+
+  // Section 24: Task & Follow-up Management
+  const [projectTasksList, setProjectTasksList] = useState(
+    INITIAL_PROJECT_TASKS[project.id] || INITIAL_PROJECT_TASKS["NIRT-26-0042"] || []
+  );
+  const [isCreateTaskModalOpen, setIsCreateTaskModalOpen] = useState(false);
+
+  // Section 25: Alerts & Notifications
+  const [projectAlertsList, setProjectAlertsList] = useState(
+    INITIAL_ALERTS_DATA[project.id] || INITIAL_ALERTS_DATA["NIRT-26-0042"] || []
+  );
+
+  const handleSaveCommunication = (newLog) => {
+    setCommHistoryLogs(prev => [newLog, ...prev]);
+  };
+
+  const handleSaveTask = (newTask) => {
+    setProjectTasksList(prev => [newTask, ...prev]);
+  };
+
+  const handleToggleTaskStatus = (taskId) => {
+    setProjectTasksList(prev =>
+      prev.map(t => {
+        if (t.id === taskId) {
+          const isDone = t.status === "Completed";
+          return {
+            ...t,
+            status: isDone ? "In Progress" : "Completed",
+            completionDate: isDone
+              ? null
+              : new Intl.DateTimeFormat("en-IN", { day: "2-digit", month: "short", year: "numeric" }).format(new Date())
+          };
+        }
+        return t;
+      })
+    );
+  };
+
+  const handleResolveAlert = (alertId) => {
+    setProjectAlertsList(prev =>
+      prev.map(a => (a.id === alertId ? { ...a, status: "RESOLVED" } : a))
+    );
+  };
 
 
 
@@ -746,7 +803,10 @@ export default function ProjectDetailPage() {
           { id: "net_metering", label: "Net Metering (Section 19)" },
           { id: "final_payment", label: "Final Payment (Section 20)" },
           { id: "subsidy_management", label: "Subsidy DBT (Section 21)" },
-          { id: "project_closure", label: "Project Closure (Section 22)" }
+          { id: "project_closure", label: "Project Closure (Section 22)" },
+          { id: "communication", label: `Communication (${commHistoryLogs.length})` },
+          { id: "task_management", label: `Tasks & Follow-ups (${projectTasksList.length})` },
+          { id: "alerts_management", label: `Alerts & Escalations (${projectAlertsList.filter(a => a.status === 'ACTIVE').length})` }
         ].map((tab) => (
           <button
             key={tab.id}
@@ -2272,6 +2332,34 @@ export default function ProjectDetailPage() {
         />
       )}
 
+      {/* TAB: SECTION 23 CUSTOMER COMMUNICATION */}
+      {activeTab === "communication" && (
+        <CustomerCommunicationView
+          logs={commHistoryLogs}
+          project={project}
+          onOpenLogModal={() => setIsLogCommModalOpen(true)}
+        />
+      )}
+
+      {/* TAB: SECTION 24 TASK & FOLLOW-UP MANAGEMENT */}
+      {activeTab === "task_management" && (
+        <TaskManagementView
+          tasks={projectTasksList}
+          project={project}
+          onOpenCreateTaskModal={() => setIsCreateTaskModalOpen(true)}
+          onToggleTaskStatus={handleToggleTaskStatus}
+        />
+      )}
+
+      {/* TAB: SECTION 25 ALERTS & NOTIFICATIONS */}
+      {activeTab === "alerts_management" && (
+        <AlertsNotificationView
+          alerts={projectAlertsList}
+          project={project}
+          onResolveAlert={handleResolveAlert}
+        />
+      )}
+
       {activeTab === "discom_subsidy" && (
         <div className="space-y-6">
           {/* Segmented Sub-Tab Switcher between Section 13, Section 12, and Subsidy */}
@@ -2862,6 +2950,22 @@ export default function ProjectDetailPage() {
         isOpen={isClosureCertModalOpen}
         onClose={() => setIsClosureCertModalOpen(false)}
         closureData={closureState}
+      />
+
+      {/* SECTION 23: LOG COMMUNICATION MODAL */}
+      <LogCommunicationModal
+        isOpen={isLogCommModalOpen}
+        onClose={() => setIsLogCommModalOpen(false)}
+        onSave={handleSaveCommunication}
+        project={project}
+      />
+
+      {/* SECTION 24: CREATE TASK MODAL */}
+      <CreateTaskModal
+        isOpen={isCreateTaskModalOpen}
+        onClose={() => setIsCreateTaskModalOpen(false)}
+        onSave={handleSaveTask}
+        project={project}
       />
 
       {/* SECTION 21: SUBSIDY MODALS */}
