@@ -17,11 +17,16 @@ export default function MISReportPreviewModal({ isOpen, onClose, report }) {
   const [downloadSuccess, setDownloadSuccess] = useState(false);
 
   React.useEffect(() => {
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
     const handleKeyDown = (e) => {
       if (e.key === "Escape") onClose();
     };
     window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
   }, [onClose]);
 
   const handleExportCSV = () => {
@@ -53,10 +58,10 @@ export default function MISReportPreviewModal({ isOpen, onClose, report }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs overflow-y-auto animate-in fade-in duration-150">
-      <div className="relative w-full max-w-4xl bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-8 print:m-0 print:border-none print:shadow-none">
+    <div className="fixed inset-0 w-screen h-screen z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-150">
+      <div className="relative w-full max-w-4xl max-h-[90vh] bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col print:m-0 print:border-none print:shadow-none print:max-h-none">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/80 print:hidden">
+        <div className="shrink-0 flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/80 print:hidden">
           <div className="flex items-center space-x-2.5">
             <div className="p-2 rounded-xl bg-blue-50 border border-blue-200 text-blue-700">
               <FileSpreadsheet className="w-5 h-5" />
@@ -64,7 +69,7 @@ export default function MISReportPreviewModal({ isOpen, onClose, report }) {
             <div>
               <div className="flex items-center space-x-2">
                 <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-blue-100 text-blue-800 font-mono">
-                  BFRD Report #{report.num}
+                  MIS Report #{report.num}
                 </span>
                 <span className="text-xs text-slate-500 font-mono">{report.categoryLabel}</span>
               </div>
@@ -93,7 +98,7 @@ export default function MISReportPreviewModal({ isOpen, onClose, report }) {
         </div>
 
         {/* Content */}
-        <div className="p-6 space-y-5">
+        <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-5">
           {/* Metadata Banner */}
           <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
             <div>
@@ -151,7 +156,7 @@ export default function MISReportPreviewModal({ isOpen, onClose, report }) {
         </div>
 
         {/* Modal Footer */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-6 py-4 bg-slate-50/80 border-t border-slate-100 print:hidden">
+        <div className="shrink-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-6 py-4 bg-slate-50/80 border-t border-slate-100 print:hidden">
           <div className="text-xs text-slate-500 font-mono">
             Format: Standard CSV (Excel compatible) & Printable PDF
           </div>

@@ -1,5 +1,6 @@
 // NIRT Solar EPC - Role & Departmental Workspace Configuration
 // Maps each of the 9 roles to their specific Department Workspace, Process Steps, and Tab Visibilities.
+// Clean, professional, section-free sidebar labels.
 // Strict Zero Amber Compliance: Blue, Indigo, Violet, Emerald, Slate, Rose.
 
 export const ROLE_WORKSPACES = {
@@ -12,7 +13,7 @@ export const ROLE_WORKSPACES = {
     pipelineCode: "P1",
     menuItems: [
       { label: "Sales Workspace", href: "/", icon: "Users" },
-      { label: "P1: Sales Pipeline (01-06)", href: "/pipelines", icon: "Layers", badge: "P1" },
+      { label: "P1: Sales Pipeline", href: "/pipelines", icon: "Layers", badge: "P1" },
       { label: "Projects Registry", href: "/projects", icon: "FolderKanban" },
       { label: "Customer Master Record", href: "/projects/NIRT-26-0042", icon: "Building2" },
       { label: "Customer Communication", href: "/projects/NIRT-26-0042", icon: "MessageSquare", tabTarget: "communication" },
@@ -37,7 +38,7 @@ export const ROLE_WORKSPACES = {
     menuItems: [
       { label: "Survey Workspace", href: "/", icon: "Compass" },
       { label: "P1: Feasibility Pipeline", href: "/pipelines", icon: "Layers", badge: "P1" },
-      { label: "Mobile Field Hub (PWA)", href: "/field", icon: "Smartphone", badge: "Offline" },
+      { label: "Mobile Field Hub", href: "/field", icon: "Smartphone", badge: "Offline" },
       { label: "Projects Registry", href: "/projects", icon: "FolderKanban" },
       { label: "Site Survey & Layout", href: "/projects/NIRT-26-0042", icon: "MapPin", tabTarget: "overview" },
       { label: "Document Locker", href: "/projects/NIRT-26-0042", icon: "FolderKanban", tabTarget: "documents" }
@@ -59,9 +60,9 @@ export const ROLE_WORKSPACES = {
     menuItems: [
       { label: "Store & Inventory Desk", href: "/", icon: "Truck" },
       { label: "P3: Stores & BoM Pipeline", href: "/pipelines", icon: "Layers", badge: "P3" },
-      { label: "Procurement & BoM (Sec 14)", href: "/projects/NIRT-26-0042", icon: "Package", tabTarget: "procurement" },
-      { label: "Store & Inventory (Sec 15)", href: "/projects/NIRT-26-0042", icon: "Warehouse", tabTarget: "store" },
-      { label: "Material Pending Report", href: "/reports", icon: "FileSpreadsheet", badge: "MIS #12" }
+      { label: "Procurement & BoM", href: "/projects/NIRT-26-0042", icon: "Package", tabTarget: "procurement" },
+      { label: "Store & Inventory", href: "/projects/NIRT-26-0042", icon: "Warehouse", tabTarget: "store" },
+      { label: "Material Pending Report", href: "/reports", icon: "FileSpreadsheet" }
     ],
     assignedSteps: [
       { step: "11", name: "Vendor PO & Tier-1 BoM Release", pipeline: "P3", status: "Procurement" },
@@ -81,11 +82,11 @@ export const ROLE_WORKSPACES = {
     menuItems: [
       { label: "EPC Site Operations", href: "/", icon: "Wrench" },
       { label: "P4: Site Execution Pipeline", href: "/pipelines", icon: "Layers", badge: "P4" },
-      { label: "Installation & Site (Sec 16)", href: "/projects/NIRT-26-0042", icon: "Activity", tabTarget: "installation" },
+      { label: "Installation & Site Erection", href: "/projects/NIRT-26-0042", icon: "Activity", tabTarget: "installation" },
       { label: "Inspection & Commissioning", href: "/projects/NIRT-26-0042", icon: "ShieldCheck", tabTarget: "inspection" },
-      { label: "Net Metering (Sec 19)", href: "/projects/NIRT-26-0042", icon: "Zap", tabTarget: "net_metering" },
+      { label: "Net Metering Synchronisation", href: "/projects/NIRT-26-0042", icon: "Zap", tabTarget: "net_metering" },
       { label: "Mobile Field Hub", href: "/field", icon: "Smartphone", badge: "Technician" },
-      { label: "Service & Complaints (Sec 35)", href: "/service", icon: "Headset", badge: "O&M" }
+      { label: "Service & Complaints", href: "/service", icon: "Headset", badge: "O&M" }
     ],
     assignedSteps: [
       { step: "14", name: "Mechanical Erection & Clamping", pipeline: "P4", status: "Civil & Mounting" },
@@ -105,9 +106,9 @@ export const ROLE_WORKSPACES = {
     menuItems: [
       { label: "DISCOM & Liaison Desk", href: "/", icon: "Building2" },
       { label: "P2: Approvals Pipeline", href: "/pipelines", icon: "Layers", badge: "P2" },
-      { label: "DISCOM & Feasibility (Sec 12-13)", href: "/projects/NIRT-26-0042", icon: "FileText", tabTarget: "discom_subsidy" },
-      { label: "Net Metering (Sec 19)", href: "/projects/NIRT-26-0042", icon: "Zap", tabTarget: "net_metering" },
-      { label: "Statutory Approvals Hub", href: "/approvals", icon: "ShieldCheck", badge: "Sec 33" }
+      { label: "DISCOM & Feasibility", href: "/projects/NIRT-26-0042", icon: "FileText", tabTarget: "discom_subsidy" },
+      { label: "Net Metering Synchronisation", href: "/projects/NIRT-26-0042", icon: "Zap", tabTarget: "net_metering" },
+      { label: "Statutory Approvals Hub", href: "/approvals", icon: "ShieldCheck" }
     ],
     assignedSteps: [
       { step: "08", name: "KYC & Document Verification", pipeline: "P2", status: "Customer KYC" },
@@ -127,10 +128,10 @@ export const ROLE_WORKSPACES = {
     pipelineCode: "P2",
     menuItems: [
       { label: "Accounts & Financial Desk", href: "/", icon: "IndianRupee" },
-      { label: "Financial Dashboard", href: "/dashboards", icon: "BarChart3", badge: "Sec 26.4" },
-      { label: "Advance 80% Hard-Lock (Sec 10)", href: "/projects/NIRT-26-0042", icon: "CreditCard", tabTarget: "financials" },
-      { label: "Final Payment & NOC (Sec 20)", href: "/projects/NIRT-26-0042", icon: "CheckCircle2", tabTarget: "final_payment" },
-      { label: "Payment Outstanding MIS", href: "/reports", icon: "FileSpreadsheet", badge: "MIS #16" },
+      { label: "Financial Dashboard", href: "/dashboards", icon: "BarChart3" },
+      { label: "80% Advance Clearance", href: "/projects/NIRT-26-0042", icon: "CreditCard", tabTarget: "financials" },
+      { label: "Final Payment & NOC", href: "/projects/NIRT-26-0042", icon: "CheckCircle2", tabTarget: "final_payment" },
+      { label: "Payment Outstanding Report", href: "/reports", icon: "FileSpreadsheet" },
       { label: "Billing Approvals", href: "/approvals", icon: "ShieldCheck" }
     ],
     assignedSteps: [
@@ -151,9 +152,9 @@ export const ROLE_WORKSPACES = {
     menuItems: [
       { label: "PM Surya Ghar Desk", href: "/", icon: "Landmark" },
       { label: "P5: Subsidy & Closure Pipeline", href: "/pipelines", icon: "Layers", badge: "P5" },
-      { label: "Subsidy DBT Console (Sec 21)", href: "/projects/NIRT-26-0042", icon: "Landmark", tabTarget: "subsidy_management" },
+      { label: "Subsidy DBT Management", href: "/projects/NIRT-26-0042", icon: "Landmark", tabTarget: "subsidy_management" },
       { label: "Project Closure & Handover", href: "/projects/NIRT-26-0042", icon: "Award", tabTarget: "project_closure" },
-      { label: "Subsidy Status MIS Report", href: "/reports", icon: "FileSpreadsheet", badge: "MIS #17" }
+      { label: "Subsidy Status Report", href: "/reports", icon: "FileSpreadsheet" }
     ],
     assignedSteps: [
       { step: "19", name: "PM Surya Ghar Subsidy Claim", pipeline: "P5", status: "National Portal" },
@@ -172,14 +173,14 @@ export const ROLE_WORKSPACES = {
     pipelineCode: "ALL",
     menuItems: [
       { label: "Executive Command Home", href: "/", icon: "LayoutDashboard" },
-      { label: "5-Pillar Dashboards", href: "/dashboards", icon: "BarChart3", badge: "Sec 26" },
-      { label: "22 Management MIS Reports", href: "/reports", icon: "FileSpreadsheet", badge: "Sec 27" },
-      { label: "Master 5-Pipeline (20 Steps)", href: "/pipelines", icon: "Layers", badge: "20" },
+      { label: "Executive Dashboards", href: "/dashboards", icon: "BarChart3" },
+      { label: "Management MIS Reports", href: "/reports", icon: "FileSpreadsheet", badge: "22" },
+      { label: "Master 5-Pipeline", href: "/pipelines", icon: "Layers", badge: "20 Steps" },
       { label: "Projects Master Registry", href: "/projects", icon: "FolderKanban" },
-      { label: "Approvals Governance Hub", href: "/approvals", icon: "ShieldCheck", badge: "Sec 33" },
-      { label: "Forensic Audit Trail", href: "/audit", icon: "ShieldAlert", badge: "Sec 34" },
-      { label: "Service & Complaints (AMC)", href: "/service", icon: "Headset", badge: "Sec 35" },
-      { label: "Mobile Field Hub (PWA)", href: "/field", icon: "Smartphone", badge: "Sec 32" }
+      { label: "Approvals Governance Hub", href: "/approvals", icon: "ShieldCheck" },
+      { label: "Forensic Audit Trail", href: "/audit", icon: "ShieldAlert" },
+      { label: "Customer Service & Complaints", href: "/service", icon: "Headset" },
+      { label: "Mobile Field Hub", href: "/field", icon: "Smartphone" }
     ],
     assignedSteps: [
       { step: "P1", name: "Sales & Feasibility", pipeline: "01-06", status: "Active Pipeline" },
@@ -200,13 +201,13 @@ export const ROLE_WORKSPACES = {
     pipelineCode: "ALL",
     menuItems: [
       { label: "PMO Coordination Home", href: "/", icon: "LayoutDashboard" },
-      { label: "5-Pillar Dashboards", href: "/dashboards", icon: "BarChart3", badge: "Sec 26" },
-      { label: "22 Management MIS Reports", href: "/reports", icon: "FileSpreadsheet", badge: "Sec 27" },
-      { label: "Master 5-Pipeline (20 Steps)", href: "/pipelines", icon: "Layers", badge: "20" },
+      { label: "Executive Dashboards", href: "/dashboards", icon: "BarChart3" },
+      { label: "Management MIS Reports", href: "/reports", icon: "FileSpreadsheet", badge: "22" },
+      { label: "Master 5-Pipeline", href: "/pipelines", icon: "Layers", badge: "20 Steps" },
       { label: "Projects Master Registry", href: "/projects", icon: "FolderKanban" },
-      { label: "Approvals Governance Hub", href: "/approvals", icon: "ShieldCheck", badge: "Sec 33" },
-      { label: "Forensic Audit Trail", href: "/audit", icon: "ShieldAlert", badge: "Sec 34" },
-      { label: "Service & Complaints (AMC)", href: "/service", icon: "Headset", badge: "Sec 35" }
+      { label: "Approvals Governance Hub", href: "/approvals", icon: "ShieldCheck" },
+      { label: "Forensic Audit Trail", href: "/audit", icon: "ShieldAlert" },
+      { label: "Customer Service & Complaints", href: "/service", icon: "Headset" }
     ],
     assignedSteps: [
       { step: "P1", name: "Sales & Feasibility", pipeline: "01-06", status: "Active Pipeline" },

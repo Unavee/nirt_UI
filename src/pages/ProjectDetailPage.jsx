@@ -86,6 +86,7 @@ import {
   User,
   Activity,
   ChevronRight,
+  ChevronLeft,
   ExternalLink,
   Building2,
   CheckCircle2,
@@ -310,6 +311,8 @@ export default function ProjectDetailPage() {
   );
   const [selectedCategoryFilter, setSelectedCategoryFilter] = useState("all");
   const [docSearchQuery, setDocSearchQuery] = useState("");
+  const [docCurrentPage, setDocCurrentPage] = useState(1);
+  const DOCS_PER_PAGE = 10;
   const [versionModalDoc, setVersionModalDoc] = useState(null);
   const [uploadModalState, setUploadModalState] = useState({ isOpen: false, targetDoc: null, defaultCat: "customer" });
 
@@ -793,23 +796,23 @@ export default function ProjectDetailPage() {
         const allProjectTabs = [
           { id: "overview", label: "Customer Master Record" },
           { id: "responsibility", label: "Responsibility & Governance" },
-          { id: "financials", label: "Advance & Payments (Section 10)" },
+          { id: "financials", label: "80% Advance & Payments" },
           { id: "documents", label: `Document Locker (${projectDocs.length})` },
-          { id: "proposal", label: "Proposals & Revisions (Section 8)" },
-          { id: "service", label: `Service & O&M (${projectTickets.length})` },
-          { id: "approvals", label: `Approvals (Section 33)` },
-          { id: "audit", label: "Audit Trail (Section 34)" },
-          { id: "discom_subsidy", label: "DISCOM & Feasibility (Sec 12-13)" },
-          { id: "procurement", label: "Procurement & BoM (Section 14)" },
-          { id: "store", label: "Store & Inventory (Section 15)" },
-          { id: "installation", label: "Installation & Site (Section 16)" },
-          { id: "progress_tracker", label: "Progress Tracker (Section 17)" },
-          { id: "inspection", label: "Inspection & Commissioning (Section 18)" },
-          { id: "net_metering", label: "Net Metering (Section 19)" },
-          { id: "final_payment", label: "Final Payment (Section 20)" },
-          { id: "subsidy_management", label: "Subsidy DBT (Section 21)" },
-          { id: "project_closure", label: "Project Closure (Section 22)" },
-          { id: "communication", label: `Communication (${commHistoryLogs.length})` },
+          { id: "proposal", label: "Proposals & System Revisions" },
+          { id: "service", label: `Service & Complaints (${projectTickets.length})` },
+          { id: "approvals", label: "Approvals Hub" },
+          { id: "audit", label: "Forensic Audit Trail" },
+          { id: "discom_subsidy", label: "DISCOM & Feasibility Sanctions" },
+          { id: "procurement", label: "Procurement & BoM" },
+          { id: "store", label: "Store & Inventory" },
+          { id: "installation", label: "Installation & Site Erection" },
+          { id: "progress_tracker", label: "Milestone Progress Tracker" },
+          { id: "inspection", label: "Inspection & Commissioning" },
+          { id: "net_metering", label: "Net Metering Synchronisation" },
+          { id: "final_payment", label: "Final Payment & NOC" },
+          { id: "subsidy_management", label: "PM Surya Ghar Subsidy" },
+          { id: "project_closure", label: "Project Closure & Handover" },
+          { id: "communication", label: `Customer Communication (${commHistoryLogs.length})` },
           { id: "task_management", label: `Tasks & Follow-ups (${projectTasksList.length})` },
           { id: "alerts_management", label: `Alerts & Escalations (${projectAlertsList.filter(a => a.status === 'ACTIVE').length})` }
         ];
@@ -937,7 +940,7 @@ export default function ProjectDetailPage() {
                   className="apple-button px-3.5 py-2 rounded-xl text-xs font-bold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 flex items-center space-x-1.5 shadow-2xs"
                 >
                   <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-                  <span>Confirmation Certificate (Sec 9)</span>
+                  <span>Confirmation Certificate</span>
                 </button>
               </div>
             </div>
@@ -1644,169 +1647,223 @@ export default function ProjectDetailPage() {
         </div>
       )}
 
-      {/* TAB 4: SECTION 30 DIGITAL DOCUMENT MANAGEMENT SYSTEM */}
-      {activeTab === "documents" && (
-        <div className="p-6 bg-white rounded-2xl border border-slate-200/90 shadow-xs space-y-5">
-          {/* Header */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-700">
-                  Section 30
-                </span>
-                <span className="text-xs font-mono font-medium text-slate-500">
-                  Project: {project.id}
-                </span>
-              </div>
-              <h3 className="text-lg font-bold text-slate-900 mt-1">
-                Project Document Management & Version Control
-              </h3>
-              <p className="text-xs text-slate-500">
-                11 statutory and technical categories digitally archived with cryptographic SHA-256 integrity and revision histories.
-              </p>
-            </div>
+      {/* TAB 4: DIGITAL DOCUMENT MANAGEMENT SYSTEM */}
+      {activeTab === "documents" && (() => {
+        const filteredDocs = projectDocs.filter(doc => {
+          const matchesCat = selectedCategoryFilter === "all" || doc.category === selectedCategoryFilter;
+          const matchesSearch = !docSearchQuery ||
+            doc.name.toLowerCase().includes(docSearchQuery.toLowerCase()) ||
+            doc.fileName.toLowerCase().includes(docSearchQuery.toLowerCase()) ||
+            doc.uploadedBy.toLowerCase().includes(docSearchQuery.toLowerCase());
+          return matchesCat && matchesSearch;
+        });
 
-            <div className="flex items-center gap-2.5">
-              <button
-                onClick={() => setUploadModalState({
-                  isOpen: true,
-                  targetDoc: null,
-                  defaultCat: selectedCategoryFilter !== "all" ? selectedCategoryFilter : "customer"
-                })}
-                className="inline-flex items-center gap-2 px-4 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-sm transition-all"
-              >
-                <Upload className="w-3.5 h-3.5" />
-                <span>Upload Document</span>
-              </button>
-            </div>
-          </div>
+        const totalDocPages = Math.ceil(filteredDocs.length / DOCS_PER_PAGE) || 1;
+        const safeCurrentPage = Math.min(Math.max(docCurrentPage, 1), totalDocPages);
+        const startIndex = (safeCurrentPage - 1) * DOCS_PER_PAGE;
+        const paginatedDocs = filteredDocs.slice(startIndex, startIndex + DOCS_PER_PAGE);
 
-          {/* Quick Stats Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
-              <div className="text-[11px] font-medium text-slate-500 uppercase tracking-wider">Total Documents</div>
-              <div className="text-lg font-bold text-slate-900 mt-0.5">{projectDocs.length} Files</div>
-            </div>
-            <div className="p-3 bg-blue-50/50 rounded-xl border border-blue-200">
-              <div className="text-[11px] font-medium text-blue-600 uppercase tracking-wider">Categories Covered</div>
-              <div className="text-lg font-bold text-blue-900 mt-0.5">
-                {new Set(projectDocs.map(d => d.category)).size} / 11 Active
+        return (
+          <div className="p-4 sm:p-6 bg-white rounded-2xl border border-slate-200/90 shadow-xs space-y-5">
+            {/* Header */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-700">
+                    Document Locker
+                  </span>
+                  <span className="text-xs font-mono font-medium text-slate-500">
+                    Project: {project.id}
+                  </span>
+                </div>
+                <h3 className="text-lg font-bold text-slate-900 mt-1">
+                  Project Document Management & Version Control
+                </h3>
+                <p className="text-xs text-slate-500">
+                  11 statutory and technical categories digitally archived with cryptographic SHA-256 integrity and revision histories.
+                </p>
               </div>
-            </div>
-            <div className="p-3 bg-emerald-50/50 rounded-xl border border-emerald-200">
-              <div className="text-[11px] font-medium text-emerald-700 uppercase tracking-wider">Verified Records</div>
-              <div className="text-lg font-bold text-emerald-900 mt-0.5">
-                {projectDocs.filter(d => d.status === "Verified").length} Documents
+
+              <div className="flex items-center gap-2.5">
+                <button
+                  onClick={() => setUploadModalState({
+                    isOpen: true,
+                    targetDoc: null,
+                    defaultCat: selectedCategoryFilter !== "all" ? selectedCategoryFilter : "customer"
+                  })}
+                  className="inline-flex items-center gap-2 px-4 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-sm transition-all"
+                >
+                  <Upload className="w-3.5 h-3.5" />
+                  <span>Upload Document</span>
+                </button>
               </div>
             </div>
-            <div className="p-3 bg-indigo-50/50 rounded-xl border border-indigo-200">
-              <div className="text-[11px] font-medium text-indigo-700 uppercase tracking-wider">Version-Controlled</div>
-              <div className="text-lg font-bold text-indigo-900 mt-0.5">
-                {projectDocs.filter(d => d.hasVersions).length} Living Files
+
+            {/* Quick Stats Grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                <div className="text-[11px] font-medium text-slate-500 uppercase tracking-wider">Total Documents</div>
+                <div className="text-lg font-bold text-slate-900 mt-0.5">{projectDocs.length} Files</div>
+              </div>
+              <div className="p-3 bg-blue-50/50 rounded-xl border border-blue-200">
+                <div className="text-[11px] font-medium text-blue-600 uppercase tracking-wider">Categories Covered</div>
+                <div className="text-lg font-bold text-blue-900 mt-0.5">
+                  {new Set(projectDocs.map(d => d.category)).size} / 11 Active
+                </div>
+              </div>
+              <div className="p-3 bg-emerald-50/50 rounded-xl border border-emerald-200">
+                <div className="text-[11px] font-medium text-emerald-700 uppercase tracking-wider">Verified Records</div>
+                <div className="text-lg font-bold text-emerald-900 mt-0.5">
+                  {projectDocs.filter(d => d.status === "Verified").length} Documents
+                </div>
+              </div>
+              <div className="p-3 bg-indigo-50/50 rounded-xl border border-indigo-200">
+                <div className="text-[11px] font-medium text-indigo-700 uppercase tracking-wider">Version-Controlled</div>
+                <div className="text-lg font-bold text-indigo-900 mt-0.5">
+                  {projectDocs.filter(d => d.hasVersions).length} Living Files
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* 11 Categories Horizontal Scrollable Filters */}
-          <div>
-            <div className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2 flex items-center justify-between">
-              <span>Filter by Document Category</span>
-              <span className="text-slate-400 font-normal">11 Standardized EPC Folders</span>
-            </div>
-            <div className="flex gap-2 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-              <button
-                onClick={() => setSelectedCategoryFilter("all")}
-                className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-colors flex items-center gap-1.5 ${
-                  selectedCategoryFilter === "all"
-                    ? "bg-slate-900 text-white"
-                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-                }`}
-              >
-                <span>All Documents</span>
-                <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-white/20">
-                  {projectDocs.length}
-                </span>
-              </button>
+            {/* Filter by Document Category: Dropdown + Scrollable Tabs */}
+            <div className="space-y-2.5">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div className="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
+                  <Filter className="w-3.5 h-3.5 text-blue-600" />
+                  <span>Filter by Document Category</span>
+                  <span className="text-slate-400 font-normal">({DOCUMENT_CATEGORIES.length} EPC Folders)</span>
+                </div>
 
-              {DOCUMENT_CATEGORIES.map((cat) => {
-                const count = projectDocs.filter(d => d.category === cat.id).length;
-                const isSelected = selectedCategoryFilter === cat.id;
-                return (
-                  <button
-                    key={cat.id}
-                    onClick={() => setSelectedCategoryFilter(cat.id)}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-colors flex items-center gap-1.5 ${
-                      isSelected
-                        ? "bg-blue-600 text-white shadow-sm"
-                        : "bg-slate-50 border border-slate-200 text-slate-700 hover:bg-slate-100"
-                    }`}
+                {/* Mobile Dropdown Filter */}
+                <div className="block sm:hidden w-full">
+                  <select
+                    value={selectedCategoryFilter}
+                    onChange={(e) => {
+                      setSelectedCategoryFilter(e.target.value);
+                      setDocCurrentPage(1);
+                    }}
+                    className="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 bg-white font-semibold text-slate-800 shadow-2xs focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
-                    <span>{cat.label}</span>
-                    <span className={`px-1.5 py-0.2 rounded-full text-[10px] ${
-                      isSelected ? "bg-white/30 text-white" : "bg-slate-200 text-slate-700"
-                    }`}>
-                      {count}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
+                    <option value="all">📁 All Documents ({projectDocs.length})</option>
+                    {DOCUMENT_CATEGORIES.map((cat) => (
+                      <option key={cat.id} value={cat.id}>
+                        {cat.label} ({projectDocs.filter(d => d.category === cat.id).length})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
 
-          {/* Search & Actions Bar */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
-            <div className="relative w-full sm:w-80">
-              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-              <input
-                type="text"
-                value={docSearchQuery}
-                onChange={(e) => setDocSearchQuery(e.target.value)}
-                placeholder="Search document name, file or author..."
-                className="w-full pl-9 pr-3 py-2 text-xs bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
+              {/* Scrollable Tabs */}
+              <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-transparent">
+                <button
+                  onClick={() => {
+                    setSelectedCategoryFilter("all");
+                    setDocCurrentPage(1);
+                  }}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all flex items-center gap-1.5 shrink-0 ${
+                    selectedCategoryFilter === "all"
+                      ? "bg-slate-900 text-white shadow-xs"
+                      : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                  }`}
+                >
+                  <span>All Documents</span>
+                  <span className="px-1.5 py-0.5 rounded-full text-[10px] bg-white/20 font-mono">
+                    {projectDocs.length}
+                  </span>
+                </button>
+
+                {DOCUMENT_CATEGORIES.map((cat) => {
+                  const count = projectDocs.filter(d => d.category === cat.id).length;
+                  const isSelected = selectedCategoryFilter === cat.id;
+                  return (
+                    <button
+                      key={cat.id}
+                      onClick={() => {
+                        setSelectedCategoryFilter(cat.id);
+                        setDocCurrentPage(1);
+                      }}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all flex items-center gap-1.5 shrink-0 ${
+                        isSelected
+                          ? "bg-blue-600 text-white shadow-xs"
+                          : "bg-slate-50 border border-slate-200 text-slate-700 hover:bg-slate-100"
+                      }`}
+                    >
+                      <span>{cat.label}</span>
+                      <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-mono ${
+                        isSelected ? "bg-white/30 text-white" : "bg-slate-200 text-slate-700"
+                      }`}>
+                        {count}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
 
-            <div className="text-xs text-slate-500 self-end sm:self-auto">
-              Showing{" "}
-              <strong className="text-slate-800">
-                {projectDocs.filter(doc => {
-                  const matchesCat = selectedCategoryFilter === "all" || doc.category === selectedCategoryFilter;
-                  const matchesSearch = !docSearchQuery ||
-                    doc.name.toLowerCase().includes(docSearchQuery.toLowerCase()) ||
-                    doc.fileName.toLowerCase().includes(docSearchQuery.toLowerCase()) ||
-                    doc.uploadedBy.toLowerCase().includes(docSearchQuery.toLowerCase());
-                  return matchesCat && matchesSearch;
-                }).length}
-              </strong>{" "}
-              of {projectDocs.length} documents
-            </div>
-          </div>
+            {/* Search, Desktop Dropdown Filter & Results Counter */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pt-1">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 flex-1 max-w-xl">
+                <div className="relative flex-1">
+                  <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="text"
+                    value={docSearchQuery}
+                    onChange={(e) => {
+                      setDocSearchQuery(e.target.value);
+                      setDocCurrentPage(1);
+                    }}
+                    placeholder="Search document name, file or author..."
+                    className="w-full pl-9 pr-3 py-2 text-xs bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
 
-          {/* Document Table */}
-          <div className="border border-slate-200 rounded-xl overflow-hidden bg-white shadow-2xs">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs">
-                <thead className="bg-slate-50 border-b border-slate-200 font-bold text-slate-700">
-                  <tr>
-                    <th className="p-3.5 border-r border-slate-200">Document Specification</th>
-                    <th className="p-3.5 border-r border-slate-200">Category</th>
-                    <th className="p-3.5 border-r border-slate-200">Version</th>
-                    <th className="p-3.5 border-r border-slate-200">Status</th>
-                    <th className="p-3.5 border-r border-slate-200">Author & Date</th>
-                    <th className="p-3.5 text-right">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100">
-                  {projectDocs
-                    .filter(doc => {
-                      const matchesCat = selectedCategoryFilter === "all" || doc.category === selectedCategoryFilter;
-                      const matchesSearch = !docSearchQuery ||
-                        doc.name.toLowerCase().includes(docSearchQuery.toLowerCase()) ||
-                        doc.fileName.toLowerCase().includes(docSearchQuery.toLowerCase()) ||
-                        doc.uploadedBy.toLowerCase().includes(docSearchQuery.toLowerCase());
-                      return matchesCat && matchesSearch;
-                    })
-                    .map((doc) => {
+                {/* Dropdown Selector on desktop/tablet */}
+                <div className="hidden sm:block shrink-0">
+                  <select
+                    value={selectedCategoryFilter}
+                    onChange={(e) => {
+                      setSelectedCategoryFilter(e.target.value);
+                      setDocCurrentPage(1);
+                    }}
+                    className="px-3 py-2 text-xs rounded-xl border border-slate-300 bg-slate-50 hover:bg-white font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-2xs"
+                  >
+                    <option value="all">All Folders ({projectDocs.length})</option>
+                    {DOCUMENT_CATEGORIES.map((cat) => (
+                      <option key={cat.id} value={cat.id}>
+                        {cat.label} ({projectDocs.filter(d => d.category === cat.id).length})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div className="text-xs text-slate-500 font-medium shrink-0 self-end md:self-auto">
+                Showing{" "}
+                <strong className="text-slate-900 font-bold">
+                  {filteredDocs.length === 0 ? 0 : `${startIndex + 1}–${Math.min(startIndex + DOCS_PER_PAGE, filteredDocs.length)}`}
+                </strong>{" "}
+                of <strong className="text-slate-900 font-bold">{filteredDocs.length}</strong> matching records
+                <span className="text-slate-400 ml-1">({projectDocs.length} total)</span>
+              </div>
+            </div>
+
+            {/* Document Table (Paginated: Max 10 docs visible) */}
+            <div className="border border-slate-200 rounded-xl overflow-hidden bg-white shadow-2xs">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs min-w-[700px]">
+                  <thead className="bg-slate-50 border-b border-slate-200 font-bold text-slate-700">
+                    <tr>
+                      <th className="p-3.5 border-r border-slate-200">Document Specification</th>
+                      <th className="p-3.5 border-r border-slate-200">Category</th>
+                      <th className="p-3.5 border-r border-slate-200">Version</th>
+                      <th className="p-3.5 border-r border-slate-200">Status</th>
+                      <th className="p-3.5 border-r border-slate-200">Author & Date</th>
+                      <th className="p-3.5 text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {paginatedDocs.map((doc) => {
                       const hasRevisionHistory = doc.hasVersions || (doc.versions && doc.versions.length > 1);
                       return (
                         <tr key={doc.id} className="hover:bg-slate-50/70 transition-colors">
@@ -1916,50 +1973,93 @@ export default function ProjectDetailPage() {
                         </tr>
                       );
                     })}
-                </tbody>
-              </table>
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Empty state if search or filter yields nothing */}
+              {filteredDocs.length === 0 && (
+                <div className="p-8 text-center text-slate-500 space-y-2">
+                  <FileText className="w-8 h-8 text-slate-300 mx-auto" />
+                  <p className="text-xs font-semibold text-slate-700">No documents found matching this filter</p>
+                  <button
+                    onClick={() => setUploadModalState({
+                      isOpen: true,
+                      targetDoc: null,
+                      defaultCat: selectedCategoryFilter !== "all" ? selectedCategoryFilter : "customer"
+                    })}
+                    className="px-3 py-1.5 text-xs font-semibold text-blue-600 hover:underline"
+                  >
+                    + Upload document into this category
+                  </button>
+                </div>
+              )}
+
+              {/* Pagination Bar (Max 10 per page) */}
+              {filteredDocs.length > 0 && (
+                <div className="p-3 sm:p-3.5 bg-slate-50/80 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+                  <div className="text-slate-500 font-medium text-center sm:text-left">
+                    Showing <span className="font-semibold text-slate-800">{startIndex + 1}</span> to{" "}
+                    <span className="font-semibold text-slate-800">{Math.min(startIndex + DOCS_PER_PAGE, filteredDocs.length)}</span> of{" "}
+                    <span className="font-semibold text-slate-800">{filteredDocs.length}</span> documents
+                    <span className="ml-1.5 text-slate-400 font-mono text-[11px]">(Page {safeCurrentPage} of {totalDocPages})</span>
+                  </div>
+
+                  <div className="flex items-center space-x-1.5">
+                    <button
+                      onClick={() => setDocCurrentPage(prev => Math.max(prev - 1, 1))}
+                      disabled={safeCurrentPage === 1}
+                      className="apple-button px-2.5 sm:px-3 py-1.5 rounded-lg border border-slate-200 bg-white font-medium text-slate-700 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed flex items-center space-x-1 transition-all"
+                    >
+                      <ChevronLeft className="w-3.5 h-3.5" />
+                      <span>Prev</span>
+                    </button>
+
+                    {/* Page Numbers */}
+                    <div className="flex items-center space-x-1">
+                      {Array.from({ length: totalDocPages }, (_, i) => i + 1).map((pageNum) => (
+                        <button
+                          key={pageNum}
+                          onClick={() => setDocCurrentPage(pageNum)}
+                          className={`w-7 h-7 rounded-lg text-xs font-bold transition-all flex items-center justify-center ${
+                            safeCurrentPage === pageNum
+                              ? "bg-blue-600 text-white shadow-2xs"
+                              : "bg-white border border-slate-200 text-slate-700 hover:bg-slate-100"
+                          }`}
+                        >
+                          {pageNum}
+                        </button>
+                      ))}
+                    </div>
+
+                    <button
+                      onClick={() => setDocCurrentPage(prev => Math.min(prev + 1, totalDocPages))}
+                      disabled={safeCurrentPage === totalDocPages}
+                      className="apple-button px-2.5 sm:px-3 py-1.5 rounded-lg border border-slate-200 bg-white font-medium text-slate-700 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed flex items-center space-x-1 transition-all"
+                    >
+                      <span>Next</span>
+                      <ChevronRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
 
-            {/* Empty state if search or filter yields nothing */}
-            {projectDocs.filter(doc => {
-              const matchesCat = selectedCategoryFilter === "all" || doc.category === selectedCategoryFilter;
-              const matchesSearch = !docSearchQuery ||
-                doc.name.toLowerCase().includes(docSearchQuery.toLowerCase()) ||
-                doc.fileName.toLowerCase().includes(docSearchQuery.toLowerCase()) ||
-                doc.uploadedBy.toLowerCase().includes(docSearchQuery.toLowerCase());
-              return matchesCat && matchesSearch;
-            }).length === 0 && (
-              <div className="p-8 text-center text-slate-500 space-y-2">
-                <FileText className="w-8 h-8 text-slate-300 mx-auto" />
-                <p className="text-xs font-semibold text-slate-700">No documents found matching this filter</p>
-                <button
-                  onClick={() => setUploadModalState({
-                    isOpen: true,
-                    targetDoc: null,
-                    defaultCat: selectedCategoryFilter !== "all" ? selectedCategoryFilter : "customer"
-                  })}
-                  className="px-3 py-1.5 text-xs font-semibold text-blue-600 hover:underline"
-                >
-                  + Upload document into this category
-                </button>
+            {/* Cryptographic Compliance Bar */}
+            <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-slate-500">
+              <div className="flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                <span>
+                  All 11 category files are indexed under <strong className="text-slate-800 font-mono">Project {project.id}</strong> with immutable revision trails.
+                </span>
               </div>
-            )}
-          </div>
-
-          {/* Cryptographic Compliance Bar */}
-          <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-slate-500">
-            <div className="flex items-center gap-2">
-              <ShieldCheck className="w-4 h-4 text-emerald-600" />
-              <span>
-                All 11 category files are indexed under <strong className="text-slate-800 font-mono">Project {project.id}</strong> with immutable revision trails.
+              <span className="font-mono text-[11px] text-slate-400">
+                DISCOM & CEA Regulatory Audit Ready
               </span>
             </div>
-            <span className="font-mono text-[11px] text-slate-400">
-              DISCOM & CEA Regulatory Audit Ready
-            </span>
           </div>
-        </div>
-      )}
+        );
+      })()}
 
       {/* TAB 5: PARALLEL DISCOM & SUBSIDY SUB-TRACKS */}
       {activeTab === "proposal" && (
@@ -2774,27 +2874,57 @@ export default function ProjectDetailPage() {
 
       {/* Document Inspector Modal */}
       {selectedDocPreview && (
-        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
-          <div className="bg-white border border-zinc-300 max-w-lg w-full p-6 shadow-xl space-y-4">
-            <div className="flex justify-between items-start border-b border-zinc-200 pb-3">
+        <div className="fixed inset-0 w-screen h-screen z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 animate-in fade-in duration-150">
+          <div className="bg-white rounded-3xl border border-slate-200 max-w-lg w-full max-h-[90vh] flex flex-col overflow-hidden shadow-2xl">
+            <div className="shrink-0 flex justify-between items-center border-b border-slate-100 p-5 bg-slate-50/70">
               <div>
-                <h4 className="font-bold text-sm text-black">{selectedDocPreview.name}</h4>
-                <p className="text-xs text-zinc-500">Document Specification & Verification Record</p>
+                <h4 className="font-bold text-sm text-slate-900">{selectedDocPreview.name}</h4>
+                <p className="text-xs text-slate-500">Document Specification & Verification Record</p>
               </div>
-              <button onClick={() => setSelectedDocPreview(null)} className="text-zinc-400 hover:text-black">
+              <button 
+                onClick={() => setSelectedDocPreview(null)}
+                aria-label="Close modal"
+                className="p-1.5 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+              >
                 <X className="w-4 h-4" />
               </button>
             </div>
-            <div className="h-44 bg-zinc-50 border border-dashed border-zinc-300 flex flex-col items-center justify-center text-center p-4">
-              <FileText className="w-10 h-10 text-zinc-400 mb-2" />
-              <span className="text-xs font-semibold text-black">{selectedDocPreview.name}</span>
-              <span className="text-[10px] text-zinc-500 mt-1">Verified on {selectedDocPreview.date || "2026-10-18"} • SHA-256 Validated</span>
+            <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-4">
+              <div className="h-44 bg-slate-50 rounded-2xl border border-dashed border-slate-300 flex flex-col items-center justify-center text-center p-4">
+                <div className="w-12 h-12 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600 mb-2">
+                  <FileText className="w-6 h-6" />
+                </div>
+                <span className="text-xs font-bold text-slate-900">{selectedDocPreview.name}</span>
+                <span className="text-[11px] text-slate-500 font-mono mt-1">
+                  Verified on {selectedDocPreview.date || "12 Oct 2026"} • SHA-256 Validated
+                </span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 text-xs">
+                <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                  <span className="text-[10px] text-slate-400 font-bold block uppercase tracking-wider">Category</span>
+                  <span className="font-semibold text-slate-800 mt-0.5 block">{selectedDocPreview.categoryLabel}</span>
+                </div>
+                <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                  <span className="text-[10px] text-slate-400 font-bold block uppercase tracking-wider">File & Version</span>
+                  <span className="font-semibold text-slate-800 mt-0.5 block">{selectedDocPreview.fileSize} • {selectedDocPreview.version}</span>
+                </div>
+              </div>
+
+              <div className="p-3 bg-blue-50/50 rounded-xl border border-blue-200/80 text-xs">
+                <span className="text-[10px] text-blue-700 font-bold block uppercase tracking-wider font-mono">SHA-256 Checksum</span>
+                <span className="text-[11px] text-blue-950 font-mono break-all mt-0.5 block">
+                  {selectedDocPreview.sha256 || "8f4a1c9e7b2d5f0a3c8e1d6b9f2a4e7c0d3b6f8a"}
+                </span>
+              </div>
             </div>
-            <div className="flex justify-between items-center pt-2">
-              <span className="text-xs text-emerald-700 font-semibold font-mono">Status: Verified ✓</span>
+            <div className="shrink-0 flex justify-between items-center p-4 bg-slate-50/70 border-t border-slate-100">
+              <span className="text-xs text-emerald-700 font-semibold font-mono bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200">
+                Status: Verified ✓
+              </span>
               <button 
                 onClick={() => setSelectedDocPreview(null)}
-                className="bg-black text-white text-xs px-4 py-1.5 font-semibold"
+                className="apple-button bg-slate-900 text-white text-xs px-4 py-2 font-semibold rounded-xl hover:bg-slate-800 transition-colors shadow-2xs"
               >
                 Close Inspector
               </button>

@@ -1,8 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { X, MessageSquare, Phone, Mail, Share2, Users, Wrench, AlertCircle, Calendar, User, Clock, CheckCircle2 } from "lucide-react";
 
 export default function LogCommunicationModal({ isOpen, onClose, onSave, project }) {
   if (!isOpen) return null;
+
+  useEffect(() => {
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [onClose]);
 
   const [channel, setChannel] = useState("Phone Call");
   const [direction, setDirection] = useState("Outbound");
@@ -50,10 +63,10 @@ export default function LogCommunicationModal({ isOpen, onClose, onSave, project
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs overflow-y-auto animate-in fade-in duration-150">
-      <div className="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-8">
+    <div className="fixed inset-0 w-screen h-screen z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-150">
+      <div className="relative w-full max-w-2xl max-h-[90vh] bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col">
         {/* Modal Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/80">
+        <div className="shrink-0 flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/80">
           <div className="flex items-center space-x-2.5">
             <div className="p-2 rounded-xl bg-blue-50 border border-blue-200 text-blue-700">
               <MessageSquare className="w-5 h-5" />
@@ -61,7 +74,7 @@ export default function LogCommunicationModal({ isOpen, onClose, onSave, project
             <div>
               <div className="flex items-center space-x-2">
                 <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-blue-100 text-blue-800 font-mono">
-                  BFRD Sec 23
+                  Customer History
                 </span>
                 <span className="text-xs text-slate-500 font-mono">Project {project?.id}</span>
               </div>
@@ -72,6 +85,7 @@ export default function LogCommunicationModal({ isOpen, onClose, onSave, project
           </div>
           <button
             onClick={onClose}
+            aria-label="Close modal"
             className="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
           >
             <X className="w-5 h-5" />
@@ -79,7 +93,7 @@ export default function LogCommunicationModal({ isOpen, onClose, onSave, project
         </div>
 
         {/* Modal Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {/* Channel */}
             <div>
