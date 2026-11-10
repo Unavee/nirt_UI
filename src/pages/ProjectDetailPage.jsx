@@ -18,6 +18,9 @@ import { INITIAL_INSTALLATION_DATA } from "@/data/installationData";
 import InstallationManagementView from "@/components/installation/InstallationManagementView";
 import UpdateInstallationModal from "@/components/installation/UpdateInstallationModal";
 import InstallationSignOffModal from "@/components/installation/InstallationSignOffModal";
+import { INITIAL_PROJECT_PROGRESS_MAP } from "@/data/projectProgressData";
+import ProjectProgressTrackerView from "@/components/progress/ProjectProgressTrackerView";
+import UpdateStageModal from "@/components/progress/UpdateStageModal";
 import { INITIAL_PROCUREMENT_ITEMS } from "@/data/procurementData";
 import ProcurementModal from "@/components/procurement/ProcurementModal";
 import GoodsReceiptModal from "@/components/procurement/GoodsReceiptModal";
@@ -134,6 +137,18 @@ export default function ProjectDetailPage() {
   );
   const [isUpdateInstallModalOpen, setIsUpdateInstallModalOpen] = useState(false);
   const [isInstallSignOffModalOpen, setIsInstallSignOffModalOpen] = useState(false);
+
+  const [projectProgress, setProjectProgress] = useState(
+    INITIAL_PROJECT_PROGRESS_MAP[project.id] || {
+      ...INITIAL_PROJECT_PROGRESS_MAP["NIRT-26-0042"],
+      projectId: project.id,
+      projectName: project.name,
+      customerName: project.customerName || "Customer",
+      capacity: project.capacity || "50 kWp"
+    }
+  );
+  const [selectedStageToUpdate, setSelectedStageToUpdate] = useState(null);
+  const [isUpdateStageModalOpen, setIsUpdateStageModalOpen] = useState(false);
 
 
 
@@ -642,7 +657,8 @@ export default function ProjectDetailPage() {
           { id: "discom_subsidy", label: "DISCOM & Feasibility (Sec 12-13)" },
           { id: "procurement", label: "Procurement & BoM (Section 14)" },
           { id: "store", label: "Store & Inventory (Section 15)" },
-          { id: "installation", label: "Installation & Site (Section 16)" }
+          { id: "installation", label: "Installation & Site (Section 16)" },
+          { id: "progress_tracker", label: "Progress Tracker (Section 17)" }
         ].map((tab) => (
           <button
             key={tab.id}
@@ -661,6 +677,34 @@ export default function ProjectDetailPage() {
       {/* TAB 1: 3.1 ONE CUSTOMER – ONE MASTER RECORD */}
       {activeTab === "overview" && (
         <div className="space-y-6">
+          {/* SECTION 17: EXECUTIVE MILESTONE TRACKER BANNER (BFRD Section 17) */}
+          <div className="p-4 sm:p-5 bg-gradient-to-r from-slate-900 to-slate-800 text-white rounded-3xl shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-blue-500/20 text-blue-300 border border-blue-400/30 font-mono">
+                  Section 17 • Progress Tracker
+                </span>
+                <span className="text-xs text-slate-300 font-mono">
+                  Stage {projectProgress.currentStageNumber} of 15 • {projectProgress.stages?.find(s => s.status === 'in_progress')?.name || 'Installation'}
+                </span>
+              </div>
+              <h3 className="text-sm sm:text-base font-bold text-white">
+                Project Execution Progress: <span className="text-blue-400 font-mono">{projectProgress.overallPercent}%</span> Complete
+              </h3>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="w-32 bg-slate-700 h-2 rounded-full overflow-hidden hidden sm:block">
+                <div className="bg-blue-500 h-2 rounded-full" style={{ width: `${projectProgress.overallPercent}%` }} />
+              </div>
+              <button
+                onClick={() => setActiveTab("progress_tracker")}
+                className="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-white/10 hover:bg-white/20 text-white border border-white/20 transition-all flex items-center gap-1.5 whitespace-nowrap"
+              >
+                <span>View Full 15 Stages</span>
+                <ChevronRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
           
           {/* SECTION 9: CONFIRMED PROJECT GOVERNANCE & HANDOVER RECORD */}
           <div className="p-5 sm:p-6 bg-white rounded-3xl border border-slate-200/90 shadow-xs space-y-4">
@@ -2083,6 +2127,17 @@ export default function ProjectDetailPage() {
         />
       )}
 
+      {/* TAB: SECTION 17 PROJECT PROGRESS TRACKER */}
+      {activeTab === "progress_tracker" && (
+        <ProjectProgressTrackerView
+          progressData={projectProgress}
+          onOpenUpdateModal={(stage) => {
+            setSelectedStageToUpdate(stage);
+            setIsUpdateStageModalOpen(true);
+          }}
+        />
+      )}
+
       {activeTab === "discom_subsidy" && (
         <div className="space-y-6">
           {/* Segmented Sub-Tab Switcher between Section 13, Section 12, and Subsidy */}
@@ -2660,6 +2715,26 @@ export default function ProjectDetailPage() {
 
 
 
+
+      {/* SECTION 17: PROGRESS TRACKER MODAL */}
+      <UpdateStageModal
+        isOpen={isUpdateStageModalOpen}
+        targetStage={selectedStageToUpdate}
+        projectId={project.id}
+        onClose={() => setIsUpdateStageModalOpen(false)}
+        onSaveStage={(updatedStage) => {
+          setProjectProgress(prev => {
+            const newStages = prev.stages.map(s => s.id === updatedStage.id ? updatedStage : s);
+            const completedCount = newStages.filter(s => s.status === "completed").length;
+            const overallPercent = Math.round((completedCount / newStages.length) * 100);
+            return {
+              ...prev,
+              stages: newStages,
+              overallPercent
+            };
+          });
+        }}
+      />
 
       {/* SECTION 16: INSTALLATION MODALS */}
       <UpdateInstallationModal
