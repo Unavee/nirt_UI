@@ -21,6 +21,10 @@ import InstallationSignOffModal from "@/components/installation/InstallationSign
 import { INITIAL_PROJECT_PROGRESS_MAP } from "@/data/projectProgressData";
 import ProjectProgressTrackerView from "@/components/progress/ProjectProgressTrackerView";
 import UpdateStageModal from "@/components/progress/UpdateStageModal";
+import { INITIAL_INSPECTIONS_DATA } from "@/data/inspectionData";
+import InspectionManagementView from "@/components/inspection/InspectionManagementView";
+import InspectionStatusModal from "@/components/inspection/InspectionStatusModal";
+import CommissioningReportModal from "@/components/inspection/CommissioningReportModal";
 import { INITIAL_PROCUREMENT_ITEMS } from "@/data/procurementData";
 import ProcurementModal from "@/components/procurement/ProcurementModal";
 import GoodsReceiptModal from "@/components/procurement/GoodsReceiptModal";
@@ -149,6 +153,19 @@ export default function ProjectDetailPage() {
   );
   const [selectedStageToUpdate, setSelectedStageToUpdate] = useState(null);
   const [isUpdateStageModalOpen, setIsUpdateStageModalOpen] = useState(false);
+
+  const [inspectionState, setInspectionState] = useState(
+    INITIAL_INSPECTIONS_DATA[project.id] || {
+      ...INITIAL_INSPECTIONS_DATA["NIRT-26-0042"],
+      projectId: project.id,
+      projectName: project.name,
+      customerName: project.customerName || "Customer",
+      capacity: project.capacity || "50 kWp",
+      siteAddress: project.address || "Project Site"
+    }
+  );
+  const [isInspectionStatusModalOpen, setIsInspectionStatusModalOpen] = useState(false);
+  const [isCommissioningReportModalOpen, setIsCommissioningReportModalOpen] = useState(false);
 
 
 
@@ -658,7 +675,8 @@ export default function ProjectDetailPage() {
           { id: "procurement", label: "Procurement & BoM (Section 14)" },
           { id: "store", label: "Store & Inventory (Section 15)" },
           { id: "installation", label: "Installation & Site (Section 16)" },
-          { id: "progress_tracker", label: "Progress Tracker (Section 17)" }
+          { id: "progress_tracker", label: "Progress Tracker (Section 17)" },
+          { id: "inspection", label: "Inspection & Commissioning (Section 18)" }
         ].map((tab) => (
           <button
             key={tab.id}
@@ -2138,6 +2156,15 @@ export default function ProjectDetailPage() {
         />
       )}
 
+      {/* TAB: SECTION 18 INSPECTION & COMMISSIONING */}
+      {activeTab === "inspection" && (
+        <InspectionManagementView
+          inspectionData={inspectionState}
+          onOpenStatusModal={() => setIsInspectionStatusModalOpen(true)}
+          onOpenReportModal={() => setIsCommissioningReportModalOpen(true)}
+        />
+      )}
+
       {activeTab === "discom_subsidy" && (
         <div className="space-y-6">
           {/* Segmented Sub-Tab Switcher between Section 13, Section 12, and Subsidy */}
@@ -2715,6 +2742,20 @@ export default function ProjectDetailPage() {
 
 
 
+
+      {/* SECTION 18: INSPECTION & COMMISSIONING MODALS */}
+      <InspectionStatusModal
+        isOpen={isInspectionStatusModalOpen}
+        onClose={() => setIsInspectionStatusModalOpen(false)}
+        inspectionData={inspectionState}
+        onUpdateInspection={(updated) => setInspectionState(updated)}
+      />
+
+      <CommissioningReportModal
+        isOpen={isCommissioningReportModalOpen}
+        onClose={() => setIsCommissioningReportModalOpen(false)}
+        inspectionData={inspectionState}
+      />
 
       {/* SECTION 17: PROGRESS TRACKER MODAL */}
       <UpdateStageModal
