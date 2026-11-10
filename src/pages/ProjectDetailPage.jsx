@@ -29,6 +29,11 @@ import { INITIAL_NET_METERING_DATA } from "@/data/netMeteringData";
 import NetMeteringManagementView from "@/components/netmetering/NetMeteringManagementView";
 import UpdateNetMeterModal from "@/components/netmetering/UpdateNetMeterModal";
 import NetMeterCertificateModal from "@/components/netmetering/NetMeterCertificateModal";
+import { INITIAL_FINAL_PAYMENT_DATA } from "@/data/finalPaymentData";
+import FinalPaymentManagementView from "@/components/finalpayment/FinalPaymentManagementView";
+import RecordFinalPaymentModal from "@/components/finalpayment/RecordFinalPaymentModal";
+import SendReminderModal from "@/components/finalpayment/SendReminderModal";
+import NoDuesCertificateModal from "@/components/finalpayment/NoDuesCertificateModal";
 import { INITIAL_PROCUREMENT_ITEMS } from "@/data/procurementData";
 import ProcurementModal from "@/components/procurement/ProcurementModal";
 import GoodsReceiptModal from "@/components/procurement/GoodsReceiptModal";
@@ -182,6 +187,19 @@ export default function ProjectDetailPage() {
   );
   const [isUpdateMeterModalOpen, setIsUpdateMeterModalOpen] = useState(false);
   const [isNetMeterCertModalOpen, setIsNetMeterCertModalOpen] = useState(false);
+
+  const [finalPaymentState, setFinalPaymentState] = useState(
+    INITIAL_FINAL_PAYMENT_DATA[project.id] || {
+      ...INITIAL_FINAL_PAYMENT_DATA["NIRT-26-0042"],
+      projectId: project.id,
+      projectName: project.name,
+      customerName: project.customerName || "Customer",
+      capacity: project.capacity || "50 kWp"
+    }
+  );
+  const [isRecordFinalPayModalOpen, setIsRecordFinalPayModalOpen] = useState(false);
+  const [isSendReminderModalOpen, setIsSendReminderModalOpen] = useState(false);
+  const [isNoDuesModalOpen, setIsNoDuesModalOpen] = useState(false);
 
 
 
@@ -693,7 +711,8 @@ export default function ProjectDetailPage() {
           { id: "installation", label: "Installation & Site (Section 16)" },
           { id: "progress_tracker", label: "Progress Tracker (Section 17)" },
           { id: "inspection", label: "Inspection & Commissioning (Section 18)" },
-          { id: "net_metering", label: "Net Metering (Section 19)" }
+          { id: "net_metering", label: "Net Metering (Section 19)" },
+          { id: "final_payment", label: "Final Payment (Section 20)" }
         ].map((tab) => (
           <button
             key={tab.id}
@@ -2191,6 +2210,16 @@ export default function ProjectDetailPage() {
         />
       )}
 
+      {/* TAB: SECTION 20 FINAL PAYMENT */}
+      {activeTab === "final_payment" && (
+        <FinalPaymentManagementView
+          paymentData={finalPaymentState}
+          onOpenRecordModal={() => setIsRecordFinalPayModalOpen(true)}
+          onOpenReminderModal={() => setIsSendReminderModalOpen(true)}
+          onOpenNocModal={() => setIsNoDuesModalOpen(true)}
+        />
+      )}
+
       {activeTab === "discom_subsidy" && (
         <div className="space-y-6">
           {/* Segmented Sub-Tab Switcher between Section 13, Section 12, and Subsidy */}
@@ -2768,6 +2797,32 @@ export default function ProjectDetailPage() {
 
 
 
+
+      {/* SECTION 20: FINAL PAYMENT MODALS */}
+      <RecordFinalPaymentModal
+        isOpen={isRecordFinalPayModalOpen}
+        onClose={() => setIsRecordFinalPayModalOpen(false)}
+        paymentData={finalPaymentState}
+        onSavePayment={(updated) => setFinalPaymentState(updated)}
+      />
+
+      <SendReminderModal
+        isOpen={isSendReminderModalOpen}
+        onClose={() => setIsSendReminderModalOpen(false)}
+        paymentData={finalPaymentState}
+        onSendReminder={(newReminder) => {
+          setFinalPaymentState(prev => ({
+            ...prev,
+            remindersSent: [newReminder, ...prev.remindersSent]
+          }));
+        }}
+      />
+
+      <NoDuesCertificateModal
+        isOpen={isNoDuesModalOpen}
+        onClose={() => setIsNoDuesModalOpen(false)}
+        paymentData={finalPaymentState}
+      />
 
       {/* SECTION 19: NET METERING MODALS */}
       <UpdateNetMeterModal
