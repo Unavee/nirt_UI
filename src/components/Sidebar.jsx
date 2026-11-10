@@ -2,15 +2,15 @@ import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useRole } from "@/context/RoleContext";
 import { useSidebar } from "@/context/SidebarContext";
-import { 
-  LayoutDashboard, 
-  Layers, 
-  FolderKanban, 
-  ShieldCheck, 
-  ChevronDown, 
-  Plus, 
-  LogOut, 
-  Activity, 
+import { ROLE_WORKSPACES } from "@/data/roleWorkspaceConfig";
+import {
+  LayoutDashboard,
+  Layers,
+  FolderKanban,
+  ShieldCheck,
+  ChevronDown,
+  LogOut,
+  Activity,
   Settings,
   Users,
   PanelLeftClose,
@@ -18,227 +18,329 @@ import {
   Headset,
   Smartphone,
   BarChart3,
-  FileSpreadsheet
+  FileSpreadsheet,
+  Building2,
+  MessageSquare,
+  CheckSquare,
+  Compass,
+  MapPin,
+  Truck,
+  Package,
+  Warehouse,
+  Wrench,
+  Zap,
+  IndianRupee,
+  CreditCard,
+  CheckCircle2,
+  Landmark,
+  Award,
+  ShieldAlert,
+  FileText,
+  UserCheck,
+  RefreshCw,
+  Sparkles
 } from "lucide-react";
+
+// Icon Map Resolver
+const ICON_MAP = {
+  LayoutDashboard,
+  Layers,
+  FolderKanban,
+  ShieldCheck,
+  Activity,
+  Settings,
+  Users,
+  Headset,
+  Smartphone,
+  BarChart3,
+  FileSpreadsheet,
+  Building2,
+  MessageSquare,
+  CheckSquare,
+  Compass,
+  MapPin,
+  Truck,
+  Package,
+  Warehouse,
+  Wrench,
+  Zap,
+  IndianRupee,
+  CreditCard,
+  CheckCircle2,
+  Landmark,
+  Award,
+  ShieldAlert,
+  FileText
+};
 
 export default function Sidebar() {
   const location = useLocation();
   const pathname = location.pathname;
-  const { activeRole, switchRole, allRoles, canViewAudit } = useRole();
+  const { activeRole, switchRole, allRoles, isExecutive, isCoordinator } = useRole();
   const { isCollapsed, toggleSidebar } = useSidebar();
 
-  const mainNavigation = [
-    { label: "Dashboard", href: "/", icon: LayoutDashboard },
-    { label: "Executive Dashboards", href: "/dashboards", icon: BarChart3, badge: "Sec 26" },
-    { label: "Management MIS Reports", href: "/reports", icon: FileSpreadsheet, badge: "22" },
-    { label: "5-Pipeline Board", href: "/pipelines", icon: Layers, badge: "20" },
-    { label: "Projects Registry", href: "/projects", icon: FolderKanban },
-    { label: "Approvals Hub", href: "/approvals", icon: ShieldCheck, badge: "Sec 33" },
-    { label: "Service & Complaints", href: "/service", icon: Headset, badge: "Sec 35" },
-    { label: "Mobile Field Hub", href: "/field", icon: Smartphone, badge: "Sec 32" },
-  ];
-
-  const pipelineStages = [
-    { code: "P1", name: "Sales & Feasibility", range: "01-06", color: "bg-blue-500" },
-    { code: "P2", name: "Advance & Approvals", range: "07-10", color: "bg-violet-500" },
-    { code: "P3", name: "Procurement & Store", range: "11-13", color: "bg-teal-500" },
-    { code: "P4", name: "EPC Site Execution", range: "14-17", color: "bg-indigo-500" },
-    { code: "P5", name: "Closure & Subsidy", range: "18-20", color: "bg-cyan-500" },
-  ];
+  // Resolve current active workspace configuration
+  const currentWorkspace =
+    ROLE_WORKSPACES[activeRole.id] || ROLE_WORKSPACES.managing_director;
 
   return (
-    <>
-      <aside 
-        className={`hidden lg:flex h-screen fixed left-0 top-0 z-40 flex-col justify-between glass-surface border-r border-slate-200/80 bg-white/85 backdrop-blur-2xl select-none overflow-x-hidden transition-all duration-300 ease-in-out ${
-          isCollapsed ? "w-20" : "w-64"
-        }`}
-      >
-        
-        {/* Top Scrollable Container */}
-        <div className="flex-1 overflow-y-auto px-3 py-4 space-y-5 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          
-          {/* NIRT Brand Header & Toggle Button */}
-          <div className="flex items-center justify-between px-1">
-            <Link to="/" className="flex items-center space-x-2.5 overflow-hidden group">
-              <div className="relative w-10 h-10 rounded-2xl overflow-hidden bg-white border border-slate-200/90 shadow-xs flex items-center justify-center p-1 shrink-0 group-hover:scale-105 transition-transform">
-                <img
-                  src="/brandLogo.png"
-                  alt="NIRT Solar Logo"
-                  width={36}
-                  height={36}
-                  className="object-contain"
-                />
-              </div>
-              {!isCollapsed && (
-                <div className="min-w-0 animate-in fade-in duration-200">
-                  <div className="flex items-center space-x-1.5">
-                    <span className="text-sm font-black tracking-tight text-slate-900 leading-none">
-                      NIRT SOLAR
-                    </span>
-                  </div>
-                  <p className="text-[10px] text-slate-400 font-medium truncate mt-0.5">
-                    Project Lifecycle & PMO
-                  </p>
+    <aside
+      className={`hidden lg:flex h-screen fixed left-0 top-0 z-40 flex-col justify-between glass-surface border-r border-slate-200/80 bg-white/95 backdrop-blur-2xl select-none overflow-x-hidden transition-all duration-300 ease-in-out ${
+        isCollapsed ? "w-20" : "w-64"
+      }`}
+    >
+      {/* Top Scrollable Container */}
+      <div className="flex-1 overflow-y-auto px-3 py-4 space-y-4 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        {/* NIRT Brand Header & Toggle */}
+        <div className="flex items-center justify-between px-1">
+          <Link to="/" className="flex items-center space-x-2.5 overflow-hidden group">
+            <div className="relative w-9 h-9 rounded-2xl overflow-hidden bg-white border border-slate-200/90 shadow-xs flex items-center justify-center p-1 shrink-0 group-hover:scale-105 transition-transform">
+              <img
+                src="/brandLogo.png"
+                alt="NIRT Solar Logo"
+                width={32}
+                height={32}
+                className="object-contain"
+              />
+            </div>
+            {!isCollapsed && (
+              <div className="min-w-0 animate-in fade-in duration-200">
+                <div className="flex items-center space-x-1.5">
+                  <span className="text-sm font-black tracking-tight text-slate-900 leading-none">
+                    NIRT SOLAR
+                  </span>
                 </div>
-              )}
-            </Link>
+                <p className="text-[10px] text-slate-400 font-medium truncate mt-0.5">
+                  Project Lifecycle & PMO
+                </p>
+              </div>
+            )}
+          </Link>
 
-            {/* Sidebar Collapse Toggle Button */}
-            <button
-              onClick={toggleSidebar}
-              className="apple-button p-1.5 text-slate-400 hover:text-slate-700 rounded-xl hover:bg-slate-100 transition-colors"
-              title={isCollapsed ? "Expand sidebar (Ctrl+B)" : "Collapse sidebar (Ctrl+B)"}
+          {/* Sidebar Collapse Toggle */}
+          <button
+            onClick={toggleSidebar}
+            className="apple-button p-1.5 text-slate-400 hover:text-slate-700 rounded-xl hover:bg-slate-100 transition-colors"
+            title={isCollapsed ? "Expand sidebar (Ctrl+B)" : "Collapse sidebar (Ctrl+B)"}
+          >
+            {isCollapsed ? (
+              <PanelLeftOpen className="w-4 h-4" />
+            ) : (
+              <PanelLeftClose className="w-4 h-4" />
+            )}
+          </button>
+        </div>
+
+        {/* Dynamic Active Role & Team Login Card */}
+        {!isCollapsed ? (
+          <div className="p-2.5 rounded-2xl bg-slate-50 border border-slate-200/90 shadow-2xs space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider font-mono">
+                Team Login / Role
+              </span>
+              <span
+                className={`px-1.5 py-0.2 rounded-md text-[10px] font-bold font-mono border ${currentWorkspace.color}`}
+              >
+                {currentWorkspace.shortCode}
+              </span>
+            </div>
+
+            <div className="space-y-1">
+              <div className="text-xs font-bold text-slate-900 leading-tight truncate">
+                {activeRole.title}
+              </div>
+              <div className="text-[10px] text-slate-500 font-medium truncate">
+                {currentWorkspace.departmentName}
+              </div>
+            </div>
+
+            {/* Quick Role Switcher Dropdown */}
+            <select
+              value={activeRole.id}
+              onChange={(e) => switchRole(e.target.value)}
+              className="w-full text-[11px] font-semibold text-slate-700 bg-white border border-slate-200 rounded-xl px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+              title="Switch role for demonstration"
             >
-              {isCollapsed ? (
-                <PanelLeftOpen className="w-4 h-4" />
-              ) : (
-                <PanelLeftClose className="w-4 h-4" />
-              )}
+              {allRoles.map((r) => (
+                <option key={r.id} value={r.id}>
+                  {r.shortCode} • {r.title.split("/")[0]}
+                </option>
+              ))}
+            </select>
+          </div>
+        ) : (
+          <div className="flex justify-center">
+            <button
+              onClick={() => {
+                const nextIdx = (allRoles.findIndex((r) => r.id === activeRole.id) + 1) % allRoles.length;
+                switchRole(allRoles[nextIdx].id);
+              }}
+              className="w-9 h-9 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-xs font-bold font-mono text-slate-700 hover:bg-slate-200"
+              title={`Active: ${activeRole.title}. Click to switch role.`}
+            >
+              {currentWorkspace.shortCode}
             </button>
           </div>
+        )}
 
-          {/* Main Navigation Group */}
-          <div className="space-y-1">
-            {!isCollapsed && (
-              <span className="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider block animate-in fade-in duration-200">
-                Core Operations
-              </span>
-            )}
-            {mainNavigation.map((item) => {
-              const isActive = pathname === item.href;
-              const Icon = item.icon;
-              return (
-                <Link
-                  key={item.href}
-                  to={item.href}
-                  className={`apple-button flex items-center justify-between px-3 py-2.5 rounded-2xl text-xs font-medium transition-all ${
-                    isActive
-                      ? "bg-slate-900 text-white font-semibold shadow-xs"
-                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-100/80"
-                  } ${isCollapsed ? "justify-center px-2" : ""}`}
-                  title={isCollapsed ? item.label : ""}
-                >
-                  <div className="flex items-center space-x-3">
-                    <Icon className={`w-4 h-4 ${isActive ? "text-white" : "text-slate-500"}`} />
-                    {!isCollapsed && <span>{item.label}</span>}
-                  </div>
-                  {!isCollapsed && item.badge && (
-                    <span className="text-[10px] font-mono px-1.5 py-0.2 rounded-md bg-white/20 text-white">
-                      {item.badge}
-                    </span>
-                  )}
-                </Link>
-              );
-            })}
-          </div>
+        {/* Section 1: My Department Workspace Navigation */}
+        <div className="space-y-1">
+          {!isCollapsed && (
+            <div className="px-3 flex items-center justify-between text-[10px] font-bold text-slate-400 uppercase tracking-wider font-mono">
+              <span>Department Workspace</span>
+              <span className="text-[9px] text-blue-600 font-normal">Active</span>
+            </div>
+          )}
 
-          {/* 5 Operational Pipelines Direct Links */}
-          <div className="space-y-1">
-            {!isCollapsed && (
-              <span className="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider block animate-in fade-in duration-200">
-                5 Operational Pipelines
-              </span>
-            )}
-            {pipelineStages.map((stage) => (
+          {currentWorkspace.menuItems.map((item, idx) => {
+            const Icon = ICON_MAP[item.icon] || LayoutDashboard;
+            const isActive = pathname === item.href && !item.tabTarget;
+            return (
               <Link
-                key={stage.code}
-                to="/pipelines"
-                className={`apple-button flex items-center justify-between px-3 py-2 rounded-xl text-xs text-slate-600 hover:text-slate-900 hover:bg-slate-100/70 transition-all group ${
-                  isCollapsed ? "justify-center px-2" : ""
-                }`}
-                title={isCollapsed ? `${stage.code}: ${stage.name} (${stage.range})` : ""}
+                key={idx}
+                to={item.href}
+                className={`apple-button flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-all ${
+                  isActive
+                    ? "bg-slate-900 text-white font-semibold shadow-xs"
+                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-100/80"
+                } ${isCollapsed ? "justify-center px-2" : ""}`}
+                title={isCollapsed ? item.label : ""}
               >
                 <div className="flex items-center space-x-2.5 min-w-0">
-                  <span className={`w-2 h-2 rounded-full ${stage.color} shrink-0`} />
-                  {!isCollapsed && <span className="truncate">{stage.name}</span>}
+                  <Icon className={`w-4 h-4 shrink-0 ${isActive ? "text-white" : "text-slate-500"}`} />
+                  {!isCollapsed && <span className="truncate">{item.label}</span>}
                 </div>
-                {!isCollapsed && (
-                  <span className="text-[10px] font-mono text-slate-400 group-hover:text-slate-600">
-                    {stage.range}
+                {!isCollapsed && item.badge && (
+                  <span
+                    className={`text-[9px] font-mono font-bold px-1.5 py-0.2 rounded-md ${
+                      isActive
+                        ? "bg-white/20 text-white"
+                        : "bg-slate-100 text-slate-600"
+                    }`}
+                  >
+                    {item.badge}
                   </span>
                 )}
               </Link>
-            ))}
-          </div>
-
-          {/* Governance & Admin (Restricted by Role) */}
-          <div className="space-y-1">
-            {!isCollapsed && (
-              <span className="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider block animate-in fade-in duration-200">
-                Governance & Safety
-              </span>
-            )}
-            <Link
-              to="/audit"
-              className={`apple-button flex items-center space-x-3 px-3 py-2 rounded-xl text-xs font-medium transition-all ${
-                pathname === "/audit"
-                  ? "bg-slate-900 text-white shadow-xs font-semibold"
-                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-100/70"
-              } ${isCollapsed ? "justify-center px-2" : ""}`}
-              title={isCollapsed ? "Audit Trail & Compliance (Sec 34)" : ""}
-            >
-              <ShieldCheck className={`w-4 h-4 shrink-0 ${pathname === "/audit" ? "text-emerald-400" : "text-emerald-600"}`} />
-              {!isCollapsed && <span className="truncate">Audit Trail (Sec 34)</span>}
-            </Link>
-            <Link
-              to="/settings/users"
-              className={`apple-button flex items-center space-x-3 px-3 py-2 rounded-xl text-xs font-medium transition-all ${
-                pathname === "/settings/users"
-                  ? "bg-slate-900 text-white shadow-xs"
-                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-100/70"
-              } ${isCollapsed ? "justify-center px-2" : ""}`}
-              title={isCollapsed ? "Users & Roles Governance" : ""}
-            >
-              <Users className={`w-4 h-4 shrink-0 ${pathname === "/settings/users" ? "text-white" : "text-blue-600"}`} />
-              {!isCollapsed && <span>Users & Roles</span>}
-            </Link>
-            <Link
-              to="/settings"
-              className={`apple-button flex items-center space-x-3 px-3 py-2 rounded-xl text-xs text-slate-600 hover:text-slate-900 hover:bg-slate-100/70 font-medium transition-all ${
-                isCollapsed ? "justify-center px-2" : ""
-              }`}
-              title={isCollapsed ? "System Settings" : ""}
-            >
-              <Settings className="w-4 h-4 text-slate-500 shrink-0" />
-              {!isCollapsed && <span>System Settings</span>}
-            </Link>
-          </div>
-
+            );
+          })}
         </div>
 
-        {/* Bottom Profile / Compliance Footer */}
-        <div className="p-3 border-t border-slate-200/80 bg-slate-50/60 space-y-2">
-          {!isCollapsed ? (
-            <>
-              {/* <div className="flex items-center justify-between px-1 text-[11px]">
-                <span className="flex items-center space-x-1.5 text-slate-500">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                  <span>SLA Velocity 96.2%</span>
-                </span>
-                <span className="font-mono text-[10px] text-slate-400">v2.0 PROD</span>
-              </div> */}
+        {/* Section 2: My Assigned BFRD Process Steps */}
+        <div className="space-y-1 pt-1">
+          {!isCollapsed && (
+            <div className="px-3 flex items-center justify-between text-[10px] font-bold text-slate-400 uppercase tracking-wider font-mono">
+              <span>Assigned Process Steps</span>
+              <span className="text-[9px] text-emerald-600 font-mono font-bold">
+                {currentWorkspace.assignedSteps.length} Steps
+              </span>
+            </div>
+          )}
 
+          {currentWorkspace.assignedSteps.map((step, idx) => (
+            <Link
+              key={idx}
+              to="/pipelines"
+              className={`apple-button flex items-center justify-between px-3 py-1.5 rounded-xl text-xs text-slate-600 hover:text-slate-900 hover:bg-slate-100/70 transition-all group ${
+                isCollapsed ? "justify-center px-2" : ""
+              }`}
+              title={isCollapsed ? `Step ${step.step}: ${step.name}` : ""}
+            >
+              <div className="flex items-center space-x-2 min-w-0">
+                <span className="w-5 h-5 rounded-md bg-blue-50 text-blue-700 font-mono font-bold text-[10px] flex items-center justify-center shrink-0 border border-blue-200/70">
+                  {step.step}
+                </span>
+                {!isCollapsed && <span className="truncate text-[11px] font-medium">{step.name}</span>}
+              </div>
+              {!isCollapsed && (
+                <span className="text-[9px] font-mono text-slate-400 group-hover:text-slate-600 shrink-0">
+                  {step.pipeline}
+                </span>
+              )}
+            </Link>
+          ))}
+        </div>
+
+        {/* Section 3: Governance / Mode Switcher */}
+        <div className="space-y-1 pt-1 border-t border-slate-100">
+          {!isCollapsed && (
+            <span className="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider block font-mono">
+              {isExecutive || isCoordinator ? "Governance & Security" : "Quick View Mode"}
+            </span>
+          )}
+
+          {isExecutive || isCoordinator ? (
+            <>
               <Link
-                to="/login"
-                className="apple-button w-full flex items-center justify-center space-x-2 py-2 px-3 rounded-xl text-xs text-slate-600 hover:text-slate-900 hover:bg-white border border-slate-200 transition-all font-medium"
+                to="/audit"
+                className={`apple-button flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs font-medium transition-all ${
+                  pathname === "/audit"
+                    ? "bg-slate-900 text-white shadow-xs font-semibold"
+                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-100/70"
+                } ${isCollapsed ? "justify-center px-2" : ""}`}
+                title={isCollapsed ? "Forensic Audit Trail (Sec 34)" : ""}
               >
-                <LogOut className="w-3.5 h-3.5" />
-                <span>Switch Session</span>
+                <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+                {!isCollapsed && <span className="truncate">Audit Trail (Sec 34)</span>}
+              </Link>
+              <Link
+                to="/settings/users"
+                className={`apple-button flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs font-medium transition-all ${
+                  pathname === "/settings/users"
+                    ? "bg-slate-900 text-white shadow-xs font-semibold"
+                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-100/70"
+                } ${isCollapsed ? "justify-center px-2" : ""}`}
+                title={isCollapsed ? "Users & Roles Governance" : ""}
+              >
+                <Users className="w-4 h-4 text-blue-600 shrink-0" />
+                {!isCollapsed && <span>Users & Roles</span>}
+              </Link>
+              <Link
+                to="/settings"
+                className={`apple-button flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs text-slate-600 hover:text-slate-900 hover:bg-slate-100/70 font-medium transition-all ${
+                  isCollapsed ? "justify-center px-2" : ""
+                }`}
+                title={isCollapsed ? "System Settings" : ""}
+              >
+                <Settings className="w-4 h-4 text-slate-500 shrink-0" />
+                {!isCollapsed && <span>System Settings</span>}
               </Link>
             </>
           ) : (
-            <Link
-              to="/login"
-              className="apple-button w-full flex items-center justify-center p-2 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-white transition-all"
-              title="Sign Out / Switch Session"
+            <button
+              onClick={() => switchRole("managing_director")}
+              className={`apple-button w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs font-bold text-blue-700 bg-blue-50/70 hover:bg-blue-100/80 border border-blue-200/70 transition-all ${
+                isCollapsed ? "justify-center px-2" : ""
+              }`}
+              title="Switch to Management View (Executive Mode)"
             >
-              <LogOut className="w-4 h-4" />
-            </Link>
+              <Sparkles className="w-4 h-4 text-blue-600 shrink-0" />
+              {!isCollapsed && <span className="truncate">Switch to Executive Mode</span>}
+            </button>
           )}
         </div>
+      </div>
 
-      </aside>
-
-      </>
+      {/* Bottom Profile Footer */}
+      <div className="p-3 border-t border-slate-200/80 bg-slate-50/60 space-y-2">
+        {!isCollapsed ? (
+          <Link
+            to="/login"
+            className="apple-button w-full flex items-center justify-center space-x-2 py-2 px-3 rounded-xl text-xs text-slate-600 hover:text-slate-900 hover:bg-white border border-slate-200 transition-all font-medium"
+          >
+            <LogOut className="w-3.5 h-3.5" />
+            <span>Switch Session / Sign Out</span>
+          </Link>
+        ) : (
+          <Link
+            to="/login"
+            className="apple-button w-full flex items-center justify-center p-2 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-white transition-all"
+            title="Sign Out / Switch Session"
+          >
+            <LogOut className="w-4 h-4" />
+          </Link>
+        )}
+      </div>
+    </aside>
   );
 }

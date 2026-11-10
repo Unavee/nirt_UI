@@ -66,6 +66,8 @@ import PaymentReceiptModal from "@/components/payments/PaymentReceiptModal";
 import { DOCUMENT_CATEGORIES, INITIAL_PROJECT_DOCUMENTS } from "@/data/projectDocumentsData";
 import DocumentVersionModal from "@/components/documents/DocumentVersionModal";
 import DocumentUploadModal from "@/components/documents/DocumentUploadModal";
+import { useRole } from "@/context/RoleContext";
+import { ROLE_WORKSPACES } from "@/data/roleWorkspaceConfig";
 
 import {
   Plus,
@@ -104,6 +106,8 @@ import {
 export default function ProjectDetailPage() {
   const { id: projectId } = useParams();
   const project = MOCK_PROJECTS.find((p) => p.id === projectId) || MOCK_PROJECTS[0];
+  const { activeRole, isExecutive, isCoordinator } = useRole();
+  const [tabFilterMode, setTabFilterMode] = useState("role"); // "role" | "all"
 
   const [activeTab, setActiveTab] = useState("overview");
   const [selectedDocPreview, setSelectedDocPreview] = useState(null);
@@ -783,9 +787,10 @@ export default function ProjectDetailPage() {
         </div>
       </div>
 
-      {/* Refined Tab Navigation */}
-      <div className="flex border-b border-slate-200 space-x-6 text-xs font-medium overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        {[
+      {/* Role-Aware Department Focus Banner & Mode Switcher */}
+      {(() => {
+        const currentRoleWorkspace = ROLE_WORKSPACES[activeRole?.id] || ROLE_WORKSPACES.managing_director;
+        const allProjectTabs = [
           { id: "overview", label: "Customer Master Record" },
           { id: "responsibility", label: "Responsibility & Governance" },
           { id: "financials", label: "Advance & Payments (Section 10)" },
@@ -807,20 +812,72 @@ export default function ProjectDetailPage() {
           { id: "communication", label: `Communication (${commHistoryLogs.length})` },
           { id: "task_management", label: `Tasks & Follow-ups (${projectTasksList.length})` },
           { id: "alerts_management", label: `Alerts & Escalations (${projectAlertsList.filter(a => a.status === 'ACTIVE').length})` }
-        ].map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            className={`px-3.5 py-2 rounded-xl whitespace-nowrap transition-all text-xs font-semibold ${
-              activeTab === tab.id
-                ? "bg-slate-900 text-white shadow-xs font-bold"
-                : "text-slate-500 hover:text-slate-900 hover:bg-white hover:shadow-2xs"
-            }`}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
+        ];
+
+        const isFiltered = tabFilterMode === "role" && !isExecutive && !isCoordinator && currentRoleWorkspace.spotlightTabs !== "ALL";
+        const displayedTabs = isFiltered
+          ? allProjectTabs.filter(t => currentRoleWorkspace.spotlightTabs?.includes(t.id))
+          : allProjectTabs;
+
+        return (
+          <div className="space-y-3">
+            {/* Role Workspace Focus Strip */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 p-3 rounded-2xl bg-slate-50 border border-slate-200/90 shadow-2xs">
+              <div className="flex items-center space-x-2 flex-wrap gap-y-1">
+                <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider font-mono">
+                  Role View:
+                </span>
+                <span className={`px-2 py-0.5 rounded-lg text-xs font-bold font-mono border ${currentRoleWorkspace.color}`}>
+                  {activeRole.title}
+                </span>
+                <span className="text-xs text-slate-500 font-medium">
+                  {isFiltered ? `(Showing ${displayedTabs.length} Assigned Tabs)` : `(Showing All ${allProjectTabs.length} Tabs)`}
+                </span>
+              </div>
+
+              <div className="flex items-center space-x-1.5 self-end sm:self-auto">
+                <button
+                  onClick={() => setTabFilterMode("role")}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                    tabFilterMode === "role"
+                      ? "bg-slate-900 text-white shadow-xs font-bold"
+                      : "bg-white text-slate-600 hover:text-slate-900 border border-slate-200 hover:bg-slate-50"
+                  }`}
+                >
+                  My Role Tabs ({currentRoleWorkspace.spotlightTabs === "ALL" ? "All" : currentRoleWorkspace.spotlightTabs?.length || displayedTabs.length})
+                </button>
+                <button
+                  onClick={() => setTabFilterMode("all")}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                    tabFilterMode === "all"
+                      ? "bg-slate-900 text-white shadow-xs font-bold"
+                      : "bg-white text-slate-600 hover:text-slate-900 border border-slate-200 hover:bg-slate-50"
+                  }`}
+                >
+                  All 22 Tabs (Full File)
+                </button>
+              </div>
+            </div>
+
+            {/* Horizontal Tabs Navigation */}
+            <div className="flex border-b border-slate-200 space-x-2 text-xs font-medium overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              {displayedTabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`px-3.5 py-2 rounded-xl whitespace-nowrap transition-all text-xs font-semibold ${
+                    activeTab === tab.id
+                      ? "bg-slate-900 text-white shadow-xs font-bold"
+                      : "text-slate-500 hover:text-slate-900 hover:bg-white hover:shadow-2xs"
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        );
+      })()}
 
       {/* TAB 1: 3.1 ONE CUSTOMER – ONE MASTER RECORD */}
       {activeTab === "overview" && (
