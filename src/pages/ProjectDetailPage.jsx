@@ -38,6 +38,10 @@ import { INITIAL_SUBSIDY_DATA } from "@/data/subsidyData";
 import SubsidyManagementView from "@/components/subsidy/SubsidyManagementView";
 import UpdateSubsidyModal from "@/components/subsidy/UpdateSubsidyModal";
 import SubsidySanctionModal from "@/components/subsidy/SubsidySanctionModal";
+import { INITIAL_PROJECT_CLOSURE_DATA } from "@/data/projectClosureData";
+import ProjectClosureView from "@/components/closure/ProjectClosureView";
+import UpdateClosureChecklistModal from "@/components/closure/UpdateClosureChecklistModal";
+import ProjectClosureCertificateModal from "@/components/closure/ProjectClosureCertificateModal";
 import { INITIAL_PROCUREMENT_ITEMS } from "@/data/procurementData";
 import ProcurementModal from "@/components/procurement/ProcurementModal";
 import GoodsReceiptModal from "@/components/procurement/GoodsReceiptModal";
@@ -216,6 +220,18 @@ export default function ProjectDetailPage() {
   );
   const [isUpdateSubsidyModalOpen, setIsUpdateSubsidyModalOpen] = useState(false);
   const [isSubsidySanctionModalOpen, setIsSubsidySanctionModalOpen] = useState(false);
+
+  const [closureState, setClosureState] = useState(
+    INITIAL_PROJECT_CLOSURE_DATA[project.id] || {
+      ...INITIAL_PROJECT_CLOSURE_DATA["NIRT-26-0042"],
+      projectId: project.id,
+      projectName: project.name,
+      customerName: project.customerName || "Customer",
+      capacity: project.capacity || "50 kWp"
+    }
+  );
+  const [isUpdateClosureModalOpen, setIsUpdateClosureModalOpen] = useState(false);
+  const [isClosureCertModalOpen, setIsClosureCertModalOpen] = useState(false);
 
 
 
@@ -729,7 +745,8 @@ export default function ProjectDetailPage() {
           { id: "inspection", label: "Inspection & Commissioning (Section 18)" },
           { id: "net_metering", label: "Net Metering (Section 19)" },
           { id: "final_payment", label: "Final Payment (Section 20)" },
-          { id: "subsidy_management", label: "Subsidy DBT (Section 21)" }
+          { id: "subsidy_management", label: "Subsidy DBT (Section 21)" },
+          { id: "project_closure", label: "Project Closure (Section 22)" }
         ].map((tab) => (
           <button
             key={tab.id}
@@ -2246,6 +2263,15 @@ export default function ProjectDetailPage() {
         />
       )}
 
+      {/* TAB: SECTION 22 PROJECT CLOSURE */}
+      {activeTab === "project_closure" && (
+        <ProjectClosureView
+          closureData={closureState}
+          onOpenChecklistModal={() => setIsUpdateClosureModalOpen(true)}
+          onOpenCertModal={() => setIsClosureCertModalOpen(true)}
+        />
+      )}
+
       {activeTab === "discom_subsidy" && (
         <div className="space-y-6">
           {/* Segmented Sub-Tab Switcher between Section 13, Section 12, and Subsidy */}
@@ -2823,6 +2849,20 @@ export default function ProjectDetailPage() {
 
 
 
+
+      {/* SECTION 22: PROJECT CLOSURE MODALS */}
+      <UpdateClosureChecklistModal
+        isOpen={isUpdateClosureModalOpen}
+        onClose={() => setIsUpdateClosureModalOpen(false)}
+        closureData={closureState}
+        onSaveClosure={(updated) => setClosureState(updated)}
+      />
+
+      <ProjectClosureCertificateModal
+        isOpen={isClosureCertModalOpen}
+        onClose={() => setIsClosureCertModalOpen(false)}
+        closureData={closureState}
+      />
 
       {/* SECTION 21: SUBSIDY MODALS */}
       <UpdateSubsidyModal
