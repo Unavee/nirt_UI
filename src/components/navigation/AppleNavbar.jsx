@@ -6,7 +6,8 @@ import {
   Bell, 
   ChevronDown, 
   PanelLeftClose,
-  PanelLeftOpen
+  PanelLeftOpen,
+  LogOut
 } from "lucide-react";
 
 export function AppleNavbar() {
@@ -92,7 +93,7 @@ export function AppleNavbar() {
                       </span>
                     </div>
 
-                    <div className="max-h-72 overflow-y-auto py-1">
+                    <div className="max-h-64 overflow-y-auto py-1">
                       {allRoles.filter((r) => r.id !== "managing_director").map((role) => {
                         const isCur = activeRole.id === role.id;
                         return (
@@ -115,6 +116,18 @@ export function AppleNavbar() {
                         );
                       })}
                     </div>
+
+                    {/* Dedicated Sign Out / Switch Session Button in Dropdown */}
+                    <div className="p-2 border-t border-slate-100 bg-slate-50/80 rounded-b-3xl">
+                      <Link
+                        to="/login"
+                        onClick={() => setIsDropdownOpen(false)}
+                        className="apple-button w-full flex items-center justify-center space-x-2 py-2 px-3 rounded-xl text-xs text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200/80 font-bold transition-all shadow-2xs"
+                      >
+                        <LogOut className="w-3.5 h-3.5 text-rose-600" />
+                        <span>Switch Session / Sign Out</span>
+                      </Link>
+                    </div>
                   </div>
                 </>
               )}
@@ -124,6 +137,17 @@ export function AppleNavbar() {
             <button className="apple-button w-9 h-9 rounded-full glass-surface border border-slate-200 flex items-center justify-center text-slate-600 hover:text-slate-900">
               <Bell className="w-4 h-4" />
             </button>
+
+            {/* Direct Sign Out Button (Essential for mobile where sidebar is hidden) */}
+            <Link
+              to="/login"
+              className="apple-button h-9 px-2.5 sm:px-3 rounded-full glass-surface border border-slate-200 hover:border-rose-200 text-slate-600 hover:text-rose-600 hover:bg-rose-50/60 transition-all flex items-center space-x-1.5 shadow-2xs shrink-0"
+              title="Sign Out / Switch Session"
+              aria-label="Sign Out"
+            >
+              <LogOut className="w-3.5 h-3.5 text-slate-500 group-hover:text-rose-600" />
+              <span className="text-xs font-semibold hidden sm:inline">Sign Out</span>
+            </Link>
 
           </div>
 
