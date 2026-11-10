@@ -193,7 +193,9 @@ export default function Sidebar() {
             </div>
           )}
 
-          {currentWorkspace.menuItems.map((item, idx) => {
+          {currentWorkspace.menuItems
+            .filter((item) => !item.mobileOnly && item.href !== "/field")
+            .map((item, idx) => {
             const Icon = ICON_MAP[item.icon] || LayoutDashboard;
             const targetUrl = item.tabTarget 
               ? `${item.href.split("?")[0]}?tab=${item.tabTarget}` 

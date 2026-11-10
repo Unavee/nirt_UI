@@ -790,11 +790,12 @@ export default function ProjectDetailPage() {
               <span>WhatsApp Dispatch</span>
             </button>
             <button
-              onClick={() => setShowPrintModal(true)}
-              className="bg-slate-900 hover:bg-black text-white px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-transform duration-160 ease-[cubic-bezier(0.23,1,0.32,1)] active:scale-[0.98] flex items-center space-x-1.5 shadow-xs"
+              disabled
+              title="Printing is disabled by System Governance policy"
+              className="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 border border-slate-200 text-slate-400 cursor-not-allowed flex items-center space-x-1.5 shadow-none opacity-60"
             >
-              <Printer className="w-3.5 h-3.5" />
-              <span>Print Project Summary</span>
+              <Printer className="w-3.5 h-3.5 text-slate-400" />
+              <span>Print Project Summary (Disabled)</span>
             </button>
           </div>
         </div>
@@ -833,7 +834,7 @@ export default function ProjectDetailPage() {
           { id: "proposal", label: "Proposals & System Revisions" },
           { id: "service", label: `Service & Complaints (${projectTickets.length})` },
           { id: "approvals", label: "Approvals Hub" },
-          { id: "audit", label: "Forensic Audit Trail" },
+          { id: "audit", label: "Audit Trail" },
           { id: "discom_subsidy", label: "DISCOM & Feasibility Sanctions" },
           { id: "procurement", label: "Procurement & BoM" },
           { id: "store", label: "Store & Inventory" },
@@ -2127,11 +2128,12 @@ export default function ProjectDetailPage() {
               </div>
 
               <button
-                onClick={() => window.print()}
-                className="apple-button px-3.5 py-2 rounded-xl text-xs font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 flex items-center space-x-1.5 shadow-2xs"
+                disabled
+                title="Printing is disabled by System Governance policy"
+                className="apple-button px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-100 border border-slate-200 text-slate-400 cursor-not-allowed flex items-center space-x-1.5 shadow-none opacity-60"
               >
-                <Printer className="w-3.5 h-3.5 text-slate-600" />
-                <span>Print Approvals Register</span>
+                <Printer className="w-3.5 h-3.5 text-slate-400" />
+                <span>Print Approvals Register (Disabled)</span>
               </button>
             </div>
 
@@ -2215,16 +2217,17 @@ export default function ProjectDetailPage() {
                   Granular Audit Trail for {project.customerName} ({project.id})
                 </h3>
                 <p className="text-xs text-slate-500">
-                  Permanent forensic ledger recording who created, who modified, what changed, date, time, and previous vs. new values.
+                  Permanent audit ledger recording who created, who modified, what changed, date, time, and previous vs. new values.
                 </p>
               </div>
 
               <button
-                onClick={() => window.print()}
-                className="apple-button px-3.5 py-2 rounded-xl text-xs font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 flex items-center space-x-1.5 shadow-2xs"
+                disabled
+                title="Printing is disabled by System Governance policy"
+                className="apple-button px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-100 border border-slate-200 text-slate-400 cursor-not-allowed flex items-center space-x-1.5 shadow-none opacity-60"
               >
-                <Printer className="w-3.5 h-3.5 text-slate-600" />
-                <span>Print Audit Certificate</span>
+                <Printer className="w-3.5 h-3.5 text-slate-400" />
+                <span>Print Audit Certificate (Disabled)</span>
               </button>
             </div>
 
@@ -3016,14 +3019,12 @@ export default function ProjectDetailPage() {
                 Close
               </button>
               <button
-                onClick={() => {
-                  window.print();
-                  setShowPrintModal(false);
-                }}
-                className="bg-black text-white px-4 py-1.5 text-xs font-semibold hover:bg-zinc-800 flex items-center space-x-1.5"
+                disabled
+                title="Printing is disabled by System Governance policy"
+                className="bg-slate-200 text-slate-400 px-4 py-1.5 text-xs font-semibold cursor-not-allowed flex items-center space-x-1.5 opacity-60"
               >
-                <Printer className="w-3.5 h-3.5" />
-                <span>Execute Print</span>
+                <Printer className="w-3.5 h-3.5 text-slate-400" />
+                <span>Print Disabled</span>
               </button>
             </div>
           </div>

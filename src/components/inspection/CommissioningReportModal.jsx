@@ -38,12 +38,12 @@ export default function CommissioningReportModal({
           </div>
           <div className="flex items-center gap-2">
             <button
-              onClick={handlePrint}
-              className="p-1.5 text-slate-600 hover:text-slate-900 hover:bg-slate-200 rounded-lg transition-colors flex items-center gap-1.5 text-xs font-semibold px-2.5"
-              title="Print Certificate"
+              disabled
+              className="p-1.5 text-slate-400 bg-slate-100 rounded-lg cursor-not-allowed flex items-center gap-1.5 text-xs font-semibold px-2.5 opacity-60"
+              title="Printing disabled by System Governance policy"
             >
-              <Printer className="w-4 h-4" />
-              <span className="hidden sm:inline">Print</span>
+              <Printer className="w-4 h-4 text-slate-400" />
+              <span className="hidden sm:inline">Print Disabled</span>
             </button>
             <button
               onClick={onClose}

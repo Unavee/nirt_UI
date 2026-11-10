@@ -38,7 +38,7 @@ export const ROLE_WORKSPACES = {
     menuItems: [
       { label: "Survey Workspace", href: "/", icon: "Compass" },
       { label: "P1: Feasibility Pipeline", href: "/pipelines?pipeline=sales", icon: "Layers", badge: "P1" },
-      { label: "Mobile Field Hub", href: "/field", icon: "Smartphone", badge: "Offline" },
+      { label: "Mobile Field Hub", href: "/field", icon: "Smartphone", badge: "Offline", mobileOnly: true },
       { label: "Projects Registry", href: "/projects", icon: "FolderKanban" },
       { label: "Site Survey & Layout", href: "/projects/NIRT-26-0042", icon: "MapPin", tabTarget: "overview" },
       { label: "Document Locker", href: "/projects/NIRT-26-0042", icon: "FolderKanban", tabTarget: "documents" }
@@ -85,7 +85,7 @@ export const ROLE_WORKSPACES = {
       { label: "Installation & Site Erection", href: "/projects/NIRT-26-0042", icon: "Activity", tabTarget: "installation" },
       { label: "Inspection & Commissioning", href: "/projects/NIRT-26-0042", icon: "ShieldCheck", tabTarget: "inspection" },
       { label: "Net Metering Synchronisation", href: "/projects/NIRT-26-0042", icon: "Zap", tabTarget: "net_metering" },
-      { label: "Mobile Field Hub", href: "/field", icon: "Smartphone", badge: "Technician" },
+      { label: "Mobile Field Hub", href: "/field", icon: "Smartphone", badge: "Technician", mobileOnly: true },
       { label: "Service & Complaints", href: "/service", icon: "Headset", badge: "O&M" }
     ],
     assignedSteps: [
@@ -178,9 +178,9 @@ export const ROLE_WORKSPACES = {
       { label: "Master 5-Pipeline", href: "/pipelines?pipeline=sales", icon: "Layers", badge: "20 Steps" },
       { label: "Projects Master Registry", href: "/projects", icon: "FolderKanban" },
       { label: "Approvals Governance Hub", href: "/approvals", icon: "ShieldCheck" },
-      { label: "Forensic Audit Trail", href: "/audit", icon: "ShieldAlert" },
+      { label: "Audit Trail", href: "/audit", icon: "ShieldAlert" },
       { label: "Customer Service & Complaints", href: "/service", icon: "Headset" },
-      { label: "Mobile Field Hub", href: "/field", icon: "Smartphone" }
+      { label: "Mobile Field Hub", href: "/field", icon: "Smartphone", mobileOnly: true }
     ],
     assignedSteps: [
       { step: "P1", name: "Sales & Feasibility", pipeline: "01-06", status: "Active Pipeline" },
@@ -206,7 +206,7 @@ export const ROLE_WORKSPACES = {
       { label: "Master 5-Pipeline", href: "/pipelines?pipeline=sales", icon: "Layers", badge: "20 Steps" },
       { label: "Projects Master Registry", href: "/projects", icon: "FolderKanban" },
       { label: "Approvals Governance Hub", href: "/approvals", icon: "ShieldCheck" },
-      { label: "Forensic Audit Trail", href: "/audit", icon: "ShieldAlert" },
+      { label: "Audit Trail", href: "/audit", icon: "ShieldAlert" },
       { label: "Customer Service & Complaints", href: "/service", icon: "Headset" }
     ],
     assignedSteps: [

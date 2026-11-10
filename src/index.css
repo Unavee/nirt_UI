@@ -151,3 +151,10 @@ button, nav, [role="button"] {
 .pt-safe {
   padding-top: env(safe-area-inset-top, 1rem);
 }
+
+/* System-wide print disable governance rule */
+@media print {
+  body {
+    display: none !important;
+  }
+}

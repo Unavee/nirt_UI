@@ -41,7 +41,7 @@ export default function AppShell({ children }) {
         <AppleNavbar />
 
         {/* Viewport Content Container (Fluid edge-to-edge on large/ultrawide displays) */}
-        <main className="flex-1 w-full p-3 sm:p-6 lg:p-8 pb-28 md:pb-12">
+        <main className="flex-1 w-full p-3 sm:p-6 lg:p-8 pb-28 lg:pb-12">
           {children}
         </main>
 

@@ -332,11 +332,12 @@ export default function TicketLifecycleModal({
           <div className="flex justify-between items-center pt-3 border-t border-slate-100">
             <button
               type="button"
-              onClick={() => window.print()}
-              className="apple-button px-3.5 py-2 rounded-xl text-xs font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 flex items-center space-x-1.5 shadow-2xs"
+              disabled
+              title="Printing disabled by System Governance policy"
+              className="apple-button px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-100 border border-slate-200 text-slate-400 cursor-not-allowed flex items-center space-x-1.5 shadow-none opacity-60"
             >
-              <Printer className="w-3.5 h-3.5 text-slate-600" />
-              <span>Print Service Work Order</span>
+              <Printer className="w-3.5 h-3.5 text-slate-400" />
+              <span>Print Work Order (Disabled)</span>
             </button>
 
             <button

@@ -121,7 +121,7 @@ export const ROLES_DEFINITIONS = [
     title: "Site Survey Engineer",
     department: "Field Feasibility & Electrical Audit",
     pipelineScope: "Pipeline 1: Sales & Feasibility",
-    ownedSteps: [3],
+    ownedSteps: [3, 4],
     badgeColor: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20",
     avatarBg: "from-emerald-500 to-teal-600",
     icon: "Compass",

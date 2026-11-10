@@ -26,7 +26,7 @@ export function MobileTabBar() {
 
   return (
     <>
-      <nav className="fixed bottom-0 inset-x-0 z-40 glass-tabbar md:hidden pb-safe px-3 pt-2">
+      <nav className="fixed bottom-0 inset-x-0 z-40 glass-tabbar lg:hidden pb-safe px-3 pt-2">
         <div className="flex items-center justify-around h-14 max-w-lg mx-auto">
           {navItems.map((item, idx) => {
             const isActive = pathname === item.href;

@@ -373,11 +373,12 @@ export default function CustomerConfirmationModal({
               <div className="flex flex-col sm:flex-row justify-between items-center gap-3 pt-3 border-t border-slate-100">
                 <button
                   type="button"
-                  onClick={handlePrintCertificate}
-                  className="apple-button px-4 py-2 rounded-xl text-xs font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 flex items-center space-x-1.5 w-full sm:w-auto justify-center shadow-2xs"
+                  disabled
+                  title="Printing disabled by System Governance policy"
+                  className="apple-button px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 border border-slate-200 text-slate-400 cursor-not-allowed flex items-center space-x-1.5 w-full sm:w-auto justify-center shadow-none opacity-60"
                 >
-                  <Printer className="w-3.5 h-3.5 text-slate-600" />
-                  <span>Print Confirmation Certificate</span>
+                  <Printer className="w-3.5 h-3.5 text-slate-400" />
+                  <span>Print Certificate (Disabled)</span>
                 </button>
 
                 <div className="flex items-center space-x-2 w-full sm:w-auto justify-end">

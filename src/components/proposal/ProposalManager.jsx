@@ -282,11 +282,12 @@ export default function ProposalManager({ project, onProposalUpdate }) {
           </button>
 
           <button
-            onClick={() => setShowPrintModal(true)}
-            className="apple-button px-3.5 py-2 rounded-xl text-xs font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 flex items-center space-x-1.5 shadow-2xs"
+            disabled
+            title="Printing disabled by System Governance policy"
+            className="apple-button px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-100 border border-slate-200 text-slate-400 cursor-not-allowed flex items-center space-x-1.5 shadow-none opacity-60"
           >
-            <Printer className="w-3.5 h-3.5 text-slate-600" />
-            <span>Official Proposal PDF</span>
+            <Printer className="w-3.5 h-3.5 text-slate-400" />
+            <span>Proposal PDF (Disabled)</span>
           </button>
 
           <button
@@ -891,11 +892,12 @@ export default function ProposalManager({ project, onProposalUpdate }) {
                   Dismiss
                 </button>
                 <button
-                  onClick={() => window.print()}
-                  className="apple-button px-5 py-2 rounded-xl bg-slate-900 text-white hover:bg-black font-semibold text-xs flex items-center space-x-1.5 shadow-xs"
+                  disabled
+                  title="Printing disabled by System Governance policy"
+                  className="apple-button px-5 py-2 rounded-xl bg-slate-100 border border-slate-200 text-slate-400 font-semibold text-xs flex items-center space-x-1.5 shadow-none cursor-not-allowed opacity-60"
                 >
-                  <Printer className="w-3.5 h-3.5" />
-                  <span>Print Official Proposal</span>
+                  <Printer className="w-3.5 h-3.5 text-slate-400" />
+                  <span>Print Disabled</span>
                 </button>
               </div>
 

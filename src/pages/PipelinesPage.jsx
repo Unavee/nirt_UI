@@ -130,6 +130,9 @@ export default function PipelinesPage() {
   const [selectedPipelineKey, setSelectedPipelineKey] = useState(initialKey);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("All");
+  const [stageFilterMode, setStageFilterMode] = useState("role"); // "role" | "all"
+
+  const isMasterAdmin = isExecutive || isCoordinator || activeRole.id === "managing_director" || activeRole.id === "project_coordinator";
 
   // Synchronize pipeline tab with URL query parameter
   useEffect(() => {
@@ -457,6 +460,7 @@ export default function PipelinesPage() {
                 const code = `P${idx + 1}`;
                 const shortName = pipe.title.replace(/^\d+\.\s*/, "").replace(/\s*Pipeline$/, "");
                 const range = pipe.stepsRange.replace("Steps ", "");
+                const roleStepsInPipe = pipe.stages.filter((s) => activeRole.ownedSteps?.includes(s.stepNumber)).length;
 
                 return (
                   <button
@@ -484,7 +488,7 @@ export default function PipelinesPage() {
                         </span>
                       </div>
                       <span className={`text-[10px] font-mono shrink-0 ${isSelected ? "text-slate-300" : "text-slate-400"}`}>
-                        {range}
+                        {isMasterAdmin ? range : `${roleStepsInPipe} Cards`}
                       </span>
                     </div>
 
@@ -531,29 +535,114 @@ export default function PipelinesPage() {
             </div>
           </div>
 
-          {/* Horizontal Kanban Swimlanes */}
-          <div className="overflow-x-auto pb-4">
-            <div className="flex gap-4 min-w-[840px] items-start">
-              {pipeline.stages.map((stage) => {
-                const stageStepNum = stage.stepNumber < 10 ? `0${stage.stepNumber}` : `${stage.stepNumber}`;
-                const matchedProjects = filteredProjects.filter((p) => p.stage === stage.id);
-                const isRoleAuthorized = activeRole.ownedSteps?.includes(stage.stepNumber);
-                const isTargetStep = Boolean(stepParam && (
-                  stepParam === stageStepNum || 
-                  parseInt(stepParam.replace(/^[^0-9]+/, ""), 10) === stage.stepNumber || 
-                  stepParam.toLowerCase() === stage.id.toLowerCase()
-                ));
+          {/* Role-Aware Process Cards Scope Filter & Swimlanes */}
+          {(() => {
+            const roleOwnedStages = pipeline.stages.filter((stage) => activeRole.ownedSteps?.includes(stage.stepNumber));
+            const isFilteringByRole = !isMasterAdmin && stageFilterMode === "role";
+            const displayedStages = isFilteringByRole ? roleOwnedStages : pipeline.stages;
 
-                return (
-                  <div
-                    key={stage.id}
-                    id={`step-lane-${stageStepNum}`}
-                    className={`w-80 shrink-0 glass-surface rounded-3xl p-4 flex flex-col justify-between shadow-xs transition-all duration-300 ${
-                      isTargetStep
-                        ? "border-2 border-blue-600 ring-4 ring-blue-500/20 shadow-lg scale-[1.01]"
-                        : "border border-slate-200/80"
-                    }`}
-                  >
+            return (
+              <div className="space-y-4">
+                {/* Role Filter Switcher Bar */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 p-3 rounded-2xl bg-slate-50 border border-slate-200/90 shadow-2xs">
+                  <div className="flex items-center space-x-2 flex-wrap gap-y-1">
+                    <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider font-mono">
+                      Process Cards:
+                    </span>
+                    <span className={`px-2 py-0.5 rounded-lg text-xs font-bold font-mono border ${activeRole.badgeColor || "bg-blue-50 text-blue-700 border-blue-200"}`}>
+                      {activeRole.title}
+                    </span>
+                    <span className="text-xs text-slate-500 font-medium">
+                      {isMasterAdmin 
+                        ? `(Master PMO View • All ${pipeline.stages.length} Process Cards)` 
+                        : isFilteringByRole 
+                        ? `(Showing ${displayedStages.length} Assigned Cards • Team Role Split)` 
+                        : `(Full Pipeline View • All ${pipeline.stages.length} Cards)`}
+                    </span>
+                  </div>
+
+                  {!isMasterAdmin && (
+                    <div className="flex items-center space-x-1.5 self-end sm:self-auto">
+                      <button
+                        onClick={() => setStageFilterMode("role")}
+                        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                          stageFilterMode === "role"
+                            ? "bg-slate-900 text-white shadow-xs font-bold"
+                            : "bg-white text-slate-600 hover:text-slate-900 border border-slate-200 hover:bg-slate-50"
+                        }`}
+                      >
+                        My Role Cards ({roleOwnedStages.length})
+                      </button>
+                      <button
+                        onClick={() => setStageFilterMode("all")}
+                        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                          stageFilterMode === "all"
+                            ? "bg-slate-900 text-white shadow-xs font-bold"
+                            : "bg-white text-slate-600 hover:text-slate-900 border border-slate-200 hover:bg-slate-50"
+                        }`}
+                      >
+                        Full Pipeline ({pipeline.stages.length})
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                {/* Empty State when role has 0 steps in this pipeline */}
+                {displayedStages.length === 0 ? (
+                  <div className="p-8 text-center glass-surface rounded-3xl border border-slate-200/80 space-y-3">
+                    <div className="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center mx-auto text-slate-500">
+                      <Layers className="w-6 h-6" />
+                    </div>
+                    <h3 className="text-sm font-bold text-slate-900">
+                      No Process Cards Assigned to {activeRole.title} in {pipeline.title}
+                    </h3>
+                    <p className="text-xs text-slate-500 max-w-md mx-auto">
+                      This operational pipeline is handled by other departments. Your assigned process steps are split into your role's primary workspace.
+                    </p>
+                    <div className="flex items-center justify-center gap-2 pt-2">
+                      <button
+                        onClick={() => {
+                          const primaryStep = activeRole.ownedSteps?.[0] || 1;
+                          const myPipe = primaryStep <= 6 ? "sales" : primaryStep <= 10 ? "approvals" : primaryStep <= 13 ? "procurement" : primaryStep <= 17 ? "execution" : "subsidy";
+                          setSelectedPipelineKey(myPipe);
+                          setSearchParams({ pipeline: myPipe });
+                        }}
+                        className="px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-900 text-white shadow-xs"
+                      >
+                        Go to My Assigned Pipeline
+                      </button>
+                      <button
+                        onClick={() => setStageFilterMode("all")}
+                        className="px-3.5 py-2 rounded-xl text-xs font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50"
+                      >
+                        View Full Pipeline ({pipeline.stages.length} Cards)
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  /* Horizontal Kanban Swimlanes with displayedStages */
+                  <div className="overflow-x-auto pb-4">
+                    <div className="flex gap-4 min-w-[840px] items-start">
+                      {displayedStages.map((stage) => {
+                        const stageStepNum = stage.stepNumber < 10 ? `0${stage.stepNumber}` : `${stage.stepNumber}`;
+                        const matchedProjects = filteredProjects.filter((p) => p.stage === stage.id);
+                        const isRoleAuthorized = activeRole.ownedSteps?.includes(stage.stepNumber);
+                        const isTargetStep = Boolean(stepParam && (
+                          stepParam === stageStepNum || 
+                          parseInt(stepParam.replace(/^[^0-9]+/, ""), 10) === stage.stepNumber || 
+                          stepParam.toLowerCase() === stage.id.toLowerCase()
+                        ));
+
+                        return (
+                          <div
+                            key={stage.id}
+                            id={`step-lane-${stageStepNum}`}
+                            className={`w-80 shrink-0 glass-surface rounded-3xl p-4 flex flex-col justify-between shadow-xs transition-all duration-300 ${
+                              isTargetStep
+                                ? "border-2 border-blue-600 ring-4 ring-blue-500/20 shadow-lg scale-[1.01]"
+                                : "border border-slate-200/80"
+                            }`}
+                          >
                     {/* Lane Header */}
                     <div className="pb-3 border-b border-slate-100 space-y-1.5">
                       <div className="flex items-center justify-between">
@@ -682,8 +771,12 @@ export default function PipelinesPage() {
               })}
             </div>
           </div>
-        </>
-      )}
+        )}
+      </div>
+    );
+  })()}
+</>
+)}
 
       {/* VIEW 2: DROPPED & LOST LEADS ARCHIVE */}
       {viewMode === "dropped" && (

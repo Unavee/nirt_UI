@@ -92,12 +92,13 @@ export default function GoodsReceiptModal({
 
           <div className="flex items-center gap-2">
             <button
-              onClick={handlePrint}
+              disabled
               type="button"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg shadow-sm transition-colors"
+              title="Printing disabled by System Governance policy"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-400 bg-slate-100 border border-slate-200 rounded-lg shadow-none cursor-not-allowed opacity-60"
             >
-              <Printer className="w-3.5 h-3.5 text-slate-600" />
-              <span>Print GRN</span>
+              <Printer className="w-3.5 h-3.5 text-slate-400" />
+              <span>Print Disabled</span>
             </button>
             <button
               onClick={onClose}

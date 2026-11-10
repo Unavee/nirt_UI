@@ -173,7 +173,7 @@ export default function DocumentVersionModal({ isOpen, onClose, document, onUplo
         <div className="px-6 py-4 border-t border-slate-200 bg-slate-50 flex items-center justify-between">
           <div className="flex items-center gap-1.5 text-xs text-slate-500">
             <Shield className="w-3.5 h-3.5 text-emerald-600" />
-            <span>Cryptographic integrity verified</span>
+            {/* <span>Cryptographic integrity verified</span> */}
           </div>
 
           <div className="flex items-center gap-2">
