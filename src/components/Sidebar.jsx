@@ -328,10 +328,10 @@ export default function Sidebar() {
                     ? "bg-slate-900 text-white shadow-xs font-semibold"
                     : "text-slate-600 hover:text-slate-900 hover:bg-slate-100/70"
                 } ${isCollapsed ? "justify-center px-2" : ""}`}
-                title={isCollapsed ? "Forensic Audit Trail" : ""}
+                title={isCollapsed ? "Audit Trail" : ""}
               >
                 <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
-                {!isCollapsed && <span className="truncate">Forensic Audit Trail</span>}
+                {!isCollapsed && <span className="truncate">Audit Trail</span>}
               </Link>
               <Link
                 to="/settings/users"
