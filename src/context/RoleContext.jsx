@@ -6,7 +6,7 @@ import { ROLES_DEFINITIONS, INITIAL_SYSTEM_AUDIT_LOG } from "@/data/rolesData";
 const RoleContext = createContext(null);
 
 export function RoleProvider({ children }) {
-  const [activeRole, setActiveRole] = useState(ROLES_DEFINITIONS[1]);
+  const [activeRole, setActiveRole] = useState(ROLES_DEFINITIONS[0]);
   const [auditLogs, setAuditLogs] = useState(INITIAL_SYSTEM_AUDIT_LOG);
 
   // Support persistence in local storage
@@ -16,9 +16,9 @@ export function RoleProvider({ children }) {
       if (savedRoleId) {
         const found = ROLES_DEFINITIONS.find((r) => r.id === savedRoleId);
         if (found) setActiveRole(found);
-        else setActiveRole(ROLES_DEFINITIONS[1]);
+        else setActiveRole(ROLES_DEFINITIONS[0]);
       } else {
-        setActiveRole(ROLES_DEFINITIONS[1]);
+        setActiveRole(ROLES_DEFINITIONS[0]);
       }
       
       const savedAudit = localStorage.getItem("nirt_system_audit_logs") || localStorage.getItem("nirt_forensic_audit_logs");
