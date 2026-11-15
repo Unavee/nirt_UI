@@ -60,20 +60,20 @@ export default function UserRoleManagementPage() {
 
   // Expanded 15 Roles + Dynamic Custom Roles
   const [rolesList, setRolesList] = useState([
-    { id: "super_admin", title: "Super Admin", department: "Executive Management", pipelineScope: "All 5 Pipelines", permissions: "Full Organization Oversight, User Governance & Audit Logs" },
-    { id: "management", title: "Management / Executive", department: "Executive Leadership", pipelineScope: "All 5 Pipelines", permissions: "Revenue Analytics, Margin Controls, Executive Sign-offs" },
-    { id: "crm_manager", title: "CRM Manager", department: "Central PMO", pipelineScope: "All 5 Pipelines", permissions: "Cross-Departmental SLA Governance & Bottleneck Resolution" },
-    { id: "crm_executive", title: "CRM Executive", department: "Sales & Intake Desk", pipelineScope: "Pipeline 1: Sales", permissions: "Step 01 Omnichannel Lead Intake & Data Deduplication" },
-    { id: "sales_team", title: "Sales Team", department: "Technical Sales", pipelineScope: "Pipeline 1: Sales", permissions: "Lead Feasibility, Commercial Proposals & Work Orders" },
-    { id: "site_survey_team", title: "Site Survey Team", department: "Technical Feasibility", pipelineScope: "Pipeline 1: Sales", permissions: "Roof Measurements, Tape Dimensions, 4 Mandatory Geo-photos" },
-    { id: "design_team", title: "Design / Engineering Team", department: "Design & Engineering", pipelineScope: "Pipeline 1: Sales", permissions: "Single Line Diagrams (SLD), CAD Layout & System DPR" },
-    { id: "purchase_team", title: "Purchase Team", department: "Supply Chain & Procurement", pipelineScope: "Pipeline 3: Stores", permissions: "Vendor PO Generation for Tier-1 TopCon Panels & Inverters" },
-    { id: "store_team", title: "Store Team", department: "Warehouse & Logistics", pipelineScope: "Pipeline 3: Stores", permissions: "Warehouse QC Barcode Inwarding (GRN) & Material Site Dispatch" },
-    { id: "project_manager", title: "Project Manager", department: "Central PMO", pipelineScope: "All 5 Pipelines", permissions: "Master 5-Pipeline Tracking & Stage-Gate Enforcement" },
-    { id: "installation_team", title: "Installation Team", department: "EPC Field Operations", pipelineScope: "Pipeline 4: EPC Execution", permissions: "Civil Structure Assembly & Inverter Electrical Wiring (<5Ω)" },
-    { id: "accounts_team", title: "Accounts Team", department: "Commercial Finance", pipelineScope: "P2 Approvals & P5 Subsidy", permissions: "80% Advance Gatekeeper, 10% Install Balance & 10% Final Settlement" },
-    { id: "liaison_team", title: "Liaisoning / Documentation Team", department: "Government Liaison", pipelineScope: "P2 Approvals & P4 EPC", permissions: "KYC Locker, TANGEDCO Portal Submissions & Net Meter Synchronization" },
-    { id: "subsidy_team", title: "Subsidy Team", department: "Central Subsidy Desk", pipelineScope: "Pipeline 5: Subsidy", permissions: "PM Surya Ghar National Portal Claim Lodging & DBT Credit Audit" },
+    { id: "super_admin", title: "Super Admin", department: "Executive Management", pipelineScope: "All 3 Pipelines", permissions: "Full Organization Oversight, User Governance & Audit Logs" },
+    { id: "management", title: "Management / Executive", department: "Executive Leadership", pipelineScope: "All 3 Pipelines", permissions: "Revenue Analytics, Margin Controls, Executive Sign-offs" },
+    { id: "crm_manager", title: "CRM Manager", department: "Central PMO", pipelineScope: "All 3 Pipelines", permissions: "Cross-Departmental SLA Governance & Bottleneck Resolution" },
+    { id: "crm_executive", title: "CRM Executive", department: "Sales & Intake Desk", pipelineScope: "S1: Sales", permissions: "Step 01 Omnichannel Lead Intake & Data Deduplication" },
+    { id: "sales_team", title: "Sales Team", department: "Technical Sales", pipelineScope: "S1: Sales", permissions: "Lead Feasibility, Commercial Proposals & Work Orders" },
+    { id: "site_survey_team", title: "Site Survey Team", department: "Technical Feasibility", pipelineScope: "S1: Sales", permissions: "Roof Measurements, Tape Dimensions, 4 Mandatory Geo-photos" },
+    { id: "design_team", title: "Design / Engineering Team", department: "Design & Engineering", pipelineScope: "S1: Sales", permissions: "Single Line Diagrams (SLD), CAD Layout & System DPR" },
+    { id: "purchase_team", title: "Purchase Team", department: "Supply Chain & Procurement", pipelineScope: "S2: Execution (Stores)", permissions: "Vendor PO Generation for Tier-1 TopCon Panels & Inverters" },
+    { id: "store_team", title: "Store Team", department: "Warehouse & Logistics", pipelineScope: "S2: Execution (Stores)", permissions: "Warehouse QC Barcode Inwarding (GRN) & Material Site Dispatch" },
+    { id: "project_manager", title: "Project Manager", department: "Central PMO", pipelineScope: "All 3 Pipelines", permissions: "Master 3-Pipeline Tracking & Stage-Gate Enforcement" },
+    { id: "installation_team", title: "Installation Team", department: "EPC Field Operations", pipelineScope: "S2: Execution (EPC)", permissions: "Civil Structure Assembly & Inverter Electrical Wiring (<5Ω)" },
+    { id: "accounts_team", title: "Accounts Team", department: "Commercial Finance", pipelineScope: "S2: Execution (Finance)", permissions: "80% Advance Gatekeeper, 10% Install Balance & 10% Final Settlement" },
+    { id: "liaison_team", title: "Liaisoning / Documentation Team", department: "Government Liaison", pipelineScope: "S2: Execution (DISCOM)", permissions: "KYC Locker, TANGEDCO Portal Submissions & Net Meter Synchronization" },
+    { id: "subsidy_team", title: "Subsidy Team", department: "Central Subsidy Desk", pipelineScope: "S3: Subsidy", permissions: "PM Surya Ghar National Portal Claim Lodging & DBT Credit Audit" },
     { id: "customer", title: "Customer Portal", department: "End Consumer", pipelineScope: "Read-Only Overview", permissions: "Milestone Tracking, Live Progress & Handover Sign-off" },
   ]);
 
@@ -86,7 +86,7 @@ export default function UserRoleManagementPage() {
       phone: "9655001122",
       roleId: "super_admin",
       roleTitle: "Super Admin",
-      pipelineScope: "All 5 Pipelines",
+      pipelineScope: "All 3 Pipelines",
       branch: "Salem (HQ)",
       status: "Active",
       sessionStatus: "online",
@@ -107,7 +107,7 @@ export default function UserRoleManagementPage() {
       phone: "9655046464",
       roleId: "management",
       roleTitle: "Management / Executive",
-      pipelineScope: "All 5 Pipelines",
+      pipelineScope: "All 3 Pipelines",
       branch: "Salem (HQ)",
       status: "Active",
       sessionStatus: "online",
@@ -128,7 +128,7 @@ export default function UserRoleManagementPage() {
       phone: "9842100110",
       roleId: "crm_manager",
       roleTitle: "CRM Manager",
-      pipelineScope: "All 5 Pipelines",
+      pipelineScope: "All 3 Pipelines",
       branch: "Salem (HQ)",
       status: "Active",
       sessionStatus: "online",
@@ -139,7 +139,7 @@ export default function UserRoleManagementPage() {
       recentActivity: {
         action: "Reallocated 4 commercial leads to Namakkal territory queue",
         time: "25m ago",
-        step: "Pipeline 1"
+        step: "S1"
       }
     },
     {
@@ -149,7 +149,7 @@ export default function UserRoleManagementPage() {
       phone: "9842100220",
       roleId: "crm_executive",
       roleTitle: "CRM Executive",
-      pipelineScope: "Pipeline 1: Sales",
+      pipelineScope: "S1: Sales",
       branch: "Salem (HQ)",
       status: "Active",
       sessionStatus: "online",
@@ -170,7 +170,7 @@ export default function UserRoleManagementPage() {
       phone: "9842100412",
       roleId: "sales_team",
       roleTitle: "Sales Team",
-      pipelineScope: "Pipeline 1: Sales",
+      pipelineScope: "S1: Sales",
       branch: "Salem (HQ)",
       status: "Active",
       sessionStatus: "online",
@@ -191,7 +191,7 @@ export default function UserRoleManagementPage() {
       phone: "9842100891",
       roleId: "site_survey_team",
       roleTitle: "Site Survey Team",
-      pipelineScope: "Pipeline 1: Sales",
+      pipelineScope: "S1: Sales",
       branch: "Namakkal",
       status: "Active",
       sessionStatus: "offline",
@@ -212,7 +212,7 @@ export default function UserRoleManagementPage() {
       phone: "9443210042",
       roleId: "design_team",
       roleTitle: "Design / Engineering Team",
-      pipelineScope: "Pipeline 1: Sales",
+      pipelineScope: "S1: Sales",
       branch: "Salem (HQ)",
       status: "Active",
       sessionStatus: "online",
@@ -233,7 +233,7 @@ export default function UserRoleManagementPage() {
       phone: "9443215588",
       roleId: "purchase_team",
       roleTitle: "Purchase Team",
-      pipelineScope: "Pipeline 3: Stores",
+      pipelineScope: "S2: Execution (Stores)",
       branch: "Salem (HQ)",
       status: "Active",
       sessionStatus: "offline",
@@ -254,7 +254,7 @@ export default function UserRoleManagementPage() {
       phone: "9842155661",
       roleId: "store_team",
       roleTitle: "Store Team",
-      pipelineScope: "Pipeline 3: Stores",
+      pipelineScope: "S2: Execution (Stores)",
       branch: "Salem (HQ)",
       status: "Active",
       sessionStatus: "online",
@@ -275,7 +275,7 @@ export default function UserRoleManagementPage() {
       phone: "9443299881",
       roleId: "project_manager",
       roleTitle: "Project Manager",
-      pipelineScope: "Pipelines 3 & 4: EPC",
+      pipelineScope: "S2: Execution (EPC)",
       branch: "Salem (HQ)",
       status: "Active",
       sessionStatus: "online",
@@ -296,7 +296,7 @@ export default function UserRoleManagementPage() {
       phone: "9443218709",
       roleId: "installation_team",
       roleTitle: "Installation Team",
-      pipelineScope: "Pipeline 4: EPC Execution",
+      pipelineScope: "S2: Execution (EPC)",
       branch: "Salem (HQ)",
       status: "Active",
       sessionStatus: "offline",
@@ -317,7 +317,7 @@ export default function UserRoleManagementPage() {
       phone: "9944008811",
       roleId: "accounts_team",
       roleTitle: "Accounts Team",
-      pipelineScope: "P2 Approvals & P5 Subsidy",
+      pipelineScope: "S2: Execution (Finance)",
       branch: "Salem (HQ)",
       status: "Active",
       sessionStatus: "online",
@@ -338,7 +338,7 @@ export default function UserRoleManagementPage() {
       phone: "9788114400",
       roleId: "liaison_team",
       roleTitle: "Liaisoning / Documentation Team",
-      pipelineScope: "P2 Approvals & P4 EPC",
+      pipelineScope: "S2: Execution (DISCOM)",
       branch: "Erode",
       status: "Active",
       sessionStatus: "offline",
@@ -359,7 +359,7 @@ export default function UserRoleManagementPage() {
       phone: "9788115599",
       roleId: "subsidy_team",
       roleTitle: "Subsidy Team",
-      pipelineScope: "Pipeline 5: Subsidy",
+      pipelineScope: "S3: Subsidy",
       branch: "Salem (HQ)",
       status: "Active",
       sessionStatus: "online",
@@ -402,14 +402,14 @@ export default function UserRoleManagementPage() {
     email: "",
     phone: "",
     roleId: "sales_team",
-    pipelineScope: "Pipeline 1: Sales",
+    pipelineScope: "S1: Sales",
     branch: "Salem (HQ)"
   });
 
   const [newRoleForm, setNewRoleForm] = useState({
     title: "",
     department: "",
-    pipelineScope: "Pipeline 1: Sales",
+    pipelineScope: "S1: Sales",
     permissions: ""
   });
 
@@ -429,7 +429,7 @@ export default function UserRoleManagementPage() {
       phone: formData.phone,
       roleId: formData.roleId,
       roleTitle: roleObj ? roleObj.title : "Sales Team",
-      pipelineScope: formData.pipelineScope || (roleObj ? roleObj.pipelineScope : "Pipeline 1: Sales"),
+      pipelineScope: formData.pipelineScope || (roleObj ? roleObj.pipelineScope : "S1: Sales"),
       branch: formData.branch,
       status: "Active",
       sessionStatus: "online",
@@ -474,7 +474,7 @@ export default function UserRoleManagementPage() {
       email: "",
       phone: "",
       roleId: "sales_team",
-      pipelineScope: "Pipeline 1: Sales",
+      pipelineScope: "S1: Sales",
       branch: "Salem (HQ)"
     });
   };
@@ -522,7 +522,7 @@ export default function UserRoleManagementPage() {
       id: roleSlug,
       title: newRoleForm.title,
       department: newRoleForm.department || "Operations",
-      pipelineScope: newRoleForm.pipelineScope || "All 5 Pipelines",
+      pipelineScope: newRoleForm.pipelineScope || "All 3 Pipelines",
       permissions: newRoleForm.permissions || "Standard Role Permissions"
     };
 
@@ -545,7 +545,7 @@ export default function UserRoleManagementPage() {
     setNewRoleForm({
       title: "",
       department: "",
-      pipelineScope: "Pipeline 1: Sales",
+      pipelineScope: "S1: Sales",
       permissions: ""
     });
   };
@@ -968,7 +968,7 @@ export default function UserRoleManagementPage() {
               </div>
             </div>
             <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-white text-indigo-700 border border-indigo-200 shrink-0">
-              4 Governance Tiers • 5 Pipelines • 15 Roles
+              4 Governance Tiers • 3 Pipelines • 15 Roles
             </span>
           </div>
 
@@ -1071,7 +1071,7 @@ export default function UserRoleManagementPage() {
                     <span>👤 S. Karthik (Master EPC Project Manager)</span>
                   </div>
                   <p className="text-xs text-slate-600">
-                    Master milestone tracking across Procurement (P3) and EPC Execution (P4), coordinating installer crews, warehouse material delivery sync, and site QA sign-offs.
+                    Master milestone tracking across S2 Execution (Advance, Approvals, Stores, EPC), coordinating installer crews, warehouse material delivery sync, and site QA sign-offs.
                   </p>
                 </div>
               </div>
@@ -1081,13 +1081,13 @@ export default function UserRoleManagementPage() {
             <div className="flex flex-col items-center justify-center -my-3 py-1">
               <div className="w-0.5 h-6 bg-blue-300" />
               <div className="px-3 py-0.5 rounded-full bg-blue-100 text-[10px] font-mono font-bold text-blue-800 border border-blue-200">
-                Directs 5 Specialized Operational Pipelines (20 Steps)
+                Directs 3 Operational Pipelines · 20 Checklist Steps
               </div>
               <div className="w-0.5 h-6 bg-blue-300" />
               <ArrowDown className="w-3.5 h-3.5 text-blue-500 -mt-1" />
             </div>
 
-            {/* TIER 3: SPECIALIZED DEPARTMENTAL TEAMS (5 PIPELINES) */}
+            {/* TIER 3: SPECIALIZED DEPARTMENTAL TEAMS (3 PIPELINES) */}
             <div className="space-y-3">
               <div className="flex items-center justify-between px-1">
                 <span className="text-xs font-bold text-slate-900 uppercase tracking-wider">
@@ -1098,10 +1098,10 @@ export default function UserRoleManagementPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
                 
-                {/* Pipeline 1 */}
+                {/* S1 · Sales */}
                 <div className="p-3 rounded-2xl bg-blue-50/50 border border-blue-200/70 space-y-2 flex flex-col justify-between">
                   <div>
-                    <span className="text-[10px] font-mono font-bold text-blue-700 uppercase block">Pipeline 1</span>
+                    <span className="text-[10px] font-mono font-bold text-blue-700 uppercase block">S1 · Sales</span>
                     <h5 className="text-xs font-bold text-slate-900">Sales & Feasibility</h5>
                     <p className="text-[11px] text-slate-500 mt-0.5">Steps 01 to 06</p>
                   </div>
@@ -1124,10 +1124,10 @@ export default function UserRoleManagementPage() {
                   </div>
                 </div>
 
-                {/* Pipeline 2 */}
+                {/* S2 · Execution / Advance & Approvals */}
                 <div className="p-3 rounded-2xl bg-violet-50/50 border border-violet-200/70 space-y-2 flex flex-col justify-between">
                   <div>
-                    <span className="text-[10px] font-mono font-bold text-violet-700 uppercase block">Pipeline 2</span>
+                    <span className="text-[10px] font-mono font-bold text-violet-700 uppercase block">S2 · Execution / Advance & Approvals</span>
                     <h5 className="text-xs font-bold text-slate-900">Advance & Approvals</h5>
                     <p className="text-[11px] text-slate-500 mt-0.5">Steps 07 to 10</p>
                   </div>
@@ -1145,10 +1145,10 @@ export default function UserRoleManagementPage() {
                   </div>
                 </div>
 
-                {/* Pipeline 3 */}
+                {/* S2 · Execution / Stores */}
                 <div className="p-3 rounded-2xl bg-teal-50/50 border border-teal-200/70 space-y-2 flex flex-col justify-between">
                   <div>
-                    <span className="text-[10px] font-mono font-bold text-teal-700 uppercase block">Pipeline 3</span>
+                    <span className="text-[10px] font-mono font-bold text-teal-700 uppercase block">S2 · Execution / Stores</span>
                     <h5 className="text-xs font-bold text-slate-900">Procure & Stores</h5>
                     <p className="text-[11px] text-slate-500 mt-0.5">Steps 11 to 13</p>
                   </div>
@@ -1166,10 +1166,10 @@ export default function UserRoleManagementPage() {
                   </div>
                 </div>
 
-                {/* Pipeline 4 */}
+                {/* S2 · Execution / EPC */}
                 <div className="p-3 rounded-2xl bg-indigo-50/50 border border-indigo-200/70 space-y-2 flex flex-col justify-between">
                   <div>
-                    <span className="text-[10px] font-mono font-bold text-indigo-700 uppercase block">Pipeline 4</span>
+                    <span className="text-[10px] font-mono font-bold text-indigo-700 uppercase block">S2 · Execution / EPC</span>
                     <h5 className="text-xs font-bold text-slate-900">EPC Site Execution</h5>
                     <p className="text-[11px] text-slate-500 mt-0.5">Steps 14 to 17</p>
                   </div>
@@ -1192,12 +1192,12 @@ export default function UserRoleManagementPage() {
                   </div>
                 </div>
 
-                {/* Pipeline 5 */}
+                {/* S3 · Subsidy */}
                 <div className="p-3 rounded-2xl bg-cyan-50/50 border border-cyan-200/70 space-y-2 flex flex-col justify-between">
                   <div>
-                    <span className="text-[10px] font-mono font-bold text-cyan-700 uppercase block">Pipeline 5</span>
+                    <span className="text-[10px] font-mono font-bold text-cyan-700 uppercase block">S3 · Subsidy</span>
                     <h5 className="text-xs font-bold text-slate-900">Closure & Subsidy</h5>
-                    <p className="text-[11px] text-slate-500 mt-0.5">Steps 18 to 20</p>
+                    <p className="text-[11px] text-slate-500 mt-0.5">Steps 19 to 20</p>
                   </div>
                   <div className="space-y-1.5 pt-2 border-t border-cyan-100 text-[11px]">
                     <div className="p-1.5 rounded-lg bg-white border border-cyan-100">
@@ -1348,12 +1348,12 @@ export default function UserRoleManagementPage() {
                     onChange={(e) => setFormData({ ...formData, pipelineScope: e.target.value })}
                     className="w-full text-xs p-2.5 rounded-xl border border-slate-200 bg-white text-slate-900 font-medium focus:outline-none"
                   >
-                    <option value="Pipeline 1: Sales">Pipeline 1: Sales (01-06)</option>
-                    <option value="Pipeline 2: Approvals">Pipeline 2: Approvals (07-10)</option>
-                    <option value="Pipeline 3: Stores">Pipeline 3: Stores (11-13)</option>
-                    <option value="Pipeline 4: EPC Execution">Pipeline 4: EPC Execution (14-17)</option>
-                    <option value="Pipeline 5: Subsidy">Pipeline 5: Subsidy (18-20)</option>
-                    <option value="All 5 Pipelines">All 5 Pipelines (Full Access)</option>
+                    <option value="S1: Sales">S1: Sales (01-06)</option>
+                    <option value="S2: Execution (Approvals)">S2: Execution (Approvals) (07-10)</option>
+                    <option value="S2: Execution (Stores)">S2: Execution (Stores) (11-13)</option>
+                    <option value="S2: Execution (EPC)">S2: Execution (EPC) (14-17)</option>
+                    <option value="S3: Subsidy">S3: Subsidy (18-20)</option>
+                    <option value="All 3 Pipelines">All 3 Pipelines (Full Access)</option>
                   </select>
                 </div>
               </div>
@@ -1472,12 +1472,12 @@ export default function UserRoleManagementPage() {
                     onChange={(e) => setEditingUser({ ...editingUser, pipelineScope: e.target.value })}
                     className="w-full text-xs p-2.5 rounded-xl border border-slate-200 bg-white text-slate-900 font-medium focus:outline-none"
                   >
-                    <option value="Pipeline 1: Sales">Pipeline 1: Sales (01-06)</option>
-                    <option value="Pipeline 2: Approvals">Pipeline 2: Approvals (07-10)</option>
-                    <option value="Pipeline 3: Stores">Pipeline 3: Stores (11-13)</option>
-                    <option value="Pipeline 4: EPC Execution">Pipeline 4: EPC Execution (14-17)</option>
-                    <option value="Pipeline 5: Subsidy">Pipeline 5: Subsidy (18-20)</option>
-                    <option value="All 5 Pipelines">All 5 Pipelines (Full Access)</option>
+                    <option value="S1: Sales">S1: Sales (01-06)</option>
+                    <option value="S2: Execution (Approvals)">S2: Execution (Approvals) (07-10)</option>
+                    <option value="S2: Execution (Stores)">S2: Execution (Stores) (11-13)</option>
+                    <option value="S2: Execution (EPC)">S2: Execution (EPC) (14-17)</option>
+                    <option value="S3: Subsidy">S3: Subsidy (18-20)</option>
+                    <option value="All 3 Pipelines">All 3 Pipelines (Full Access)</option>
                   </select>
                 </div>
               </div>
@@ -1561,12 +1561,12 @@ export default function UserRoleManagementPage() {
                     onChange={(e) => setNewRoleForm({ ...newRoleForm, pipelineScope: e.target.value })}
                     className="w-full text-xs p-2.5 rounded-xl border border-slate-200 bg-white text-slate-900 font-medium focus:outline-none"
                   >
-                    <option value="Pipeline 1: Sales">Pipeline 1: Sales</option>
-                    <option value="Pipeline 2: Approvals">Pipeline 2: Approvals</option>
-                    <option value="Pipeline 3: Stores">Pipeline 3: Stores</option>
-                    <option value="Pipeline 4: EPC Execution">Pipeline 4: EPC Execution</option>
-                    <option value="Pipeline 5: Subsidy">Pipeline 5: Subsidy</option>
-                    <option value="All 5 Pipelines">All 5 Pipelines</option>
+                    <option value="S1: Sales">S1: Sales</option>
+                    <option value="S2: Execution (Approvals)">S2: Execution (Approvals)</option>
+                    <option value="S2: Execution (Stores)">S2: Execution (Stores)</option>
+                    <option value="S2: Execution (EPC)">S2: Execution (EPC)</option>
+                    <option value="S3: Subsidy">S3: Subsidy</option>
+                    <option value="All 3 Pipelines">All 3 Pipelines</option>
                   </select>
                 </div>
               </div>

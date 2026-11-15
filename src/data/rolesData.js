@@ -7,7 +7,7 @@ export const ROLES_DEFINITIONS = [
     shortCode: "MD",
     title: "Managing Director / Business Owner",
     department: "Executive Strategy & Project Governance",
-    pipelineScope: "All 5 Pipelines (Master Oversight)",
+    pipelineScope: "All 3 Pipelines (1. Sales · 2. Project Execution · 3. Subsidy Flow)",
     ownedSteps: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
     badgeColor: "bg-blue-600/10 text-blue-700 border-blue-600/20",
     avatarBg: "from-blue-600 to-indigo-700",
@@ -41,19 +41,17 @@ export const ROLES_DEFINITIONS = [
         ]
       },
       systemBalance: {
-        title: "5-Pipeline System Balance",
+        title: "3-Pipeline System Balance",
         type: "stacked-bar",
         pipelines: [
-          { code: "P1", name: "P1 Sales", count: 18, color: "#3b82f6" },
-          { code: "P2", name: "P2 Approvals", count: 9, color: "#8b5cf6" },
-          { code: "P3", name: "P3 Procurement", count: 6, color: "#10b981" },
-          { code: "P4", name: "P4 Execution", count: 12, color: "#8b5cf6" },
-          { code: "P5", name: "P5 Subsidy", count: 7, color: "#06b6d4" }
+          { code: "S1", name: "S1 Sales", count: 18, color: "#3b82f6" },
+          { code: "S2", name: "S2 Execution", count: 27, color: "#6366f1" },
+          { code: "S3", name: "S3 Subsidy", count: 7, color: "#10b981" }
         ]
       }
     },
     operationalActions: [
-      { id: "board_inspect", title: "Master 5-Pipeline Review", desc: "Track progress and stage clearances across all projects", step: "01-20" },
+      { id: "board_inspect", title: "Master 3-Pipeline Review", desc: "Track progress and stage clearances across all projects", step: "01-20" },
       { id: "discount_auth", title: "Step 05 Discount Authorization", desc: "Sign off commercial discounts >5% on C&I contracts", step: "05" },
       { id: "audit_oversight", title: "Audit Log Review", desc: "Review system edit records and update reasons", step: "ALL" }
     ]
@@ -63,7 +61,7 @@ export const ROLES_DEFINITIONS = [
     shortCode: "SALES",
     title: "Field Sales Representative",
     department: "Customer Acquisition & Quotation Sizing",
-    pipelineScope: "Pipeline 1: Sales & Feasibility",
+    pipelineScope: "1. Sales Pipeline",
     ownedSteps: [1, 2, 5, 6],
     badgeColor: "bg-blue-500/10 text-blue-600 border-blue-500/20",
     avatarBg: "from-blue-500 to-indigo-600",
@@ -120,7 +118,7 @@ export const ROLES_DEFINITIONS = [
     shortCode: "SURVEY",
     title: "Site Survey Engineer",
     department: "Field Feasibility & Electrical Audit",
-    pipelineScope: "Pipeline 1: Sales & Feasibility",
+    pipelineScope: "1. Sales Pipeline",
     ownedSteps: [3, 4],
     badgeColor: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20",
     avatarBg: "from-emerald-500 to-teal-600",
@@ -173,7 +171,7 @@ export const ROLES_DEFINITIONS = [
     shortCode: "STORE",
     title: "Purchase & Warehouse Manager",
     department: "Procurement, QC & Inventory Logistics",
-    pipelineScope: "Pipeline 3: Procurement & Store",
+    pipelineScope: "2. Project Execution Pipeline (Stores)",
     ownedSteps: [11, 12, 13],
     badgeColor: "bg-teal-500/10 text-teal-600 border-teal-500/20",
     avatarBg: "from-teal-500 to-cyan-600",
@@ -224,7 +222,7 @@ export const ROLES_DEFINITIONS = [
     shortCode: "EPC",
     title: "EPC Operations Manager",
     department: "Field Construction & Quality Assurance",
-    pipelineScope: "Pipeline 4: EPC Site Execution",
+    pipelineScope: "2. Project Execution Pipeline (EPC)",
     ownedSteps: [14, 15],
     badgeColor: "bg-indigo-500/10 text-indigo-600 border-indigo-500/20",
     avatarBg: "from-indigo-500 to-purple-600",
@@ -278,7 +276,7 @@ export const ROLES_DEFINITIONS = [
     shortCode: "LIAISON",
     title: "TANGEDCO Liaison Officer",
     department: "Utility Approvals & Grid Synchronization",
-    pipelineScope: "Pipeline 2 (Approvals) & Pipeline 4 (Sync)",
+    pipelineScope: "2. Project Execution Pipeline (DISCOM)",
     ownedSteps: [8, 9, 10, 17],
     badgeColor: "bg-purple-500/10 text-purple-600 border-purple-500/20",
     avatarBg: "from-purple-500 to-pink-600",
@@ -332,7 +330,7 @@ export const ROLES_DEFINITIONS = [
     shortCode: "ACCOUNTS",
     title: "Finance & Accounts Officer",
     department: "Commercial Gatekeeper & Milestone Billing",
-    pipelineScope: "Commercial Gatekeeper (Pipelines 2, 4, 5)",
+    pipelineScope: "2. Project Execution Pipeline (Finance)",
     ownedSteps: [7, 16, 18],
     badgeColor: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20",
     avatarBg: "from-emerald-600 to-green-700",
@@ -384,7 +382,7 @@ export const ROLES_DEFINITIONS = [
     shortCode: "SUBSIDY",
     title: "Central Subsidy Coordinator",
     department: "PM Surya Ghar Consumer DBT Administration",
-    pipelineScope: "Pipeline 5: Closure & Subsidy",
+    pipelineScope: "3. Subsidy Flow Pipeline",
     ownedSteps: [19, 20],
     badgeColor: "bg-cyan-500/10 text-cyan-600 border-cyan-500/20",
     avatarBg: "from-cyan-500 to-blue-600",
@@ -436,7 +434,7 @@ export const ROLES_DEFINITIONS = [
     shortCode: "PMO",
     title: "Project Coordinator (Central PMO)",
     department: "Central Project Management Office (PMO)",
-    pipelineScope: "Central Stage-Gate Governance (All 20 Steps)",
+    pipelineScope: "All 3 Pipelines (Central PMO Governance)",
     ownedSteps: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
     badgeColor: "bg-rose-500/10 text-rose-600 border-rose-500/20",
     avatarBg: "from-rose-500 to-red-600",
@@ -450,14 +448,12 @@ export const ROLES_DEFINITIONS = [
     ],
     charts: {
       pipelineProjects: {
-        title: "Projects Across 5 Pipelines",
+        title: "Projects Across 3 Pipelines",
         type: "horizontal-bar",
         pipelines: [
-          { pipeline: "P1: Sales & Feasibility", count: 18, target: 20 },
-          { pipeline: "P2: Advance & Approvals", count: 9, target: 10 },
-          { pipeline: "P3: Procurement & Stores", count: 6, target: 8 },
-          { pipeline: "P4: EPC Site Execution", count: 12, target: 15 },
-          { pipeline: "P5: Closure & Subsidy", count: 7, target: 10 }
+          { pipeline: "S1: Sales", count: 18, target: 20 },
+          { pipeline: "S2: Execution", count: 27, target: 30 },
+          { pipeline: "S3: Subsidy", count: 7, target: 10 }
         ]
       },
       averageHandoverTime: {

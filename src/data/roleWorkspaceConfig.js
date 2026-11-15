@@ -1,7 +1,8 @@
-// NIRT Solar EPC - Role & Departmental Workspace Configuration
-// Maps each of the 9 roles to their specific Department Workspace, Process Steps, and Tab Visibilities.
-// Clean, professional, section-free sidebar labels.
-// Strict Zero Amber Compliance: Blue, Indigo, Violet, Emerald, Slate, Rose.
+// NIRT Solar EPC - Role & departmental workspace configuration
+// Strictly aligned with client specification:
+// 1. Sales Pipeline (7 Open, 3 Closed)
+// 2. Project Execution Pipeline (12 Open, 2 Closed)
+// 3. Subsidy Flow Pipeline (3 Open, 1 Closed)
 
 export const ROLE_WORKSPACES = {
   sales_rep: {
@@ -10,20 +11,20 @@ export const ROLE_WORKSPACES = {
     shortCode: "SALES",
     color: "text-blue-700 bg-blue-50 border-blue-200",
     pipelineKey: "sales",
-    pipelineCode: "P1",
+    pipelineCode: "1",
     menuItems: [
       { label: "Sales Workspace", href: "/", icon: "Users" },
-      { label: "P1: Sales Pipeline", href: "/pipelines?pipeline=sales", icon: "Layers", badge: "P1" },
+      { label: "1. Sales Pipeline", href: "/pipelines?pipeline=sales", icon: "Layers", badge: "7 Open" },
       { label: "Projects Registry", href: "/projects", icon: "FolderKanban" },
       { label: "Customer Master Record", href: "/projects/NIRT-26-0042", icon: "Building2" },
       { label: "Customer Communication", href: "/projects/NIRT-26-0042", icon: "MessageSquare", tabTarget: "communication" },
       { label: "Tasks & Follow-ups", href: "/projects/NIRT-26-0042", icon: "CheckSquare", tabTarget: "task_management" }
     ],
     assignedSteps: [
-      { step: "01", name: "Lead Intake & Inward", pipeline: "P1", status: "Active Intake" },
-      { step: "02", name: "Consumer & Roof Qualification", pipeline: "P1", status: "Qualification" },
-      { step: "05", name: "Commercial Quotation Sizing", pipeline: "P1", status: "Proposal Generation" },
-      { step: "06", name: "Customer Work Order Confirmation", pipeline: "P1", status: "Contract Closing" }
+      { step: "01", name: "Lead Intake & Inward", pipeline: "Sales", status: "Active Intake" },
+      { step: "02", name: "Consumer & Roof Qualification", pipeline: "Sales", status: "Qualification" },
+      { step: "05", name: "Commercial Quotation Sizing", pipeline: "Sales", status: "Proposal Generation" },
+      { step: "06", name: "Customer Work Order Confirmation", pipeline: "Sales", status: "Contract Closing" }
     ],
     spotlightTabs: ["overview", "proposal", "responsibility", "communication", "task_management", "documents"]
   },
@@ -34,18 +35,18 @@ export const ROLE_WORKSPACES = {
     shortCode: "SURVEY",
     color: "text-sky-700 bg-sky-50 border-sky-200",
     pipelineKey: "sales",
-    pipelineCode: "P1",
+    pipelineCode: "1",
     menuItems: [
       { label: "Survey Workspace", href: "/", icon: "Compass" },
-      { label: "P1: Feasibility Pipeline", href: "/pipelines?pipeline=sales", icon: "Layers", badge: "P1" },
+      { label: "1. Sales Pipeline", href: "/pipelines?pipeline=sales", icon: "Layers", badge: "7 Open" },
       { label: "Mobile Field Hub", href: "/field", icon: "Smartphone", badge: "Offline", mobileOnly: true },
       { label: "Projects Registry", href: "/projects", icon: "FolderKanban" },
       { label: "Site Survey & Layout", href: "/projects/NIRT-26-0042", icon: "MapPin", tabTarget: "overview" },
       { label: "Document Locker", href: "/projects/NIRT-26-0042", icon: "FolderKanban", tabTarget: "documents" }
     ],
     assignedSteps: [
-      { step: "03", name: "Terrace Survey & Shadow Audit", pipeline: "P1", status: "Field Audit" },
-      { step: "04", name: "Engineering Design & SLD DPR", pipeline: "P1", status: "Technical Sign-off" }
+      { step: "03", name: "Terrace Survey & Shadow Audit", pipeline: "Sales", status: "Field Audit" },
+      { step: "04", name: "Engineering Design & SLD DPR", pipeline: "Sales", status: "Technical Sign-off" }
     ],
     spotlightTabs: ["overview", "discom_subsidy", "documents", "responsibility"]
   },
@@ -55,19 +56,19 @@ export const ROLE_WORKSPACES = {
     departmentName: "Stores & BoM Procurement",
     shortCode: "STORE",
     color: "text-teal-700 bg-teal-50 border-teal-200",
-    pipelineKey: "procurement",
-    pipelineCode: "P3",
+    pipelineKey: "execution",
+    pipelineCode: "2",
     menuItems: [
       { label: "Store & Inventory Desk", href: "/", icon: "Truck" },
-      { label: "P3: Stores & BoM Pipeline", href: "/pipelines?pipeline=procurement", icon: "Layers", badge: "P3" },
+      { label: "2. Project Execution Pipeline", href: "/pipelines?pipeline=execution", icon: "Layers", badge: "12 Open" },
       { label: "Procurement & BoM", href: "/projects/NIRT-26-0042", icon: "Package", tabTarget: "procurement" },
       { label: "Store & Inventory", href: "/projects/NIRT-26-0042", icon: "Warehouse", tabTarget: "store" },
       { label: "Material Pending Report", href: "/reports", icon: "FileSpreadsheet" }
     ],
     assignedSteps: [
-      { step: "11", name: "Vendor PO & Tier-1 BoM Release", pipeline: "P3", status: "Procurement" },
-      { step: "12", name: "Central Warehouse GRN Inward", pipeline: "P3", status: "Store Intake" },
-      { step: "13", name: "Site SIV Dispatch & RTS Return", pipeline: "P3", status: "Site Staging" }
+      { step: "11", name: "Vendor PO & Tier-1 BoM Release", pipeline: "Execution", status: "Procurement" },
+      { step: "12", name: "Central Warehouse GRN Inward", pipeline: "Execution", status: "Store Intake" },
+      { step: "13", name: "Site Dispatch & RTS Return", pipeline: "Execution", status: "Site Staging" }
     ],
     spotlightTabs: ["procurement", "store", "documents", "responsibility"]
   },
@@ -78,10 +79,10 @@ export const ROLE_WORKSPACES = {
     shortCode: "EPC",
     color: "text-indigo-700 bg-indigo-50 border-indigo-200",
     pipelineKey: "execution",
-    pipelineCode: "P4",
+    pipelineCode: "2",
     menuItems: [
       { label: "EPC Site Operations", href: "/", icon: "Wrench" },
-      { label: "P4: Site Execution Pipeline", href: "/pipelines?pipeline=execution", icon: "Layers", badge: "P4" },
+      { label: "2. Project Execution Pipeline", href: "/pipelines?pipeline=execution", icon: "Layers", badge: "12 Open" },
       { label: "Installation & Site Erection", href: "/projects/NIRT-26-0042", icon: "Activity", tabTarget: "installation" },
       { label: "Inspection & Commissioning", href: "/projects/NIRT-26-0042", icon: "ShieldCheck", tabTarget: "inspection" },
       { label: "Net Metering Synchronisation", href: "/projects/NIRT-26-0042", icon: "Zap", tabTarget: "net_metering" },
@@ -89,45 +90,46 @@ export const ROLE_WORKSPACES = {
       { label: "Service & Complaints", href: "/service", icon: "Headset", badge: "O&M" }
     ],
     assignedSteps: [
-      { step: "14", name: "Mechanical Erection & Clamping", pipeline: "P4", status: "Civil & Mounting" },
-      { step: "15", name: "Array Megger & Earth Testing", pipeline: "P4", status: "Safety Sign-off" },
-      { step: "17", name: "Joint Commissioning & Meter Sync", pipeline: "P4", status: "Grid Connection" }
+      { step: "14", name: "Civil Structure & Module Mounting", pipeline: "Execution", status: "Mounting Erection" },
+      { step: "15", name: "Electrical Cabling & Inverter Setup", pipeline: "Execution", status: "Testing & Sign-off" },
+      { step: "17", name: "Net Meter Inspection & Grid Sync", pipeline: "Execution", status: "Grid Connection" }
     ],
     spotlightTabs: ["installation", "progress_tracker", "inspection", "net_metering", "service", "documents"]
   },
 
   liaison_officer: {
     roleId: "liaison_officer",
-    departmentName: "TANGEDCO & DISCOM Liaison",
-    shortCode: "LIAISON",
+    departmentName: "TANGEDCO DISCOM Liaison",
+    shortCode: "DISCOM",
     color: "text-violet-700 bg-violet-50 border-violet-200",
-    pipelineKey: "approvals",
-    pipelineCode: "P2",
+    pipelineKey: "execution",
+    pipelineCode: "2",
     menuItems: [
-      { label: "DISCOM & Liaison Desk", href: "/", icon: "Building2" },
-      { label: "P2: Approvals Pipeline", href: "/pipelines?pipeline=approvals", icon: "Layers", badge: "P2" },
-      { label: "DISCOM & Feasibility", href: "/projects/NIRT-26-0042", icon: "FileText", tabTarget: "discom_subsidy" },
-      { label: "Net Metering Synchronisation", href: "/projects/NIRT-26-0042", icon: "Zap", tabTarget: "net_metering" },
-      { label: "Statutory Approvals Hub", href: "/approvals", icon: "ShieldCheck" }
+      { label: "Liaison Command Desk", href: "/", icon: "Zap" },
+      { label: "2. Project Execution Pipeline", href: "/pipelines?pipeline=execution", icon: "Layers", badge: "12 Open" },
+      { label: "TANGEDCO Feasibility Sanctions", href: "/projects/NIRT-26-0042", icon: "Zap", tabTarget: "feasibility" },
+      { label: "DISCOM Application Filing", href: "/projects/NIRT-26-0042", icon: "Building2", tabTarget: "discom_application" },
+      { label: "Bi-directional Net Metering", href: "/projects/NIRT-26-0042", icon: "Zap", tabTarget: "net_metering" },
+      { label: "DISCOM CEIG Inspection", href: "/projects/NIRT-26-0042", icon: "ShieldCheck", tabTarget: "inspection" }
     ],
     assignedSteps: [
-      { step: "08", name: "KYC & Document Verification", pipeline: "P2", status: "Customer KYC" },
-      { step: "09", name: "DISCOM Portal Application", pipeline: "P2", status: "Online Filing" },
-      { step: "10", name: "Technical Feasibility Sanction", pipeline: "P2", status: "DT Headroom" },
-      { step: "17", name: "Bi-Directional Net Meter Sync", pipeline: "P4", status: "TNEB Metering" }
+      { step: "08", name: "Customer KYC Dossier Assembly", pipeline: "Execution", status: "KYC Verified" },
+      { step: "09", name: "TANGEDCO Portal Filing", pipeline: "Execution", status: "Application Lodged" },
+      { step: "10", name: "Technical Feasibility Sanction", pipeline: "Execution", status: "Sanction Letter" }
     ],
-    spotlightTabs: ["discom_subsidy", "inspection", "net_metering", "approvals", "documents"]
+    spotlightTabs: ["feasibility", "discom_application", "net_metering", "inspection", "documents"]
   },
 
   accounts_officer: {
     roleId: "accounts_officer",
-    departmentName: "Finance & Commercial Accounts",
-    shortCode: "ACCOUNTS",
-    color: "text-rose-700 bg-rose-50 border-rose-200",
-    pipelineKey: "approvals",
-    pipelineCode: "P2",
+    departmentName: "Finance & Accounts Command",
+    shortCode: "ACCTS",
+    color: "text-emerald-700 bg-emerald-50 border-emerald-200",
+    pipelineKey: "execution",
+    pipelineCode: "2",
     menuItems: [
-      { label: "Accounts & Financial Desk", href: "/", icon: "IndianRupee" },
+      { label: "Accounts Desk Home", href: "/", icon: "IndianRupee" },
+      { label: "2. Project Execution Pipeline", href: "/pipelines?pipeline=execution", icon: "Layers", badge: "12 Open" },
       { label: "Financial Dashboard", href: "/dashboards", icon: "BarChart3" },
       { label: "80% Advance Clearance", href: "/projects/NIRT-26-0042", icon: "CreditCard", tabTarget: "financials" },
       { label: "Final Payment & NOC", href: "/projects/NIRT-26-0042", icon: "CheckCircle2", tabTarget: "final_payment" },
@@ -135,9 +137,9 @@ export const ROLE_WORKSPACES = {
       { label: "Billing Approvals", href: "/approvals", icon: "ShieldCheck" }
     ],
     assignedSteps: [
-      { step: "07", name: "80% Advance Hard-Lock Clearance", pipeline: "P2", status: "Hard-Gate" },
-      { step: "16", name: "Interim Milestone Invoicing", pipeline: "P4", status: "Pre-Commissioning" },
-      { step: "18", name: "Final Settlement & No-Dues NOC", pipeline: "P5", status: "Full Payment" }
+      { step: "07", name: "80% Advance Hard-Gate Clearance", pipeline: "Execution", status: "Hard Gate" },
+      { step: "16", name: "10% On-Installation Receipt", pipeline: "Execution", status: "Pre-Commissioning" },
+      { step: "18", name: "Final Settlement & No-Dues NOC", pipeline: "Execution", status: "Full Payment" }
     ],
     spotlightTabs: ["financials", "final_payment", "approvals", "documents", "communication"]
   },
@@ -148,22 +150,21 @@ export const ROLE_WORKSPACES = {
     shortCode: "SUBSIDY",
     color: "text-cyan-700 bg-cyan-50 border-cyan-200",
     pipelineKey: "subsidy",
-    pipelineCode: "P5",
+    pipelineCode: "3",
     menuItems: [
       { label: "PM Surya Ghar Desk", href: "/", icon: "Landmark" },
-      { label: "P5: Subsidy & Closure Pipeline", href: "/pipelines?pipeline=subsidy", icon: "Layers", badge: "P5" },
+      { label: "3. Subsidy Flow Pipeline", href: "/pipelines?pipeline=subsidy", icon: "Layers", badge: "3 Open" },
       { label: "Subsidy DBT Management", href: "/projects/NIRT-26-0042", icon: "Landmark", tabTarget: "subsidy_management" },
       { label: "Project Closure & Handover", href: "/projects/NIRT-26-0042", icon: "Award", tabTarget: "project_closure" },
       { label: "Subsidy Status Report", href: "/reports", icon: "FileSpreadsheet" }
     ],
     assignedSteps: [
-      { step: "19", name: "PM Surya Ghar Subsidy Claim", pipeline: "P5", status: "National Portal" },
-      { step: "20", name: "DBT Subsidy Credit Verification", pipeline: "P5", status: "Bank Credit" }
+      { step: "19", name: "PM Surya Ghar Subsidy Claim", pipeline: "Subsidy", status: "National Portal" },
+      { step: "20", name: "DBT Subsidy Credit Verification", pipeline: "Subsidy", status: "Bank Credit" }
     ],
     spotlightTabs: ["subsidy_management", "project_closure", "documents", "communication"]
   },
 
-  // Managing Director & PMO (Master Access)
   managing_director: {
     roleId: "managing_director",
     departmentName: "Executive Command & Governance",
@@ -175,7 +176,9 @@ export const ROLE_WORKSPACES = {
       { label: "Executive Command Home", href: "/", icon: "LayoutDashboard" },
       { label: "Executive Dashboards", href: "/dashboards", icon: "BarChart3" },
       { label: "Management MIS Reports", href: "/reports", icon: "FileSpreadsheet", badge: "22" },
-      { label: "Master 5-Pipeline", href: "/pipelines?pipeline=sales", icon: "Layers", badge: "20 Steps" },
+      { label: "1. Sales Pipeline", href: "/pipelines?pipeline=sales", icon: "Layers", badge: "7 Open" },
+      { label: "2. Project Execution Pipeline", href: "/pipelines?pipeline=execution", icon: "Layers", badge: "12 Open" },
+      { label: "3. Subsidy Flow Pipeline", href: "/pipelines?pipeline=subsidy", icon: "Layers", badge: "3 Open" },
       { label: "Projects Master Registry", href: "/projects", icon: "FolderKanban" },
       { label: "Approvals Governance Hub", href: "/approvals", icon: "ShieldCheck" },
       { label: "Audit Trail", href: "/audit", icon: "ShieldAlert" },
@@ -183,11 +186,9 @@ export const ROLE_WORKSPACES = {
       { label: "Mobile Field Hub", href: "/field", icon: "Smartphone", mobileOnly: true }
     ],
     assignedSteps: [
-      { step: "P1", name: "Sales & Feasibility", pipeline: "01-06", status: "Active Pipeline" },
-      { step: "P2", name: "Advance & Approvals", pipeline: "07-10", status: "Hard-Gate" },
-      { step: "P3", name: "Procurement & Stores", pipeline: "11-13", status: "Supply Chain" },
-      { step: "P4", name: "EPC Site Execution", pipeline: "14-17", status: "Installation" },
-      { step: "P5", name: "Subsidy & Triple Closure", pipeline: "18-20", status: "Settlement" }
+      { step: "P1", name: "1. Sales Pipeline (7 Open, 3 Closed)", pipeline: "Sales", status: "Lead to Order" },
+      { step: "P2", name: "2. Project Execution Pipeline (12 Open, 2 Closed)", pipeline: "Execution", status: "Advance to Completion" },
+      { step: "P3", name: "3. Subsidy Flow Pipeline (3 Open, 1 Closed)", pipeline: "Subsidy", status: "Claim to DBT" }
     ],
     spotlightTabs: "ALL"
   },
@@ -203,18 +204,18 @@ export const ROLE_WORKSPACES = {
       { label: "PMO Coordination Home", href: "/", icon: "LayoutDashboard" },
       { label: "Executive Dashboards", href: "/dashboards", icon: "BarChart3" },
       { label: "Management MIS Reports", href: "/reports", icon: "FileSpreadsheet", badge: "22" },
-      { label: "Master 5-Pipeline", href: "/pipelines?pipeline=sales", icon: "Layers", badge: "20 Steps" },
+      { label: "1. Sales Pipeline", href: "/pipelines?pipeline=sales", icon: "Layers", badge: "7 Open" },
+      { label: "2. Project Execution Pipeline", href: "/pipelines?pipeline=execution", icon: "Layers", badge: "12 Open" },
+      { label: "3. Subsidy Flow Pipeline", href: "/pipelines?pipeline=subsidy", icon: "Layers", badge: "3 Open" },
       { label: "Projects Master Registry", href: "/projects", icon: "FolderKanban" },
       { label: "Approvals Governance Hub", href: "/approvals", icon: "ShieldCheck" },
       { label: "Audit Trail", href: "/audit", icon: "ShieldAlert" },
       { label: "Customer Service & Complaints", href: "/service", icon: "Headset" }
     ],
     assignedSteps: [
-      { step: "P1", name: "Sales & Feasibility", pipeline: "01-06", status: "Active Pipeline" },
-      { step: "P2", name: "Advance & Approvals", pipeline: "07-10", status: "Hard-Gate" },
-      { step: "P3", name: "Procurement & Stores", pipeline: "11-13", status: "Supply Chain" },
-      { step: "P4", name: "EPC Site Execution", pipeline: "14-17", status: "Installation" },
-      { step: "P5", name: "Subsidy & Triple Closure", pipeline: "18-20", status: "Settlement" }
+      { step: "P1", name: "1. Sales Pipeline (7 Open, 3 Closed)", pipeline: "Sales", status: "Lead to Order" },
+      { step: "P2", name: "2. Project Execution Pipeline (12 Open, 2 Closed)", pipeline: "Execution", status: "Advance to Completion" },
+      { step: "P3", name: "3. Subsidy Flow Pipeline (3 Open, 1 Closed)", pipeline: "Subsidy", status: "Claim to DBT" }
     ],
     spotlightTabs: "ALL"
   }

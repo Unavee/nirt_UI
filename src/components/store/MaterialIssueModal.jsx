@@ -8,13 +8,12 @@ export default function MaterialIssueModal({
   projectId = "NIRT-26-0042",
   onConfirmIssue
 }) {
-  if (!isOpen || !item) return null;
 
-  const currentAvailable = item.availableQty || 0;
-  const currentPending = item.pendingQty ?? Math.max(0, item.requiredQty - item.issuedQty);
+  const currentAvailable = item?.availableQty || 0;
+  const currentPending = item?.pendingQty ?? Math.max(0, item?.requiredQty - item?.issuedQty);
 
-  const [issueQty, setIssueQty] = useState(Math.min(currentAvailable, currentPending > 0 ? currentPending : item.requiredQty));
-  const [gatePassNo, setGatePassNo] = useState(`GP-SLM-2026-${projectId.replace("NIRT-26-", "")}-${Math.floor(10 + Math.random() * 90)}`);
+  const [issueQty, setIssueQty] = useState(Math.min(currentAvailable, currentPending > 0 ? currentPending : item?.requiredQty));
+  const [gatePassNo, setGatePassNo] = useState(`GP-SLM-2026-${(projectId || "").replace("NIRT-26-", "")}-${Math.floor(10 + Math.random() * 90)}`);
   const [issuedTo, setIssuedTo] = useState("M. Saravanan (Senior Installation Lead)");
   const [contractorTeam, setContractorTeam] = useState("Salem EPC Installation Team #1");
   const [issueDate, setIssueDate] = useState(new Date().toISOString().split("T")[0]);
@@ -37,8 +36,8 @@ export default function MaterialIssueModal({
 
   const numIssue = parseFloat(issueQty) || 0;
   const newAvailable = Math.max(0, currentAvailable - numIssue);
-  const newIssued = (item.issuedQty || 0) + numIssue;
-  const newPending = Math.max(0, (item.requiredQty || 0) - newIssued);
+  const newIssued = (item?.issuedQty || 0) + numIssue;
+  const newPending = Math.max(0, (item?.requiredQty || 0) - newIssued);
   const newShortage = Math.max(0, newPending - newAvailable);
 
   const handleSubmit = (e) => {
@@ -48,7 +47,7 @@ export default function MaterialIssueModal({
       return;
     }
     if (numIssue > currentAvailable) {
-      setError(`Cannot issue ${numIssue} ${item.unit}. Only ${currentAvailable} ${item.unit} available in warehouse.`);
+      setError(`Cannot issue ${numIssue} ${item?.unit}. Only ${currentAvailable} ${item?.unit} available in warehouse.`);
       return;
     }
 
@@ -79,6 +78,7 @@ export default function MaterialIssueModal({
     window.print();
   };
 
+  if (!isOpen || !item) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
       <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-2xl overflow-hidden max-h-[92vh] flex flex-col print:m-0 print:p-0 print:border-none print:shadow-none print:max-w-none">
@@ -126,21 +126,21 @@ export default function MaterialIssueModal({
         <div className="bg-blue-50/70 border-b border-blue-100 px-6 py-3 flex flex-wrap items-center justify-between gap-3 text-xs">
           <div>
             <span className="text-[10px] text-slate-500 uppercase font-bold block">Store Available Stock</span>
-            <strong className="text-slate-900 font-mono text-sm">{currentAvailable} {item.unit}</strong>
+            <strong className="text-slate-900 font-mono text-sm">{currentAvailable} {item?.unit}</strong>
           </div>
           <div className="text-slate-400">&minus;</div>
           <div>
             <span className="text-[10px] text-blue-700 uppercase font-bold block">Issuing in this Pass</span>
-            <strong className="text-blue-700 font-mono text-sm">{numIssue} {item.unit}</strong>
+            <strong className="text-blue-700 font-mono text-sm">{numIssue} {item?.unit}</strong>
           </div>
           <div className="text-slate-400">=</div>
           <div className="p-1.5 px-3 rounded-lg bg-white border border-blue-200">
             <span className="text-[10px] text-slate-500 uppercase font-bold block">Warehouse Balance After</span>
-            <strong className="text-indigo-900 font-mono text-sm font-black">{newAvailable} {item.unit}</strong>
+            <strong className="text-indigo-900 font-mono text-sm font-black">{newAvailable} {item?.unit}</strong>
           </div>
           <div className="p-1.5 px-3 rounded-lg bg-emerald-50 border border-emerald-200">
             <span className="text-[10px] text-emerald-700 uppercase font-bold block">Total Issued to Site</span>
-            <strong className="text-emerald-800 font-mono text-sm font-black">{newIssued} / {item.requiredQty} {item.unit}</strong>
+            <strong className="text-emerald-800 font-mono text-sm font-black">{newIssued} / {item?.requiredQty} {item?.unit}</strong>
           </div>
         </div>
 
@@ -158,19 +158,19 @@ export default function MaterialIssueModal({
             <div className="flex justify-between items-start">
               <div>
                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Material Item</span>
-                <strong className="text-sm font-bold text-slate-900">{item.material}</strong>
+                <strong className="text-sm font-bold text-slate-900">{item?.material}</strong>
               </div>
               <span className="text-xs font-mono font-semibold px-2 py-0.5 rounded bg-slate-200 text-slate-800">
-                Bin: {item.warehouseBin}
+                Bin: {item?.warehouseBin}
               </span>
             </div>
             <div className="text-slate-600 text-xs">
-              Spec: <span className="font-medium text-slate-800">{item.specification}</span>
+              Spec: <span className="font-medium text-slate-800">{item?.specification}</span>
             </div>
             <div className="flex justify-between text-[11px] text-slate-500 pt-1 border-t border-slate-200">
-              <span>Required BoM: <strong className="text-slate-800">{item.requiredQty} {item.unit}</strong></span>
-              <span>Already Issued: <strong className="text-slate-800">{item.issuedQty} {item.unit}</strong></span>
-              <span>Pending Issue: <strong className="text-blue-700 font-bold">{currentPending} {item.unit}</strong></span>
+              <span>Required BoM: <strong className="text-slate-800">{item?.requiredQty} {item?.unit}</strong></span>
+              <span>Already Issued: <strong className="text-slate-800">{item?.issuedQty} {item?.unit}</strong></span>
+              <span>Pending Issue: <strong className="text-blue-700 font-bold">{currentPending} {item?.unit}</strong></span>
             </div>
           </div>
 
@@ -178,7 +178,7 @@ export default function MaterialIssueModal({
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                Quantity to Issue ({item.unit}) *
+                Quantity to Issue ({item?.unit}) *
               </label>
               <input
                 type="number"

@@ -9,15 +9,14 @@ export default function UpdateStageModal({
   projectId,
   onSaveStage
 }) {
-  if (!isOpen || !targetStage) return null;
 
-  const stageMeta = BFRD_PROGRESS_STAGES.find(s => s.id === targetStage.id) || {};
+  const stageMeta = BFRD_PROGRESS_STAGES.find(s => s.id === targetStage?.id) || {};
 
-  const [status, setStatus] = useState(targetStage.status || "pending");
-  const [startDate, setStartDate] = useState(targetStage.startDate || new Date().toISOString().split("T")[0]);
-  const [completionDate, setCompletionDate] = useState(targetStage.completionDate || "");
-  const [referenceDoc, setReferenceDoc] = useState(targetStage.referenceDoc || "");
-  const [remarks, setRemarks] = useState(targetStage.remarks || "");
+  const [status, setStatus] = useState(targetStage?.status || "pending");
+  const [startDate, setStartDate] = useState(targetStage?.startDate || new Date().toISOString().split("T")[0]);
+  const [completionDate, setCompletionDate] = useState(targetStage?.completionDate || "");
+  const [referenceDoc, setReferenceDoc] = useState(targetStage?.referenceDoc || "");
+  const [remarks, setRemarks] = useState(targetStage?.remarks || "");
 
   const handleSave = (e) => {
     e.preventDefault();
@@ -32,6 +31,7 @@ export default function UpdateStageModal({
     onClose();
   };
 
+  if (!isOpen || !targetStage) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-150">
       <div 
@@ -46,7 +46,7 @@ export default function UpdateStageModal({
             </div>
             <div>
               <h2 className="text-sm font-bold text-slate-900">
-                Update Milestone Stage {targetStage.stageNumber}: {stageMeta.name}
+                Update Milestone Stage {targetStage?.stageNumber}: {stageMeta.name}
               </h2>
               <p className="text-xs text-slate-500 font-mono">
                 Project: {projectId} • {stageMeta.department}

@@ -89,7 +89,7 @@ export default function ManagementDashboardPage() {
             className="apple-button flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-slate-900 text-white hover:bg-black shadow-xs"
           >
             <Layers className="w-3.5 h-3.5" />
-            <span>5-Pipeline Board</span>
+            <span>3-Pipeline Board</span>
           </Link>
         </div>
       </div>

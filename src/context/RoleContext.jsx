@@ -13,9 +13,10 @@ export function RoleProvider({ children }) {
   useEffect(() => {
     try {
       const savedRoleId = localStorage.getItem("nirt_active_role_id");
-      if (savedRoleId && savedRoleId !== "managing_director") {
+      if (savedRoleId) {
         const found = ROLES_DEFINITIONS.find((r) => r.id === savedRoleId);
         if (found) setActiveRole(found);
+        else setActiveRole(ROLES_DEFINITIONS[1]);
       } else {
         setActiveRole(ROLES_DEFINITIONS[1]);
       }

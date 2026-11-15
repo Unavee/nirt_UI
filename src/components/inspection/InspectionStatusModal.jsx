@@ -8,18 +8,17 @@ export default function InspectionStatusModal({
   inspectionData,
   onUpdateInspection
 }) {
-  if (!isOpen || !inspectionData) return null;
 
-  const [status, setStatus] = useState(inspectionData.currentStatus || "scheduled");
-  const [scheduledDate, setScheduledDate] = useState(inspectionData.dates?.scheduledDate || "");
+  const [status, setStatus] = useState(inspectionData?.currentStatus || "scheduled");
+  const [scheduledDate, setScheduledDate] = useState(inspectionData?.dates?.scheduledDate || "");
   const [actualInspectionDate, setActualInspectionDate] = useState(
-    inspectionData.dates?.actualInspectionDate || new Date().toISOString().split("T")[0]
+    inspectionData?.dates?.actualInspectionDate || new Date().toISOString().split("T")[0]
   );
-  const [approvalDate, setApprovalDate] = useState(inspectionData.dates?.approvalDate || "");
-  const [commissioningDate, setCommissioningDate] = useState(inspectionData.dates?.commissioningDate || "");
-  const [rectificationDone, setRectificationDone] = useState(!inspectionData.rectificationDetails?.required || inspectionData.rectificationDetails?.status === "Resolved");
-  const [rectificationNotes, setRectificationNotes] = useState(inspectionData.rectificationDetails?.description || "");
-  const [commissioningReading, setCommissioningReading] = useState(inspectionData.commissioningReport?.initialGenerationReading || "000005.0 kWh");
+  const [approvalDate, setApprovalDate] = useState(inspectionData?.dates?.approvalDate || "");
+  const [commissioningDate, setCommissioningDate] = useState(inspectionData?.dates?.commissioningDate || "");
+  const [rectificationDone, setRectificationDone] = useState(!inspectionData?.rectificationDetails?.required || inspectionData?.rectificationDetails?.status === "Resolved");
+  const [rectificationNotes, setRectificationNotes] = useState(inspectionData?.rectificationDetails?.description || "");
+  const [commissioningReading, setCommissioningReading] = useState(inspectionData?.commissioningReport?.initialGenerationReading || "000005.0 kWh");
 
   const handleSave = (e) => {
     e.preventDefault();
@@ -32,22 +31,22 @@ export default function InspectionStatusModal({
       currentStatus: status,
       statusStep: stepNum,
       dates: {
-        ...inspectionData.dates,
+        ...inspectionData?.dates,
         scheduledDate,
         actualInspectionDate: (status !== "requested" && status !== "scheduled") ? actualInspectionDate : null,
         approvalDate: (status === "approved" || status === "commissioned") ? (approvalDate || new Date().toISOString().split("T")[0]) : null,
         commissioningDate: status === "commissioned" ? (commissioningDate || new Date().toISOString().split("T")[0]) : null
       },
       rectificationDetails: {
-        ...inspectionData.rectificationDetails,
+        ...inspectionData?.rectificationDetails,
         status: rectificationDone ? "Resolved" : "In Progress",
         description: rectificationNotes,
         rectificationEvidenceUploaded: rectificationDone
       },
       commissioningReport: {
-        ...inspectionData.commissioningReport,
+        ...inspectionData?.commissioningReport,
         initialGenerationReading: commissioningReading,
-        status: status === "commissioned" ? "Commissioned & Energized" : inspectionData.commissioningReport?.status
+        status: status === "commissioned" ? "Commissioned & Energized" : inspectionData?.commissioningReport?.status
       }
     };
 
@@ -55,6 +54,7 @@ export default function InspectionStatusModal({
     onClose();
   };
 
+  if (!isOpen || !inspectionData) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-150">
       <div 
@@ -72,7 +72,7 @@ export default function InspectionStatusModal({
                 Update Inspection & Commissioning Stage
               </h2>
               <p className="text-xs text-slate-500 font-mono">
-                Project: {inspectionData.projectId} • {inspectionData.capacity}
+                Project: {inspectionData?.projectId} • {inspectionData?.capacity}
               </p>
             </div>
           </div>

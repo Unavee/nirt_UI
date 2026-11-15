@@ -8,12 +8,11 @@ export default function UpdateClosureChecklistModal({
   closureData,
   onSaveClosure
 }) {
-  if (!isOpen || !closureData) return null;
 
-  const [checklist, setChecklist] = useState(closureData.checklistState || {});
-  const [rating, setRating] = useState(closureData.customerFeedback?.rating || 5);
-  const [review, setReview] = useState(closureData.customerFeedback?.review || "");
-  const [closureStatus, setClosureStatus] = useState(closureData.closureStatus || "closed");
+  const [checklist, setChecklist] = useState(closureData?.checklistState || {});
+  const [rating, setRating] = useState(closureData?.customerFeedback?.rating || 5);
+  const [review, setReview] = useState(closureData?.customerFeedback?.review || "");
+  const [closureStatus, setClosureStatus] = useState(closureData?.closureStatus || "closed");
 
   const toggleItem = (id) => {
     setChecklist((prev) => {
@@ -42,7 +41,7 @@ export default function UpdateClosureChecklistModal({
       actualClosureDate: newStatus === "closed" ? new Date().toISOString().split("T")[0] : null,
       checklistState: checklist,
       customerFeedback: {
-        ...closureData.customerFeedback,
+        ...closureData?.customerFeedback,
         rating,
         review
       }
@@ -54,6 +53,7 @@ export default function UpdateClosureChecklistModal({
 
   const checkedCount = BFRD_CLOSURE_CHECKLIST.filter(item => checklist[item.id]?.checked).length;
 
+  if (!isOpen || !closureData) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-150">
       <div 
@@ -71,7 +71,7 @@ export default function UpdateClosureChecklistModal({
                 14-Point Project Closure Audit Checklist
               </h2>
               <p className="text-xs text-slate-500 font-mono">
-                Project: {closureData.projectId} • {checkedCount} of 14 Completed
+                Project: {closureData?.projectId} • {checkedCount} of 14 Completed
               </p>
             </div>
           </div>

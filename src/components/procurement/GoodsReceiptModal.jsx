@@ -8,21 +8,20 @@ export default function GoodsReceiptModal({
   projectId = "NIRT-26-0042",
   onConfirmReceipt
 }) {
-  if (!isOpen || !item) return null;
 
-  const totalOrdered = item.quantity || 1;
-  const alreadyReceived = item.quantityReceived || 0;
+  const totalOrdered = item?.quantity || 1;
+  const alreadyReceived = item?.quantityReceived || 0;
   const currentPending = Math.max(0, totalOrdered - alreadyReceived);
 
   const [receivedNow, setReceivedNow] = useState(currentPending);
   const [deliveryDate, setDeliveryDate] = useState(new Date().toISOString().split("T")[0]);
   const [vehicleNumber, setVehicleNumber] = useState("TN-30-BB-4891");
   const [carrierName, setCarrierName] = useState("VRL Logistics / Direct Dispatch");
-  const [location, setLocation] = useState(item.deliveryLocation || "Salem Central Warehouse (Bay 1)");
+  const [location, setLocation] = useState(item?.deliveryLocation || "Salem Central Warehouse (Bay 1)");
   const [qaStatus, setQaStatus] = useState("Pass");
   const [inspectorName, setInspectorName] = useState("M. Saravanan (Quality & Stores Lead)");
   const [inspectionRemarks, setInspectionRemarks] = useState("Physical visual check & packaging seal intact. Zero transit damage.");
-  const [grnNumber] = useState(item.grnNumber || `GRN-SLM-2026-${Math.floor(100 + Math.random() * 900)}`);
+  const [grnNumber] = useState(item?.grnNumber || `GRN-SLM-2026-${Math.floor(100 + Math.random() * 900)}`);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Close on Escape key
@@ -66,6 +65,7 @@ export default function GoodsReceiptModal({
     window.print();
   };
 
+  if (!isOpen || !item) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
       <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-2xl overflow-hidden max-h-[92vh] flex flex-col print:m-0 print:p-0 print:border-none print:shadow-none print:max-w-none">
@@ -113,22 +113,22 @@ export default function GoodsReceiptModal({
         <div className="bg-blue-50/70 border-b border-blue-100 px-6 py-3 flex flex-wrap items-center justify-between gap-3 text-xs">
           <div>
             <span className="text-[10px] text-slate-500 uppercase font-bold block">Ordered BoM Qty</span>
-            <strong className="text-slate-900 font-mono text-sm">{totalOrdered} {item.unit}</strong>
+            <strong className="text-slate-900 font-mono text-sm">{totalOrdered} {item?.unit}</strong>
           </div>
           <div className="text-slate-400">&minus;</div>
           <div>
             <span className="text-[10px] text-slate-500 uppercase font-bold block">Already Received</span>
-            <strong className="text-slate-700 font-mono text-sm">{alreadyReceived} {item.unit}</strong>
+            <strong className="text-slate-700 font-mono text-sm">{alreadyReceived} {item?.unit}</strong>
           </div>
           <div className="text-slate-400">&minus;</div>
           <div>
             <span className="text-[10px] text-blue-700 uppercase font-bold block">Receiving in this GRN</span>
-            <strong className="text-blue-700 font-mono text-sm">{numReceivedNow} {item.unit}</strong>
+            <strong className="text-blue-700 font-mono text-sm">{numReceivedNow} {item?.unit}</strong>
           </div>
           <div className="text-slate-400">=</div>
           <div className="p-1.5 px-3 rounded-lg bg-white border border-blue-200">
             <span className="text-[10px] text-slate-500 uppercase font-bold block">Remaining Pending</span>
-            <strong className="text-indigo-900 font-mono text-sm font-black">{newRemainingPending} {item.unit}</strong>
+            <strong className="text-indigo-900 font-mono text-sm font-black">{newRemainingPending} {item?.unit}</strong>
           </div>
         </div>
 
@@ -139,17 +139,17 @@ export default function GoodsReceiptModal({
             <div className="flex justify-between items-start">
               <div>
                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Material Item</span>
-                <strong className="text-sm font-bold text-slate-900">{item.material}</strong>
+                <strong className="text-sm font-bold text-slate-900">{item?.material}</strong>
               </div>
               <span className="text-xs font-mono font-semibold px-2 py-0.5 rounded bg-blue-100 text-blue-800">
-                PO: {item.poNumber}
+                PO: {item?.poNumber}
               </span>
             </div>
             <div className="text-slate-600 text-xs">
-              Spec: <span className="font-medium text-slate-800">{item.specification}</span>
+              Spec: <span className="font-medium text-slate-800">{item?.specification}</span>
             </div>
             <div className="flex justify-between text-[11px] text-slate-500 pt-1 border-t border-slate-200">
-              <span>Vendor: <strong className="text-slate-700">{item.vendor}</strong></span>
+              <span>Vendor: <strong className="text-slate-700">{item?.vendor}</strong></span>
               <span>Project ID: <strong className="font-mono text-slate-700">{projectId}</strong></span>
             </div>
           </div>
@@ -158,7 +158,7 @@ export default function GoodsReceiptModal({
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                Quantity Delivering Now ({item.unit}) *
+                Quantity Delivering Now ({item?.unit}) *
               </label>
               <input
                 type="number"

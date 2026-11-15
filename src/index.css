@@ -152,9 +152,67 @@ button, nav, [role="button"] {
   padding-top: env(safe-area-inset-top, 1rem);
 }
 
-/* System-wide print disable governance rule */
+/* Print: keep documents clean and hide application chrome */
 @media print {
+  @page {
+    size: A4;
+    margin: 14mm;
+  }
+
+  html,
   body {
+    background: #ffffff !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  body {
+    font-size: 11px;
+  }
+
+  .print-hidden {
     display: none !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
+  /* Executive project summary: print only the summary card */
+  body:has(.print-summary-modal) * {
+    visibility: hidden;
+  }
+
+  body:has(.print-summary-modal) .print-summary-modal,
+  body:has(.print-summary-modal) .print-summary-modal * {
+    visibility: visible;
+  }
+
+  body:has(.print-summary-modal) .print-summary-modal {
+    position: absolute !important;
+    inset: 0 auto auto 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    background: #ffffff !important;
+  }
+
+  .print-summary-modal .print-hidden {
+    display: none !important;
+  }
+
+  a[href]::after {
+    content: "";
+  }
+
+  table {
+    page-break-inside: auto;
+  }
+
+  tr {
+    page-break-inside: avoid;
   }
 }

@@ -150,8 +150,8 @@ export const MASTER_AUDIT_LOGS = [
     fieldModified: "Operational Pipeline Access Scope",
     date: "01 Nov 2026",
     time: "10:15:30 AM IST",
-    previousValue: "Pipeline 1: Sales Only",
-    newValue: "Pipeline 1: Sales & Pipeline 2: Approvals Access",
+    previousValue: "S1: Sales only",
+    newValue: "S1: Sales and S2: Execution access",
     reason: "Authorized cross-pipeline visibility for high-value industrial client negotiation and document collection."
   },
   {

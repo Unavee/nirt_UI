@@ -1,5 +1,5 @@
 // BFRD Section 26: Management Dashboard Data Store
-// Defines authoritative management metrics across all 5 canonical pillars:
+// Defines authoritative management metrics across the 3 operational pipelines:
 // 1. Lead Dashboard (Total, New, Qualified, Lost, Converted, Conversion %, Lead Sources)
 // 2. Sales Dashboard (Proposals Issued, Accepted, Total Project Value, Advance Received, Pending Payments)
 // 3. Project Dashboard (Total Projects, In Progress, Delayed, Completed, kW Under Execution, kW Commissioned)

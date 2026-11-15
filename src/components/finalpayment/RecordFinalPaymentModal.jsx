@@ -8,12 +8,11 @@ export default function RecordFinalPaymentModal({
   paymentData,
   onSavePayment
 }) {
-  if (!isOpen || !paymentData) return null;
 
   const [milestoneId, setMilestoneId] = useState("MS-03");
-  const targetMilestone = paymentData.milestones.find(m => m.id === milestoneId) || paymentData.milestones[2];
+  const targetMilestone = paymentData?.milestones.find(m => m.id === milestoneId) || paymentData?.milestones[2];
 
-  const [amount, setAmount] = useState(targetMilestone?.amount || paymentData.balanceAmount || 250000);
+  const [amount, setAmount] = useState(targetMilestone?.amount || paymentData?.balanceAmount || 250000);
   const [paymentMode, setPaymentMode] = useState("RTGS / NEFT");
   const [referenceUtr, setReferenceUtr] = useState("");
   const [paymentDate, setPaymentDate] = useState(new Date().toISOString().split("T")[0]);
@@ -22,7 +21,7 @@ export default function RecordFinalPaymentModal({
 
   const handleMilestoneChange = (id) => {
     setMilestoneId(id);
-    const m = paymentData.milestones.find(ms => ms.id === id);
+    const m = paymentData?.milestones.find(ms => ms.id === id);
     if (m) {
       setAmount(m.amount);
     }
@@ -35,7 +34,7 @@ export default function RecordFinalPaymentModal({
     const receiptNo = `REC-SLM-2026-${Math.floor(1000 + Math.random() * 9000)}`;
 
     // Update milestones
-    const updatedMilestones = paymentData.milestones.map((ms) => {
+    const updatedMilestones = paymentData?.milestones.map((ms) => {
       if (ms.id === milestoneId) {
         return {
           ...ms,
@@ -50,9 +49,9 @@ export default function RecordFinalPaymentModal({
     });
 
     // Recalculate financial balances
-    const newOtherPayments = paymentData.otherPayments + (milestoneId === "MS-03" ? amtNumber : 0);
-    const newTotalReceived = paymentData.advanceReceived + newOtherPayments;
-    const newBalance = Math.max(0, paymentData.totalProjectValue - newTotalReceived);
+    const newOtherPayments = paymentData?.otherPayments + (milestoneId === "MS-03" ? amtNumber : 0);
+    const newTotalReceived = paymentData?.advanceReceived + newOtherPayments;
+    const newBalance = Math.max(0, paymentData?.totalProjectValue - newTotalReceived);
 
     const isFullyPaid = newBalance === 0;
 
@@ -64,17 +63,18 @@ export default function RecordFinalPaymentModal({
       milestones: updatedMilestones,
       noDuesCertificate: isFullyPaid ? {
         isIssued: true,
-        certificateNumber: `NIRT-NOC-2026-${paymentData.projectId?.replace("NIRT-", "")}`,
+        certificateNumber: `NIRT-NOC-2026-${paymentData?.projectId?.replace("NIRT-", "")}`,
         issuedDate: paymentDate,
         issuedBy: "A. Lakshmi (Accounts Manager)",
         remarks: "100% project amount settled. No outstanding customer dues."
-      } : paymentData.noDuesCertificate
+      } : paymentData?.noDuesCertificate
     };
 
     onSavePayment(updatedPaymentData);
     onClose();
   };
 
+  if (!isOpen || !paymentData) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-150">
       <div 
@@ -92,7 +92,7 @@ export default function RecordFinalPaymentModal({
                 Record Final Milestone Payment Settlement
               </h2>
               <p className="text-xs text-slate-500 font-mono">
-                Project: {paymentData.projectId} • Balance: ₹{paymentData.balanceAmount?.toLocaleString()}
+                Project: {paymentData?.projectId} • Balance: ₹{paymentData?.balanceAmount?.toLocaleString()}
               </p>
             </div>
           </div>
@@ -116,7 +116,7 @@ export default function RecordFinalPaymentModal({
               onChange={(e) => handleMilestoneChange(e.target.value)}
               className="w-full text-xs font-semibold px-3 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
             >
-              {paymentData.milestones.map((m) => (
+              {paymentData?.milestones.map((m) => (
                 <option key={m.id} value={m.id}>
                   {m.title} — ₹{m.amount.toLocaleString()} ({m.status})
                 </option>

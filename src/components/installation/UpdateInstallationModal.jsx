@@ -8,11 +8,10 @@ export default function UpdateInstallationModal({
   installationData,
   onUpdateInstallation
 }) {
-  if (!isOpen || !installationData) return null;
 
   const [selectedPackageKey, setSelectedPackageKey] = useState("electrical_testing");
   const selectedPkgMeta = INSTALLATION_WORK_PACKAGES.find(p => p.key === selectedPackageKey) || INSTALLATION_WORK_PACKAGES[0];
-  const currentStatus = installationData.workPackageStatuses?.[selectedPackageKey] || {
+  const currentStatus = installationData?.workPackageStatuses?.[selectedPackageKey] || {
     status: "in_progress",
     progress: 50,
     completedAt: null,
@@ -25,11 +24,11 @@ export default function UpdateInstallationModal({
   const [verifiedBy, setVerifiedBy] = useState(currentStatus.verifiedBy || "Er. K. Vasanth");
   const [completionDate, setCompletionDate] = useState(currentStatus.completedAt || new Date().toISOString().split("T")[0]);
   const [remarks, setRemarks] = useState(currentStatus.remarks || "");
-  const [overallRemarks, setOverallRemarks] = useState(installationData.completionRemarks || "");
+  const [overallRemarks, setOverallRemarks] = useState(installationData?.completionRemarks || "");
 
   const handlePackageChange = (key) => {
     setSelectedPackageKey(key);
-    const pkg = installationData.workPackageStatuses?.[key] || {
+    const pkg = installationData?.workPackageStatuses?.[key] || {
       status: "pending",
       progress: 0,
       completedAt: null,
@@ -47,7 +46,7 @@ export default function UpdateInstallationModal({
     e.preventDefault();
 
     const updatedStatuses = {
-      ...installationData.workPackageStatuses,
+      ...installationData?.workPackageStatuses,
       [selectedPackageKey]: {
         status,
         progress: Number(progress),
@@ -88,6 +87,7 @@ export default function UpdateInstallationModal({
     onClose();
   };
 
+  if (!isOpen || !installationData) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-150">
       <div 
@@ -105,7 +105,7 @@ export default function UpdateInstallationModal({
                 Update Installation Package Progress
               </h2>
               <p className="text-xs text-slate-500 font-mono">
-                Project ID: {installationData.projectId} • {installationData.systemCapacity}
+                Project ID: {installationData?.projectId} • {installationData?.systemCapacity}
               </p>
             </div>
           </div>

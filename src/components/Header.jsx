@@ -40,7 +40,7 @@ export default function Header() {
 
   const getBreadcrumbs = () => {
     if (pathname === "/") return ["NIRT Solar", "Dashboard"];
-    if (pathname.startsWith("/pipelines")) return ["NIRT Solar", "Pipelines", "Quad-Pipeline Board"];
+    if (pathname.startsWith("/pipelines")) return ["NIRT Solar", "Pipelines", "3-Pipeline Board"];
     if (pathname.startsWith("/projects/")) return ["NIRT Solar", "Projects", "Project Details"];
     if (pathname.startsWith("/projects")) return ["NIRT Solar", "Projects"];
     if (pathname.startsWith("/calculator")) return ["NIRT Solar", "Engineering", "Solar Sizer"];

@@ -386,12 +386,11 @@ export default function SolarCalculatorPage() {
                 Dismiss
               </button>
               <button 
-                disabled
-                title="Printing is disabled by System Governance policy"
-                className="bg-slate-200 border border-slate-300 text-slate-400 px-4 py-1.5 text-xs font-semibold flex items-center space-x-1.5 cursor-not-allowed opacity-60"
+                onClick={() => window.print()}
+                className="bg-slate-900 text-white border border-slate-900 hover:bg-black px-4 py-1.5 text-xs font-semibold flex items-center space-x-1.5 print:hidden"
               >
-                <Printer className="w-3.5 h-3.5 text-slate-400" />
-                <span>Print Quotation (Disabled)</span>
+                <Printer className="w-3.5 h-3.5" />
+                <span>Print Quotation</span>
               </button>
             </div>
           </div>

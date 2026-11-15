@@ -6,14 +6,47 @@ import {
   Eye, Laptop, Smartphone, Building, Sparkles, X
 } from "lucide-react";
 import { MASTER_AUDIT_LOGS } from "@/data/auditTrailData";
+import { useRole } from "@/context/RoleContext";
 import Portal from "@/components/Portal";
 
 export default function AuditTrailPage() {
-  const [logs, setLogs] = useState(MASTER_AUDIT_LOGS);
+  const { auditLogs } = useRole();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedEntity, setSelectedEntity] = useState("all");
   const [selectedStaff, setSelectedStaff] = useState("all");
   const [activeLogDetail, setActiveLogDetail] = useState(null);
+
+  const liveLogs = auditLogs.map((entry) => {
+    const [datePart, timePart] = String(entry.timestamp || "").split(",");
+    const date = datePart?.trim() || "-";
+    const time = timePart?.trim() || "-";
+    const isFinancial = /advance|payment|utr|invoice|balance/i.test(
+      `${entry.field || ""} ${entry.step || ""} ${entry.newValue || ""}`
+    );
+
+    return {
+      id: entry.id,
+      projectId: entry.projectId,
+      entityType: isFinancial ? "Payment" : "Project",
+      entityName: entry.clientName,
+      createdBy: { name: entry.staffName, role: entry.role, date, time },
+      modifiedBy: {
+        name: entry.staffName,
+        role: entry.role,
+        branch: "Live CRM session",
+        device: "Web CRM"
+      },
+      fieldModified: entry.field || entry.step,
+      date,
+      time,
+      previousValue: entry.oldValue,
+      newValue: entry.newValue,
+      reason: entry.reason,
+      source: "live"
+    };
+  });
+
+  const logs = [...liveLogs, ...MASTER_AUDIT_LOGS];
 
   // Statistics
   const totalEvents = logs.length;
@@ -62,12 +95,11 @@ export default function AuditTrailPage() {
 
         <div className="flex items-center space-x-2">
           <button
-            disabled
-            title="Printing is disabled by System Governance policy"
-            className="apple-button px-4 py-2.5 rounded-xl text-xs font-semibold bg-slate-100 border border-slate-200 text-slate-400 cursor-not-allowed flex items-center space-x-1.5 shadow-none opacity-60"
+            onClick={() => window.print()}
+            className="apple-button px-4 py-2.5 rounded-xl text-xs font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 flex items-center space-x-1.5 shadow-2xs print:hidden"
           >
-            <Printer className="w-3.5 h-3.5 text-slate-400" />
-            <span>Print Ledger (Disabled)</span>
+            <Printer className="w-3.5 h-3.5 text-slate-500" />
+            <span>Print Ledger</span>
           </button>
         </div>
       </div>

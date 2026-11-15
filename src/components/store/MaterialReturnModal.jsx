@@ -8,15 +8,14 @@ export default function MaterialReturnModal({
   projectId = "NIRT-26-0042",
   onConfirmReturn
 }) {
-  if (!isOpen || !item) return null;
 
   const [returnQty, setReturnQty] = useState(1);
   const [returnDate, setReturnDate] = useState(new Date().toISOString().split("T")[0]);
   const [returnReason, setReturnReason] = useState("Job completed surplus — unused original length");
   const [condition, setCondition] = useState("Reusable A-Grade Stock");
-  const [bin, setBin] = useState(item.warehouseBin || "Warehouse Salem • Drum Stand #04");
+  const [bin, setBin] = useState(item?.warehouseBin || "Warehouse Salem • Drum Stand #04");
   const [returnedBy, setReturnedBy] = useState("M. Saravanan (Senior Installation Lead)");
-  const [rtsNumber] = useState(item.returnSlipNumber || `RTS-SLM-2026-${Math.floor(100 + Math.random() * 900)}`);
+  const [rtsNumber] = useState(item?.returnSlipNumber || `RTS-SLM-2026-${Math.floor(100 + Math.random() * 900)}`);
   const [notes, setNotes] = useState("Physical inspection completed; item cleaned, tagged, and restocked to shelf.");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -33,8 +32,8 @@ export default function MaterialReturnModal({
   }, [isOpen, onClose]);
 
   const numReturn = parseFloat(returnQty) || 0;
-  const newReturnedTotal = (item.returnedQty || 0) + numReturn;
-  const newAvailableTotal = (item.availableQty || 0) + numReturn;
+  const newReturnedTotal = (item?.returnedQty || 0) + numReturn;
+  const newAvailableTotal = (item?.availableQty || 0) + numReturn;
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -42,8 +41,8 @@ export default function MaterialReturnModal({
       setError("Please specify a valid return quantity.");
       return;
     }
-    if (numReturn > item.issuedQty) {
-      setError(`Cannot return ${numReturn} ${item.unit}. Only ${item.issuedQty} ${item.unit} was issued to site.`);
+    if (numReturn > item?.issuedQty) {
+      setError(`Cannot return ${numReturn} ${item?.unit}. Only ${item?.issuedQty} ${item?.unit} was issued to site.`);
       return;
     }
 
@@ -57,7 +56,7 @@ export default function MaterialReturnModal({
         availableQty: newAvailableTotal,
         returnSlipNumber: rtsNumber,
         returnDate: returnDate,
-        notes: `Returned: ${numReturn} ${item.unit} (${returnReason}). Restocked to ${bin}.`
+        notes: `Returned: ${numReturn} ${item?.unit} (${returnReason}). Restocked to ${bin}.`
       };
 
       onConfirmReturn(updatedItem);
@@ -70,6 +69,7 @@ export default function MaterialReturnModal({
     window.print();
   };
 
+  if (!isOpen || !item) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
       <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-xl overflow-hidden max-h-[92vh] flex flex-col print:m-0 print:p-0 print:border-none print:shadow-none print:max-w-none">
@@ -124,11 +124,11 @@ export default function MaterialReturnModal({
 
           {/* Item Meta */}
           <div className="p-3.5 rounded-xl border border-slate-200 bg-slate-50 space-y-1 text-xs">
-            <div className="font-bold text-slate-900 text-sm">{item.material}</div>
-            <div className="text-slate-600 text-[11px]">{item.specification}</div>
+            <div className="font-bold text-slate-900 text-sm">{item?.material}</div>
+            <div className="text-slate-600 text-[11px]">{item?.specification}</div>
             <div className="flex justify-between text-[11px] text-slate-500 pt-1 border-t border-slate-200">
-              <span>Total Issued to Site: <strong className="text-slate-800">{item.issuedQty} {item.unit}</strong></span>
-              <span>Previously Returned: <strong className="text-emerald-700">{item.returnedQty || 0} {item.unit}</strong></span>
+              <span>Total Issued to Site: <strong className="text-slate-800">{item?.issuedQty} {item?.unit}</strong></span>
+              <span>Previously Returned: <strong className="text-emerald-700">{item?.returnedQty || 0} {item?.unit}</strong></span>
             </div>
           </div>
 
@@ -136,12 +136,12 @@ export default function MaterialReturnModal({
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                Surplus Quantity Returned ({item.unit}) *
+                Surplus Quantity Returned ({item?.unit}) *
               </label>
               <input
                 type="number"
                 step="any"
-                max={item.issuedQty}
+                max={item?.issuedQty}
                 value={returnQty}
                 onChange={(e) => setReturnQty(e.target.value)}
                 className="w-full text-xs font-mono font-bold bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"

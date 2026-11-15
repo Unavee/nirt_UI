@@ -8,16 +8,15 @@ export default function UpdateNetMeterModal({
   meterData,
   onUpdateMeter
 }) {
-  if (!isOpen || !meterData) return null;
 
-  const [status, setStatus] = useState(meterData.currentStatus || "meter_installed");
-  const [installationDate, setInstallationDate] = useState(meterData.application?.installationDate || "");
-  const [completionDate, setCompletionDate] = useState(meterData.application?.completionDate || "");
-  const [meterSerial, setMeterSerial] = useState(meterData.meterDetails?.serialNumber || "");
-  const [meterMake, setMeterMake] = useState(meterData.meterDetails?.make || "L&T Electrical & Automation");
-  const [importKwh, setImportKwh] = useState(meterData.readings?.initialImportKwh || "042180.0");
-  const [exportKwh, setExportKwh] = useState(meterData.readings?.initialExportKwh || "000004.8");
-  const [serviceOrderNo, setServiceOrderNo] = useState(meterData.application?.serviceConnectionOrderNo || "");
+  const [status, setStatus] = useState(meterData?.currentStatus || "meter_installed");
+  const [installationDate, setInstallationDate] = useState(meterData?.application?.installationDate || "");
+  const [completionDate, setCompletionDate] = useState(meterData?.application?.completionDate || "");
+  const [meterSerial, setMeterSerial] = useState(meterData?.meterDetails?.serialNumber || "");
+  const [meterMake, setMeterMake] = useState(meterData?.meterDetails?.make || "L&T Electrical & Automation");
+  const [importKwh, setImportKwh] = useState(meterData?.readings?.initialImportKwh || "042180.0");
+  const [exportKwh, setExportKwh] = useState(meterData?.readings?.initialExportKwh || "000004.8");
+  const [serviceOrderNo, setServiceOrderNo] = useState(meterData?.application?.serviceConnectionOrderNo || "");
 
   const handleSave = (e) => {
     e.preventDefault();
@@ -32,18 +31,18 @@ export default function UpdateNetMeterModal({
       currentStatus: status,
       statusStep: stepNum,
       application: {
-        ...meterData.application,
+        ...meterData?.application,
         installationDate,
         completionDate: status === "completed" ? (completionDate || new Date().toISOString().split("T")[0]) : null,
         serviceConnectionOrderNo: serviceOrderNo
       },
       meterDetails: {
-        ...meterData.meterDetails,
+        ...meterData?.meterDetails,
         serialNumber: meterSerial,
         make: meterMake
       },
       readings: {
-        ...meterData.readings,
+        ...meterData?.readings,
         initialImportKwh: importKwh,
         initialExportKwh: exportKwh,
         initialNetKwh: netKwhCalc
@@ -54,6 +53,7 @@ export default function UpdateNetMeterModal({
     onClose();
   };
 
+  if (!isOpen || !meterData) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-150">
       <div 
@@ -71,7 +71,7 @@ export default function UpdateNetMeterModal({
                 Update Net Metering & Grid Changeover
               </h2>
               <p className="text-xs text-slate-500 font-mono">
-                Consumer #{meterData.consumerNumber} • {meterData.capacity}
+                Consumer #{meterData?.consumerNumber} • {meterData?.capacity}
               </p>
             </div>
           </div>

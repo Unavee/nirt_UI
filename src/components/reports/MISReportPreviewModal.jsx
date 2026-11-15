@@ -12,7 +12,6 @@ import {
 } from "lucide-react";
 
 export default function MISReportPreviewModal({ isOpen, onClose, report }) {
-  if (!isOpen || !report) return null;
 
   const [downloadSuccess, setDownloadSuccess] = useState(false);
 
@@ -54,6 +53,7 @@ export default function MISReportPreviewModal({ isOpen, onClose, report }) {
     window.print();
   };
 
+  if (!isOpen || !report) return null;
   return (
     <div className="fixed inset-0 w-screen h-screen z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-150">
       <div className="relative w-full max-w-4xl max-h-[90vh] bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col print:m-0 print:border-none print:shadow-none print:max-h-none">

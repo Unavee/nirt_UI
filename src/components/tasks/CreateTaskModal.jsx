@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { X, CheckSquare, Calendar, User, AlertCircle, Clock, CheckCircle2, Building2 } from "lucide-react";
 
 export default function CreateTaskModal({ isOpen, onClose, onSave, project }) {
-  if (!isOpen) return null;
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -46,6 +45,7 @@ export default function CreateTaskModal({ isOpen, onClose, onSave, project }) {
     onClose();
   };
 
+  if (!isOpen) return null;
   return (
     <div className="fixed inset-0 w-screen h-screen z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-150">
       <div className="relative w-full max-w-xl max-h-[90vh] bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col">

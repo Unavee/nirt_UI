@@ -26,7 +26,7 @@ export default function AppShell({ children }) {
   }
 
   return (
-    <div className="flex min-h-screen bg-slate-50 relative selection:bg-slate-900 selection:text-white">
+    <div className="flex min-h-screen bg-slate-50 relative selection:bg-slate-900 selection:text-white print:block print:bg-white">
       {/* Desktop Apple Sidebar */}
       <Sidebar />
 
@@ -34,14 +34,14 @@ export default function AppShell({ children }) {
       <div 
         className={`flex-1 flex flex-col min-h-screen w-full min-w-0 transition-all duration-300 ease-in-out ${
           isCollapsed ? "lg:pl-20" : "lg:pl-64"
-        }`}
+        } print:!pl-0`}
       >
         
         {/* Top Frosted Navbar */}
         <AppleNavbar />
 
         {/* Viewport Content Container (Fluid edge-to-edge on large/ultrawide displays) */}
-        <main className="flex-1 w-full p-3 sm:p-6 lg:p-8 pb-28 lg:pb-12">
+        <main className="flex-1 w-full p-3 sm:p-6 lg:p-8 pb-28 lg:pb-12 print:p-0 print:pb-0">
           {children}
         </main>
 
@@ -49,7 +49,7 @@ export default function AppShell({ children }) {
         <MobileTabBar />
 
         {/* Desktop Footer (CIN removed, Powered by ACHISE added) */}
-        <footer className="hidden md:block border-t border-slate-200/80 py-4 px-6 text-xs text-slate-500 bg-white/60 backdrop-blur-md">
+        <footer className="hidden md:block border-t border-slate-200/80 py-4 px-6 text-xs text-slate-500 bg-white/60 backdrop-blur-md print:hidden">
           <div className="w-full flex flex-col sm:flex-row justify-between items-center gap-2">
             <span className="font-semibold text-slate-800 tracking-tight">
               NIRT RENEWABLE ENERGY PRIVATE LIMITED

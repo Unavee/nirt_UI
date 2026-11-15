@@ -7,11 +7,10 @@ export default function SendReminderModal({
   paymentData,
   onSendReminder
 }) {
-  if (!isOpen || !paymentData) return null;
 
   const [channel, setChannel] = useState("WhatsApp");
-  const [amount, setAmount] = useState(paymentData.balanceAmount || 250000);
-  const [dueDate, setDueDate] = useState(paymentData.paymentDueDate || "2026-11-15");
+  const [amount, setAmount] = useState(paymentData?.balanceAmount || 250000);
+  const [dueDate, setDueDate] = useState(paymentData?.paymentDueDate || "2026-11-15");
   const [customNote, setCustomNote] = useState("");
 
   const handleSend = (e) => {
@@ -21,7 +20,7 @@ export default function SendReminderModal({
       id: `REM-${Date.now().toString().slice(-4)}`,
       channel,
       sentAt: new Date().toLocaleString("en-IN", { dateStyle: "short", timeStyle: "short" }),
-      recipient: channel === "Email" ? paymentData.email : paymentData.phone,
+      recipient: channel === "Email" ? paymentData?.email : paymentData?.phone,
       subject: `Final Milestone Settlement Notice: ₹${Number(amount).toLocaleString()}`,
       amountDemanded: Number(amount),
       status: "Dispatched",
@@ -32,8 +31,9 @@ export default function SendReminderModal({
     onClose();
   };
 
-  const previewMessage = `Dear ${paymentData.customerName},\n\nGreetings from NIRT Solar Renewable Energy Systems. Your 50 kWp Rooftop Solar installation (Consumer #${paymentData.consumerNumber}) has completed Net Metering.\n\nThe final milestone payment of ₹${Number(amount).toLocaleString()} is due on ${dueDate}.\n\nBank Transfer Details:\n• Account: NIRT Solar Systems Pvt Ltd\n• Bank: HDFC Bank Ltd (A/c: 50200088910245)\n• IFSC: HDFC0000214\n• UPI ID: nirtsolar@hdfcbank\n\nThank you for choosing NIRT Solar.`;
+  const previewMessage = `Dear ${paymentData?.customerName},\n\nGreetings from NIRT Solar Renewable Energy Systems. Your 50 kWp Rooftop Solar installation (Consumer #${paymentData?.consumerNumber}) has completed Net Metering.\n\nThe final milestone payment of ₹${Number(amount).toLocaleString()} is due on ${dueDate}.\n\nBank Transfer Details:\n• Account: NIRT Solar Systems Pvt Ltd\n• Bank: HDFC Bank Ltd (A/c: 50200088910245)\n• IFSC: HDFC0000214\n• UPI ID: nirtsolar@hdfcbank\n\nThank you for choosing NIRT Solar.`;
 
+  if (!isOpen || !paymentData) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-150">
       <div 
@@ -51,7 +51,7 @@ export default function SendReminderModal({
                 Generate Automated Payment Reminder
               </h2>
               <p className="text-xs text-slate-500 font-mono">
-                Project: {paymentData.projectId} • Customer: {paymentData.customerName}
+                Project: {paymentData?.projectId} • Customer: {paymentData?.customerName}
               </p>
             </div>
           </div>
@@ -125,7 +125,7 @@ export default function SendReminderModal({
             <div className="flex justify-between">
               <span className="text-slate-500">Destination:</span>
               <strong className="font-mono text-slate-800">
-                {channel === "Email" ? paymentData.email : paymentData.phone}
+                {channel === "Email" ? paymentData?.email : paymentData?.phone}
               </strong>
             </div>
             <div className="flex justify-between">

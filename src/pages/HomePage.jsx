@@ -72,7 +72,7 @@ export default function DashboardPage() {
   // 2. PROJECTS STATS & CHARTS
   const projectMetrics = [
     { label: "Total Projects", value: "48", helper: "All-time Active Pipeline", icon: FolderKanban, color: "text-slate-900" },
-    { label: "Projects in Progress", value: "26", helper: "Pipelines 1–4", icon: Layers, color: "text-blue-600" },
+    { label: "Projects in Progress", value: "26", helper: "Sales + Execution + Subsidy", icon: Layers, color: "text-blue-600" },
     { label: "Projects Delayed", value: "3", helper: ">10d SLA Alert", icon: AlertTriangle, color: "text-rose-600" },
     { label: "Projects Completed", value: "19", helper: "Triple Closed", icon: CheckCircle2, color: "text-emerald-600" },
     { label: "Under Execution", value: "185.5 kW", helper: "12 Ongoing Sites", icon: Zap, color: "text-indigo-600" },
@@ -89,11 +89,9 @@ export default function DashboardPage() {
   ];
 
   const pipelineDistribution = [
-    { name: "P1: Sales & Feasibility", value: 18 },
-    { name: "P2: Advance & Approvals", value: 9 },
-    { name: "P3: Procurement & Stores", value: 6 },
-    { name: "P4: EPC Site Execution", value: 12 },
-    { name: "P5: Closure & Subsidy", value: 7 },
+    { name: "1. Sales Pipeline (7 Open · 3 Closed)", value: 18 },
+    { name: "2. Project Execution Pipeline (12 Open · 2 Closed)", value: 27 },
+    { name: "3. Subsidy Flow Pipeline (3 Open · 1 Closed)", value: 7 },
   ];
 
   // 3. FINANCE STATS & CHARTS
@@ -115,11 +113,11 @@ export default function DashboardPage() {
 
   // 4. OPERATIONS STATS & FUNNEL
   const operationsMetrics = [
-    { label: "Procurement Pending", count: 4, desc: "Step 11: Vendor POs awaiting dispatch", badge: "P3 Stores", icon: Truck, color: "border-teal-200 bg-teal-50/50 text-teal-800" },
-    { label: "Installation Pending", count: 6, desc: "Step 14: Material delivered, team en route", badge: "P4 Civil", icon: Wrench, color: "border-indigo-200 bg-indigo-50/50 text-indigo-800" },
-    { label: "Inspection Pending", count: 3, desc: "Step 15: Earth pit (<5Ω) & string tests", badge: "P4 Safety", icon: ClipboardCheck, color: "border-blue-200 bg-blue-50/50 text-blue-800" },
-    { label: "Net Metering Pending", count: 5, desc: "Step 17: TANGEDCO meter sync scheduled", badge: "P4 Grid", icon: Zap, color: "border-violet-200 bg-violet-50/50 text-violet-800" },
-    { label: "Documentation Pending", count: 2, desc: "Step 08: KYC & Property Tax awaiting upload", badge: "P2 KYC", icon: FileText, color: "border-rose-200 bg-rose-50/50 text-rose-800" },
+    { label: "Procurement Pending", count: 4, desc: "Step 11: Vendor POs awaiting dispatch", badge: "S2 Stores", icon: Truck, color: "border-teal-200 bg-teal-50/50 text-teal-800" },
+    { label: "Installation Pending", count: 6, desc: "Step 14: Material delivered, team en route", badge: "S2 Civil", icon: Wrench, color: "border-indigo-200 bg-indigo-50/50 text-indigo-800" },
+    { label: "Inspection Pending", count: 3, desc: "Step 15: Earth pit (<5Ω) & string tests", badge: "S2 Safety", icon: ClipboardCheck, color: "border-blue-200 bg-blue-50/50 text-blue-800" },
+    { label: "Net Metering Pending", count: 5, desc: "Step 17: TANGEDCO meter sync scheduled", badge: "S2 Grid", icon: Zap, color: "border-violet-200 bg-violet-50/50 text-violet-800" },
+    { label: "Documentation Pending", count: 2, desc: "Step 08: KYC & Property Tax awaiting upload", badge: "S2 KYC", icon: FileText, color: "border-rose-200 bg-rose-50/50 text-rose-800" },
   ];
 
   const operationsExecutionFunnel = [
@@ -180,7 +178,7 @@ export default function DashboardPage() {
           <Link to="/pipelines"
             className="apple-button flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-slate-900 text-white hover:bg-black shadow-md shadow-slate-900/10"
           >
-            <span>Master 5-Pipeline</span>
+            <span>Master Pipeline Board</span>
             <ChevronRight className="w-3.5 h-3.5" />
           </Link>
         </div>
@@ -281,11 +279,11 @@ export default function DashboardPage() {
         {/* 2 Live Charts Row */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <AppleHorizontalBarChart 
-            title="Projects across 5 Operational Pipelines" 
+            title="Projects across 3 Operational Pipelines" 
             items={pipelineDistribution}
             labelKey="name"
             valueKey="value"
-            subtitle="Pipeline flow: Sales → Approvals → Procurement → Site → Subsidy"
+            subtitle="Pipeline flow: Sales → Execution → Subsidy"
           />
           <AppleBarLineChart 
             title="Monthly Commissioned kW & Revenue Trend" 

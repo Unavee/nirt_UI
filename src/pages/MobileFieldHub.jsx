@@ -704,12 +704,11 @@ export default function MobileFieldHub() {
 
           <div className="flex justify-end pt-2">
             <button
-              disabled
-              title="Printing is disabled by System Governance policy"
-              className="apple-button px-5 py-2.5 rounded-xl bg-slate-100 border border-slate-200 text-slate-400 font-bold text-xs flex items-center space-x-1.5 shadow-none cursor-not-allowed opacity-60"
+              onClick={() => window.print()}
+              className="apple-button px-5 py-2.5 rounded-xl bg-slate-900 text-white hover:bg-black font-bold text-xs flex items-center space-x-1.5 shadow-xs print:hidden"
             >
-              <Printer className="w-3.5 h-3.5 text-slate-400" />
-              <span>Print Handover Slip (Disabled)</span>
+              <Printer className="w-3.5 h-3.5" />
+              <span>Print Handover Slip</span>
             </button>
           </div>
         </div>

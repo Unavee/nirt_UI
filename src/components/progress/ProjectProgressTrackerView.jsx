@@ -38,6 +38,9 @@ export default function ProjectProgressTrackerView({
   const delayedCount = stages.filter(s => s.status === "delayed").length;
   const totalStages = BFRD_PROGRESS_STAGES.length; // 15
   const overallPercentage = Math.round((completedCount / totalStages) * 100);
+  const activeStageMeta = BFRD_PROGRESS_STAGES.find(
+    (meta) => stages.find((stage) => stage.id === meta.id)?.status === "in_progress"
+  );
 
   const getStatusBadge = (status) => {
     switch (status) {
@@ -86,21 +89,21 @@ export default function ProjectProgressTrackerView({
               </span>
               <span className="text-xs font-bold px-3 py-1 rounded-full border bg-blue-50 text-blue-800 border-blue-200 flex items-center gap-1.5">
                 <Activity className="w-3.5 h-3.5 text-blue-600" />
-                <span>STAGE {progressData.currentStageNumber} OF 15</span>
+                <span>BFRD §17 REFERENCE VIEW</span>
               </span>
               <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-100">
                 🎯 Target Handover: {progressData.targetHandoverDate}
               </span>
             </div>
             <h1 className="text-xl font-bold text-slate-900">
-              End-to-End 15-Stage Project Progress Tracker
+              BFRD 15-Milestone Reference Tracker
             </h1>
-            <p className="text-xs text-slate-500 mt-1 flex items-center gap-2">
+            <p className="text-xs text-slate-500 mt-1 flex items-center gap-2 flex-wrap">
               <span>Customer: <strong className="text-slate-800">{progressData.customerName}</strong></span>
               <span>•</span>
               <span>Capacity: <strong className="text-blue-700">{progressData.capacity}</strong></span>
               <span>•</span>
-              <span>BFRD Section 17 Standard Governance</span>
+              <span>BFRD Section 17 customer-file record</span>
             </p>
           </div>
 
@@ -123,7 +126,7 @@ export default function ProjectProgressTrackerView({
             <div className="text-xl font-mono font-bold text-emerald-700 mt-1">
               {completedCount} <span className="text-xs font-normal text-slate-500">/ 15 Stages</span>
             </div>
-            <span className="text-[10px] text-emerald-600 font-semibold block mt-0.5">✓ Ahead of Schedule</span>
+            <span className="text-[10px] text-emerald-600 font-semibold block mt-0.5">✓ Recorded in customer file</span>
           </div>
 
           <div className="p-4 rounded-xl bg-slate-50 border border-slate-100">
@@ -131,7 +134,11 @@ export default function ProjectProgressTrackerView({
             <div className="text-xl font-mono font-bold text-blue-700 mt-1">
               {inProgressCount} <span className="text-xs font-normal text-slate-500">Stage Active</span>
             </div>
-            <span className="text-[10px] text-blue-600 font-semibold block mt-0.5">⚙️ Stage 10: Installation</span>
+            <span className="text-[10px] text-blue-600 font-semibold block mt-0.5">
+              {activeStageMeta
+                ? `${activeStageMeta.stageNumber}. ${activeStageMeta.name}`
+                : "No milestone in progress"}
+            </span>
           </div>
 
           <div className="p-4 rounded-xl bg-slate-50 border border-slate-100">
@@ -147,16 +154,33 @@ export default function ProjectProgressTrackerView({
             <div className="text-xl font-mono font-bold text-emerald-700 mt-1">
               {delayedCount === 0 ? "0 Delays" : `${delayedCount} Delayed`}
             </div>
-            <span className="text-[10px] text-emerald-600 font-semibold block mt-0.5">✓ 100% On-Time Execution</span>
+            <span className={`text-[10px] font-semibold block mt-0.5 ${delayedCount === 0 ? "text-emerald-600" : "text-rose-600"}`}>
+              {delayedCount === 0 ? "✓ No SLA breaches recorded" : `${delayedCount} milestone${delayedCount === 1 ? "" : "s"} delayed`}
+            </span>
           </div>
         </div>
 
-        {/* 15-Stage Horizontal Stepper */}
+        <div className="mt-5 p-3.5 rounded-xl bg-blue-50/70 border border-blue-200 flex items-start gap-2.5">
+          <Layers className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
+          <div>
+            <p className="text-xs font-bold text-blue-900">
+              Reference view, not a pipeline list
+            </p>
+            <p className="text-[11px] text-blue-900/75 leading-relaxed mt-0.5">
+              This tracker keeps the BFRD Section 17 fifteen-milestone record for the customer file.
+              The live operating model has three pipelines: <strong>Sales (S1)</strong>,{" "}
+              <strong>Execution (S2)</strong> and <strong>Subsidy (S3)</strong>. Stage-gate work is
+              owned by the pipeline board; this ledger is the audit-friendly project history.
+            </p>
+          </div>
+        </div>
+
+        {/* BFRD 15-milestone reference stepper */}
         <div className="mt-6 pt-6 border-t border-slate-100">
           <div className="flex justify-between items-center mb-3">
             <span className="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
               <Layers className="w-4 h-4 text-blue-600" />
-              15-Stage Lifecycle Flow
+              15-Milestone Flow (BFRD reference)
             </span>
             <span className="text-xs font-mono text-slate-500">
               {completedCount} of 15 completed ({overallPercentage}%)
@@ -166,7 +190,15 @@ export default function ProjectProgressTrackerView({
           <div className="relative overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             <div className="flex items-center min-w-[900px] justify-between">
               {BFRD_PROGRESS_STAGES.map((meta, idx) => {
-                const stageData = stages.find(s => s.id === meta.id) || { status: "pending" };
+                const stageData = stages.find(s => s.id === meta.id) || {
+                  stageNumber: meta.stageNumber,
+                  id: meta.id,
+                  status: "pending",
+                  startDate: null,
+                  completionDate: null,
+                  referenceDoc: "",
+                  remarks: ""
+                };
                 const isCompleted = stageData.status === "completed";
                 const isInProgress = stageData.status === "in_progress";
 
@@ -208,13 +240,13 @@ export default function ProjectProgressTrackerView({
         </div>
       </div>
 
-      {/* 2. 15-Stage Detail Ledger Table */}
+      {/* 2. BFRD Reference Ledger Table */}
       <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3 border-b border-slate-100">
           <div>
             <h2 className="text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
               <Activity className="w-4 h-4 text-blue-600" />
-              15 Sequential Stages & Regulatory Milestones
+              BFRD 15-Milestone Ledger
             </h2>
             <p className="text-xs text-slate-500 mt-0.5">
               Click any stage row or button to update status, completion dates, and audit remarks

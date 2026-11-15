@@ -19,7 +19,15 @@ import {
   ArrowUpRight
 } from "lucide-react";
 
-export function QuickActionSheet({ isOpen, onClose, defaultAction = null, project = null, onStepComplete = null }) {
+export function QuickActionSheet({
+  isOpen,
+  onClose,
+  defaultAction = null,
+  project = null,
+  stage = null,
+  onStepComplete = null,
+  onStageComplete = null
+}) {
   const { activeRole, addAuditEntry } = useRole();
   const [selectedAction, setSelectedAction] = useState(defaultAction || activeRole.operationalActions?.[0]);
   const [formData, setFormData] = useState({});
@@ -27,17 +35,20 @@ export function QuickActionSheet({ isOpen, onClose, defaultAction = null, projec
   const [submitted, setSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const fileInputRef = useRef(null);
+  const modalRef = useRef(null);
 
   useEffect(() => {
-    if (defaultAction) {
-      setSelectedAction(defaultAction);
+    if (!isOpen) return;
+
+    if (stage || defaultAction) {
+      setSelectedAction(defaultAction || activeRole.operationalActions?.[0]);
       // Pre-fill initial project data if provided
       const initial = {};
       if (project) {
         initial.projectId = project.id;
-        initial.customerName = project.client || project.clientName || "";
-        initial.clientName = project.client || project.clientName || "";
-        initial.proposedCapacity = project.capacity || "";
+        initial.customerName = project.client || project.customerName || "";
+        initial.clientName = project.client || project.customerName || "";
+        initial.proposedCapacity = String(project.capacity || "").replace(/[^0-9.]/g, "");
         initial.districtCircle = project.district || "";
       }
       setFormData(initial);
@@ -46,7 +57,51 @@ export function QuickActionSheet({ isOpen, onClose, defaultAction = null, projec
     } else if (activeRole.operationalActions?.[0]) {
       setSelectedAction(activeRole.operationalActions[0]);
     }
-  }, [defaultAction, activeRole, project]);
+  }, [stage, defaultAction, activeRole, project, isOpen]);
+
+  // Dialog accessibility: Escape to close, focus containment and scroll lock.
+  useEffect(() => {
+    if (!isOpen) return undefined;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        onClose?.();
+        return;
+      }
+
+      if (event.key !== "Tab" || !modalRef.current) return;
+      const focusable = modalRef.current.querySelectorAll(
+        'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      );
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    const focusTimer = window.setTimeout(() => {
+      const firstInput = modalRef.current?.querySelector("input:not([type=hidden]), select, textarea, button");
+      firstInput?.focus();
+    }, 30);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", handleKeyDown);
+      window.clearTimeout(focusTimer);
+    };
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
@@ -99,6 +154,7 @@ export function QuickActionSheet({ isOpen, onClose, defaultAction = null, projec
             "Qualified",
             "Site Survey Required",
             "Not Qualified",
+            "Not Feasible (technical)",
             "Lost",
             "Converted"
           ]},
@@ -372,6 +428,7 @@ export function QuickActionSheet({ isOpen, onClose, defaultAction = null, projec
     const step = String(stepRaw || "").padStart(2, "0");
     const isTerminal = step === "02" && (
       qualificationStatus === "Not Qualified" ||
+      qualificationStatus === "Not Feasible (technical)" ||
       qualificationStatus === "Lost" ||
       qualificationStatus === "Lead rejected" ||
       viabilityValue?.includes("Cat D")
@@ -422,71 +479,109 @@ export function QuickActionSheet({ isOpen, onClose, defaultAction = null, projec
   }
 
   const currentAction = selectedAction || activeRole.operationalActions?.[0];
-  const currentStep = currentAction?.step;
-  const fields = getRequiredFields(currentStep);
-  const uploadRequirement = getRequiredUpload(currentStep);
-  const isNoUploadRequired = uploadRequirement.startsWith("None");
+  const currentStep = stage?.formStep || currentAction?.step;
+  const fields = stage?.formFields || getRequiredFields(currentStep);
+  const uploadRequirement = stage
+    ? stage.upload || "None (stage has no document requirement)"
+    : getRequiredUpload(currentStep);
+  const isNoUploadRequired = !uploadRequirement || uploadRequirement.startsWith("None");
+  const isUploadRequired = Boolean(stage?.uploadRequired);
+  const isConfirmOnly = Boolean(stage?.confirmOnly);
   const isCatDSelected = currentStep === "02" && (
     formData.qualificationStatus === "Not Qualified" ||
+    formData.qualificationStatus === "Not Feasible (technical)" ||
     formData.qualificationStatus === "Lost" ||
     formData.qualificationStatus === "Lead rejected" ||
     formData.viability?.includes("Cat D")
   );
-  const milestone = getProgressiveMilestone(currentStep, formData.viability, formData.qualificationStatus);
+
+  const milestone = stage
+    ? {
+        isTerminal: false,
+        badge: stage.closed ? "Closed / exit stage" : `Stage ${stage.number} of ${stage.stageTotal || stage.number}`,
+        nextTitle: stage.nextStageTitle || (stage.nextStage ? "Next stage unlocked" : "Stage completion"),
+        nextDesc: stage.nextStage
+          ? `Completing this gate records the evidence and moves the project to ${stage.nextStageTitle || "the next stage"}.`
+          : stage.description,
+        buttonText: submitted
+          ? "Stage Saved"
+          : stage.actionLabel || `Complete ${stage.title}`
+      }
+    : getProgressiveMilestone(currentStep, formData.viability, formData.qualificationStatus);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
-    // Validate inputs
-    for (const rf of fields) {
-      // Custom lead source is only required if "Custom / Other Source" is selected
-      if (rf.id === "customLeadSource" && formData.leadSource !== "Custom / Other Source") {
-        continue;
-      }
-      // If Cat D is selected, dropReason and dropRemarks are strictly mandatory
-      if (rf.id === "dropReason" || rf.id === "dropRemarks") {
-        if (isCatDSelected && !formData[rf.id]) {
-          setErrorMessage(`Please provide: ${rf.label}`);
-          return;
-        }
-      } else if (!formData[rf.id]) {
-        // Drop reason not required if not Cat D
-        if (rf.id !== "dropReason" && rf.id !== "dropRemarks") {
+
+    if (!isConfirmOnly) {
+      // Validate visible fields. Fields marked optional are deliberately skipped.
+      for (const rf of fields) {
+        if (rf.optional) continue;
+        if (rf.id === "customLeadSource" && formData.leadSource !== "Custom / Other Source") continue;
+        if (currentStep === "02" && (rf.id === "dropReason" || rf.id === "dropRemarks") && !isCatDSelected) continue;
+
+        if (rf.id === "dropReason" || rf.id === "dropRemarks") {
+          if (isCatDSelected && !formData[rf.id]) {
+            setErrorMessage(`Please provide: ${rf.label}`);
+            return;
+          }
+        } else if (!formData[rf.id]) {
           setErrorMessage(`Please fill out: ${rf.label}`);
           return;
         }
       }
     }
 
+    if (isUploadRequired && !selectedFileName) {
+      setErrorMessage(`This stage gate requires a document: ${uploadRequirement}`);
+      return;
+    }
+
     // Determine audit log description
-    let outcomeReason = "Initial authorized milestone verification";
-    let stepTitle = `Step ${currentStep}: ${currentAction?.title}`;
+    let outcomeReason = stage ? `${stage.gateRule} • Verified by ${activeRole.title.split("/")[0].trim()}` : "Initial authorized milestone verification";
+    let auditStepTitle = stage
+      ? `${stage.pipelineTitle || "Pipeline"} • ${stage.title}`
+      : `Step ${currentStep}: ${currentAction?.title}`;
     let newValue = String(formData[fields[0]?.id] || "Submitted");
 
     if (isCatDSelected) {
       outcomeReason = `Lead Dropped: ${formData.dropReason} • ${formData.dropRemarks || "Unqualified"}`;
-      stepTitle = `Step 02: Lead Dropped (Closed)`;
+      auditStepTitle = `${stage?.pipelineTitle || "Sales"} • Lead Dropped (Closed)`;
       newValue = "Cat D: Dropped / Pipeline Terminated";
     }
 
-    // Log to System Audit Log
+    // Never persist a full Aadhaar/PAN in the audit value.
+    if (fields[0]?.id === "aadhaarNo" && newValue) {
+      newValue = `XXXX-XXXX-${String(newValue).replace(/\D/g, "").slice(-4)}`;
+    }
+
     addAuditEntry({
       staffName: activeRole.title.split("/")[0].trim(),
       projectId: formData.projectId || project?.id || "NIRT-2610-0045",
       clientName: formData.customerName || formData.clientName || project?.client || "Apex Spinning Mill",
-      step: stepTitle,
+      step: auditStepTitle,
       field: fields[0]?.label || "Operational Record",
       oldValue: isCatDSelected ? "Active Inquiry" : "Pending Creation",
       newValue: newValue,
       reason: outcomeReason
     });
 
+    if (onStageComplete) {
+      onStageComplete({
+        project,
+        stage,
+        formData,
+        isCatDSelected,
+        fileName: selectedFileName
+      });
+    }
+
     if (onStepComplete) {
       onStepComplete({
-        project: project,
+        project,
         step: currentStep,
-        formData: formData,
-        isCatDSelected: isCatDSelected,
+        stage,
+        formData,
+        isCatDSelected,
         fileName: selectedFileName
       });
     }
@@ -503,32 +598,46 @@ export function QuickActionSheet({ isOpen, onClose, defaultAction = null, projec
   return createPortal(
     <div className="modal-backdrop-root flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-150">
       {/* Tap backdrop to close */}
-      <div className="fixed inset-0" onClick={onClose} />
+      <div className="fixed inset-0" onClick={onClose} aria-hidden="true" />
 
       {/* Sheet Modal Container */}
-      <div className="relative w-full sm:max-w-xl max-h-[88vh] bg-white rounded-3xl shadow-2xl border border-slate-200/80 overflow-hidden flex flex-col z-10 animate-in zoom-in-95 duration-150">
+      <div
+        ref={modalRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="quick-action-title"
+        className="relative w-full sm:max-w-xl max-h-[88vh] bg-white rounded-3xl shadow-2xl border border-slate-200/80 overflow-hidden flex flex-col z-10 animate-in zoom-in-95 duration-150"
+      >
         
         {/* Modal Header */}
-        <div className="shrink-0 flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/80">
-          <div className="flex items-center space-x-2.5">
-            <span className={`w-2.5 h-2.5 rounded-full ${isCatDSelected ? "bg-rose-500 animate-pulse" : "bg-blue-600"}`} />
-            <div>
-              <div className="flex items-center space-x-1.5">
-                <span className="text-[10px] font-mono font-bold px-1.5 py-0.2 rounded bg-slate-100 text-slate-700">
-                  Step {currentStep}
+        <div className="shrink-0 flex items-center justify-between gap-3 px-5 sm:px-6 py-4 border-b border-slate-100 bg-slate-50/80">
+          <div className="flex items-center space-x-2.5 min-w-0">
+            <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${isCatDSelected ? "bg-rose-500 animate-pulse" : "bg-blue-600"}`} />
+            <div className="min-w-0">
+              <div className="flex items-center space-x-1.5 flex-wrap gap-y-1">
+                <span className="text-[11px] font-mono font-bold px-1.5 py-0.5 rounded bg-slate-900 text-white">
+                  {stage ? `${stage.pipelineCode || "P"} · Stage ${stage.number}` : `Step ${currentStep}`}
                 </span>
-                <h3 className="text-base font-bold text-slate-900 tracking-tight">
-                  {currentAction?.title}
+                {stage && (
+                  <span className="text-[11px] font-mono font-semibold px-1.5 py-0.5 rounded bg-white text-slate-600 border border-slate-200">
+                    {stage.checklist?.length || 0} checklist item{(stage.checklist?.length || 0) === 1 ? "" : "s"}
+                  </span>
+                )}
+                <h3 id="quick-action-title" className="text-base font-bold text-slate-900 tracking-tight truncate">
+                  {stage?.title || currentAction?.title}
                 </h3>
               </div>
-              <p className="text-xs text-slate-500 mt-0.5">
-                Authorized Role: <span className="font-semibold text-slate-800">{activeRole.title.split("/")[0]}</span>
+              <p className="text-xs text-slate-500 mt-0.5 truncate">
+                Owner: <span className="font-semibold text-slate-800">{stage?.responsibleRole || activeRole.title.split("/")[0]}</span>
+                {stage?.slaDays > 0 && <span className="text-slate-400"> · SLA {stage.slaDays}d</span>}
               </p>
             </div>
           </div>
           <button
+            type="button"
             onClick={onClose}
-            className="apple-button p-2 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100"
+            aria-label="Close stage dialog"
+            className="apple-button p-2 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100 shrink-0"
           >
             <X className="w-5 h-5" />
           </button>
@@ -537,6 +646,33 @@ export function QuickActionSheet({ isOpen, onClose, defaultAction = null, projec
         {/* Form Body */}
         <form onSubmit={handleSubmit} className="flex-1 min-h-0 flex flex-col">
           <div className="flex-1 min-h-0 overflow-y-auto p-5 sm:p-6 space-y-4">
+
+          {stage && (
+            <div className="rounded-2xl border border-slate-200 bg-white p-3.5 space-y-2">
+              <div className="flex items-start justify-between gap-3">
+                <p className="text-[11px] text-slate-600 leading-relaxed">{stage.description}</p>
+                {stage.isHardGate && (
+                  <span className="shrink-0 text-[10px] font-bold px-1.5 py-0.5 rounded bg-rose-50 text-rose-700 border border-rose-200">
+                    HARD GATE
+                  </span>
+                )}
+              </div>
+              <div className="flex items-center gap-1.5 flex-wrap">
+                {(stage.checklist || []).map((stepNumber) => (
+                  <span
+                    key={stepNumber}
+                    className="text-[11px] font-mono font-semibold px-2 py-1 rounded-lg bg-slate-50 text-slate-600 border border-slate-200"
+                    title={stage.checklistTitles?.[stepNumber] || `Checklist step ${stepNumber}`}
+                  >
+                    Step {String(stepNumber).padStart(2, "0")}
+                  </span>
+                ))}
+                {(!stage.checklist || stage.checklist.length === 0) && (
+                  <span className="text-[11px] text-slate-400">No checklist steps attached</span>
+                )}
+              </div>
+            </div>
+          )}
           
           {/* Progressive Next Step Preview Banner */}
           <div className={`p-3.5 rounded-2xl border text-xs flex items-start space-x-2.5 ${
@@ -571,6 +707,22 @@ export function QuickActionSheet({ isOpen, onClose, defaultAction = null, projec
             </div>
           )}
 
+          {isConfirmOnly ? (
+            <div className="rounded-2xl border border-blue-200 bg-blue-50/60 p-4 space-y-2">
+              <div className="flex items-center space-x-2 text-blue-900">
+                <ShieldAlert className="w-4 h-4" />
+                <h4 className="text-xs font-bold uppercase tracking-wider">Stage gate confirmation</h4>
+              </div>
+              <p className="text-xs text-blue-900/80 leading-relaxed">
+                This stage has no data-entry form. Confirm that the gate rule below is satisfied,
+                then move the project forward.
+              </p>
+              <div className="rounded-xl bg-white border border-blue-100 p-3">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Gate rule</span>
+                <p className="text-xs font-medium text-slate-800 mt-1">{stage?.gateRule}</p>
+              </div>
+            </div>
+          ) : (
           <div className="space-y-3.5">
             {fields.map((field) => {
               // Hide dropReason and dropRemarks if user didn't select Cat D in Step 02
@@ -585,10 +737,14 @@ export function QuickActionSheet({ isOpen, onClose, defaultAction = null, projec
 
               return (
                 <div key={field.id} className="space-y-1">
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between gap-2">
                     <label className="text-xs font-semibold text-slate-700">
                       {field.label}
+                      {!field.optional && <span className="text-rose-500 ml-0.5">*</span>}
                     </label>
+                    {field.optional && (
+                      <span className="text-[10px] text-slate-400 font-medium">Optional</span>
+                    )}
                     {field.id === "discount" && formData.discount > 5 && (
                       <span className="text-[10px] font-bold text-rose-600 bg-rose-50 px-1.5 py-0.2 rounded border border-rose-200">
                         Requires MD Approval (&gt;5%)
@@ -632,9 +788,23 @@ export function QuickActionSheet({ isOpen, onClose, defaultAction = null, projec
               );
             })}
           </div>
+          )}
 
           {/* Interactive File Upload Area */}
+          {!isNoUploadRequired && (
           <div className="mt-4">
+            <div className="flex items-center justify-between gap-2 mb-1.5">
+              <label className="text-xs font-semibold text-slate-700">
+                Stage evidence {isUploadRequired && <span className="text-rose-500">*</span>}
+              </label>
+              <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
+                isUploadRequired
+                  ? "bg-rose-50 text-rose-700 border-rose-200"
+                  : "bg-slate-50 text-slate-500 border-slate-200"
+              }`}>
+                {isUploadRequired ? "Required at this gate" : "Optional"}
+              </span>
+            </div>
             <input
               type="file"
               ref={fileInputRef}
@@ -642,13 +812,11 @@ export function QuickActionSheet({ isOpen, onClose, defaultAction = null, projec
               className="hidden"
             />
             <div 
-              onClick={() => !isNoUploadRequired && fileInputRef.current?.click()}
-              className={`border-2 border-dashed rounded-2xl p-4 text-center transition-all ${
-                isNoUploadRequired
-                  ? "border-slate-200 bg-slate-50/40 cursor-default"
-                  : selectedFileName
-                  ? "border-emerald-300 bg-emerald-50/40 cursor-pointer"
-                  : "border-slate-200 bg-slate-50/50 hover:bg-slate-100/50 hover:border-slate-300 cursor-pointer"
+              onClick={() => fileInputRef.current?.click()}
+              className={`border-2 border-dashed rounded-2xl p-4 text-center transition-all cursor-pointer ${
+                selectedFileName
+                  ? "border-emerald-300 bg-emerald-50/40"
+                  : "border-slate-200 bg-slate-50/50 hover:bg-slate-100/50 hover:border-slate-300"
               }`}
             >
               {selectedFileName ? (
@@ -664,12 +832,13 @@ export function QuickActionSheet({ isOpen, onClose, defaultAction = null, projec
                     {uploadRequirement}
                   </span>
                   <span className="text-[11px] text-slate-400">
-                    {isNoUploadRequired ? "Auto-handled by System" : "Click to browse & upload required file"}
+                    Click to browse & upload stage evidence
                   </span>
                 </>
               )}
             </div>
           </div>
+          )}
         </div>
 
         {/* Pinned Submit Action Footer */}

@@ -86,7 +86,7 @@ export default function Sidebar() {
 
   return (
     <aside
-      className={`hidden lg:flex h-screen fixed left-0 top-0 z-40 flex-col justify-between glass-surface border-r border-slate-200/80 bg-white/95 backdrop-blur-2xl select-none overflow-x-hidden transition-all duration-300 ease-in-out ${
+      className={`hidden lg:flex h-screen fixed left-0 top-0 z-40 flex-col justify-between glass-surface border-r border-slate-200/80 bg-white/95 backdrop-blur-2xl select-none overflow-x-hidden transition-all duration-300 ease-in-out print:hidden ${
         isCollapsed ? "w-20" : "w-64"
       }`}
     >
@@ -258,23 +258,22 @@ export default function Sidebar() {
 
           {currentWorkspace.assignedSteps.map((step, idx) => {
             let pipeKey = "sales";
-            if (step.pipeline === "P1" || step.step === "P1") pipeKey = "sales";
-            else if (step.pipeline === "P2" || step.step === "P2") pipeKey = "approvals";
-            else if (step.pipeline === "P3" || step.step === "P3") pipeKey = "procurement";
-            else if (step.pipeline === "P4" || step.step === "P4") pipeKey = "execution";
-            else if (step.pipeline === "P5" || step.step === "P5") pipeKey = "subsidy";
+            if (step.pipeline === "S1" || step.step === "S1" || step.pipeline === "Sales" || step.step === "P1") pipeKey = "sales";
+            else if (step.pipeline === "S2" || step.step === "S2" || step.pipeline === "Execution" || step.step === "P2") pipeKey = "execution";
+            else if (step.pipeline === "S3" || step.step === "S3" || step.pipeline === "Subsidy" || step.step === "P3") pipeKey = "subsidy";
             else {
               const num = parseInt(step.step, 10);
               if (!isNaN(num)) {
                 if (num <= 6) pipeKey = "sales";
-                else if (num <= 10) pipeKey = "approvals";
-                else if (num <= 13) pipeKey = "procurement";
-                else if (num <= 17) pipeKey = "execution";
+                else if (num <= 18) pipeKey = "execution";
                 else pipeKey = "subsidy";
               }
             }
 
-            const stepUrl = `/pipelines?pipeline=${pipeKey}&step=${step.step}`;
+            const hasStepAnchor = /^\d+$/.test(String(step.step));
+            const stepUrl = hasStepAnchor
+              ? `/pipelines?pipeline=${pipeKey}&step=${step.step}`
+              : `/pipelines?pipeline=${pipeKey}`;
             const currentPipe = searchParams.get("pipeline") || "sales";
             const isStepActive = pathname === "/pipelines" && currentPipe === pipeKey && searchParams.get("step") === step.step;
 

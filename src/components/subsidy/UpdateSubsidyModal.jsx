@@ -8,15 +8,14 @@ export default function UpdateSubsidyModal({
   subsidyData,
   onUpdateSubsidy
 }) {
-  if (!isOpen || !subsidyData) return null;
 
-  const [status, setStatus] = useState(subsidyData.currentStatus || "approved");
-  const [appNumber, setAppNumber] = useState(subsidyData.application?.portalApplicationNumber || "");
-  const [approvalDate, setApprovalDate] = useState(subsidyData.application?.approvalDate || "");
-  const [receiptDate, setReceiptDate] = useState(subsidyData.application?.receiptDate || "");
-  const [actualReceived, setActualReceived] = useState(subsidyData.actualSubsidyReceived || 78000);
-  const [dbtUtr, setDbtUtr] = useState(subsidyData.application?.dbtUtrNumber || "");
-  const [remarks, setRemarks] = useState(subsidyData.auditRemarks || "");
+  const [status, setStatus] = useState(subsidyData?.currentStatus || "approved");
+  const [appNumber, setAppNumber] = useState(subsidyData?.application?.portalApplicationNumber || "");
+  const [approvalDate, setApprovalDate] = useState(subsidyData?.application?.approvalDate || "");
+  const [receiptDate, setReceiptDate] = useState(subsidyData?.application?.receiptDate || "");
+  const [actualReceived, setActualReceived] = useState(subsidyData?.actualSubsidyReceived || 78000);
+  const [dbtUtr, setDbtUtr] = useState(subsidyData?.application?.dbtUtrNumber || "");
+  const [remarks, setRemarks] = useState(subsidyData?.auditRemarks || "");
 
   const handleSave = (e) => {
     e.preventDefault();
@@ -28,9 +27,9 @@ export default function UpdateSubsidyModal({
       ...subsidyData,
       currentStatus: status,
       statusStep: stepNum,
-      actualSubsidyReceived: status === "subsidy_received" ? Number(actualReceived) : subsidyData.actualSubsidyReceived,
+      actualSubsidyReceived: status === "subsidy_received" ? Number(actualReceived) : subsidyData?.actualSubsidyReceived,
       application: {
-        ...subsidyData.application,
+        ...subsidyData?.application,
         portalApplicationNumber: appNumber,
         approvalDate,
         receiptDate: status === "subsidy_received" ? (receiptDate || new Date().toISOString().split("T")[0]) : null,
@@ -43,6 +42,7 @@ export default function UpdateSubsidyModal({
     onClose();
   };
 
+  if (!isOpen || !subsidyData) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-150">
       <div 
@@ -60,7 +60,7 @@ export default function UpdateSubsidyModal({
                 Update PM Surya Ghar Subsidy Stage
               </h2>
               <p className="text-xs text-slate-500 font-mono">
-                Project: {subsidyData.projectId} • CFA Cap: ₹{subsidyData.eligibleAmount?.toLocaleString()}
+                Project: {subsidyData?.projectId} • CFA Cap: ₹{subsidyData?.eligibleAmount?.toLocaleString()}
               </p>
             </div>
           </div>

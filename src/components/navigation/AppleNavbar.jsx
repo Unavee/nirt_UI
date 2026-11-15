@@ -16,7 +16,7 @@ export function AppleNavbar() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-30 w-full glass-nav pt-safe">
+    <header className="sticky top-0 z-30 w-full glass-nav pt-safe print:hidden">
         <div className="w-full px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           
           {/* Left: Desktop Sidebar Toggle & Ticker */}
