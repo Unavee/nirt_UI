@@ -42,7 +42,6 @@ export default function DashboardPage() {
   if (!isManagementView) {
     return (
       <div className="space-y-4 sm:space-y-6">
-        <RoleSwitcherPill />
         <RoleDashboardView />
       </div>
     );
@@ -131,25 +130,22 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6 sm:space-y-8 pb-10">
 
-      {/* Top Segmented Role Switcher */}
-      <RoleSwitcherPill />
-
       {/* Management Top Header */}
-      <div className="glass-surface rounded-3xl p-5 sm:p-6 border border-slate-200/80 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="rounded-2xl p-4 sm:p-5 bg-white border border-zinc-200/90 shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center space-x-2">
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-blue-50 text-blue-700 border border-blue-200">
-              CRM Management Portal
+            <span className="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-zinc-100 text-zinc-700 border border-zinc-200">
+              CRM Executive Portal
             </span>
-            <span className="text-xs text-slate-400 font-mono">
-              Live Operations & Charts 
+            <span className="text-xs text-zinc-400 font-mono">
+              Live Operations & Telemetry
             </span>
           </div>
-          <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight mt-1">
+          <h1 className="text-xl sm:text-2xl font-black text-zinc-900 tracking-tight mt-1">
             CRM Executive Dashboard
           </h1>
-          <p className="text-xs text-slate-500 mt-0.5">
-            Integrated live analytics across Today&apos;s actions, Project portfolios, Financial cashflow, and Site bottlenecks.
+          <p className="text-xs text-zinc-500 mt-0.5 font-medium">
+            Cross-department live metrics across Sales Intake, Execution Gates, and Subsidy Disbursement.
           </p>
         </div>
 
