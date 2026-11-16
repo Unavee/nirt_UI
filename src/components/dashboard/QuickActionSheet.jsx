@@ -48,8 +48,22 @@ export function QuickActionSheet({
         initial.projectId = project.id;
         initial.customerName = project.client || project.customerName || "";
         initial.clientName = project.client || project.customerName || "";
-        initial.proposedCapacity = String(project.capacity || "").replace(/[^0-9.]/g, "");
+        const numericKw = String(project.capacity || "").replace(/[^0-9.]/g, "");
+        initial.proposedCapacity = numericKw;
+        initial.preferredCapacity = numericKw;
+        initial.finalCapacity = numericKw;
+        initial.suggestedSystemSize = numericKw;
+        initial.interestedCapacity = numericKw;
         initial.districtCircle = project.district || "";
+        initial.location = project.district || "";
+        initial.siteAddress = project.district ? `${project.district} District Rooftop Site` : "";
+        if (project.valueNumeric) {
+          initial.finalAgreedAmount = project.valueNumeric;
+          initial.estimatedCost = project.valueNumeric;
+          initial.advanceAmountReceived = Math.round(project.valueNumeric * 0.8);
+          initial.partialPaymentReceived = Math.round(project.valueNumeric * 0.8);
+          initial.pendingAmount = Math.round(project.valueNumeric * 0.1);
+        }
       }
       setFormData(initial);
       setSelectedFileName("");
@@ -763,6 +777,14 @@ export function QuickActionSheet({
                         <option key={opt} value={opt}>{opt}</option>
                       ))}
                     </select>
+                  ) : field.type === "textarea" ? (
+                    <textarea
+                      rows={3}
+                      placeholder={field.placeholder}
+                      value={formData[field.id] || ""}
+                      onChange={(e) => handleInputChange(field.id, e.target.value)}
+                      className="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 transition-all placeholder:text-slate-400 resize-none"
+                    />
                   ) : field.type === "checkbox" ? (
                     <label className="flex items-start space-x-2.5 p-3 rounded-xl border border-slate-200 bg-slate-50/50 cursor-pointer">
                       <input
