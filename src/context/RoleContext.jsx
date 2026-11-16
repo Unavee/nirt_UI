@@ -7,11 +7,34 @@ const RoleContext = createContext(null);
 
 export function RoleProvider({ children }) {
   const [activeRole, setActiveRole] = useState(ROLES_DEFINITIONS[0]);
+  const [activeRbacRoleId, setActiveRbacRoleId] = useState("super_admin");
   const [auditLogs, setAuditLogs] = useState(INITIAL_SYSTEM_AUDIT_LOG);
+
+  const RBAC_ROLE_ALIAS_MAP = {
+    super_admin: "managing_director",
+    management: "managing_director",
+    project_manager: "project_coordinator",
+    crm_manager: "project_coordinator",
+    crm_executive: "sales_rep",
+    sales_team: "sales_rep",
+    site_survey_team: "site_surveyor",
+    design_team: "project_coordinator",
+    purchase_team: "warehouse_manager",
+    store_team: "warehouse_manager",
+    installation_team: "epc_manager",
+    accounts_team: "accounts_officer",
+    liaison_team: "liaison_officer",
+    subsidy_team: "subsidy_desk",
+    customer: "managing_director"
+  };
 
   // Support persistence in local storage
   useEffect(() => {
     try {
+      const savedRbacId = localStorage.getItem("nirt_active_rbac_role_id");
+      if (savedRbacId) {
+        setActiveRbacRoleId(savedRbacId);
+      }
       const savedRoleId = localStorage.getItem("nirt_active_role_id");
       if (savedRoleId) {
         const found = ROLES_DEFINITIONS.find((r) => r.id === savedRoleId);
@@ -31,11 +54,14 @@ export function RoleProvider({ children }) {
   }, []);
 
   const switchRole = (roleId) => {
-    const found = ROLES_DEFINITIONS.find((r) => r.id === roleId);
+    const targetId = RBAC_ROLE_ALIAS_MAP[roleId] || roleId;
+    const found = ROLES_DEFINITIONS.find((r) => r.id === targetId || r.id === roleId);
     if (found) {
       setActiveRole(found);
+      setActiveRbacRoleId(roleId);
       try {
-        localStorage.setItem("nirt_active_role_id", roleId);
+        localStorage.setItem("nirt_active_role_id", targetId);
+        localStorage.setItem("nirt_active_rbac_role_id", roleId);
       } catch {
         // Storage failure fallback
       }
@@ -92,6 +118,7 @@ export function RoleProvider({ children }) {
     <RoleContext.Provider 
       value={{ 
         activeRole, 
+        activeRbacRoleId,
         switchRole, 
         allRoles: ROLES_DEFINITIONS,
         isExecutive,
