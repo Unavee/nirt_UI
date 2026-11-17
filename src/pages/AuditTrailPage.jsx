@@ -191,102 +191,96 @@ export default function AuditTrailPage() {
 
       </div>
 
-      {/* Main Audit Trail Data Table */}
-      <div className="glass-surface rounded-3xl border border-slate-200/80 overflow-hidden shadow-xs">
+      {/* Main Audit Trail Data Table - High Density */}
+      <div className="glass-surface rounded-2xl border border-slate-200/80 overflow-hidden shadow-xs">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs min-w-[1200px]">
+          <table className="w-full text-left text-xs min-w-[1000px]">
             <thead>
-              <tr className="border-b border-slate-100 bg-slate-50/60 text-slate-400 uppercase tracking-wider text-[10px] font-bold">
-                <th className="py-3 px-4">Entity / Record ID</th>
-                <th className="py-3 px-4">1. Created By</th>
-                <th className="py-3 px-4">2. Modified By</th>
-                <th className="py-3 px-4">3. What Was Modified</th>
-                <th className="py-3 px-4">4. Date & 5. Time</th>
-                <th className="py-3 px-4">6. Previous Value</th>
-                <th className="py-3 px-4">7. New Value</th>
-                <th className="py-3 px-4">Reason / Authorization</th>
-                <th className="py-3 px-4 text-right">Details</th>
+              <tr className="border-b border-slate-200/80 bg-slate-50/70 text-slate-500 uppercase tracking-wider text-[10px] font-bold font-mono">
+                <th className="py-2.5 px-3">Record / Entity</th>
+                <th className="py-2.5 px-3">Action By</th>
+                <th className="py-2.5 px-3">Field Modified</th>
+                <th className="py-2.5 px-3">Change Diff (Previous → New)</th>
+                <th className="py-2.5 px-3">Reason / Authorization</th>
+                <th className="py-2.5 px-3 text-right">Inspect</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 font-medium">
               {filteredLogs.map(log => (
-                <tr key={log.id} className="hover:bg-slate-50/50 transition-colors">
-                  
-                  {/* Entity ID */}
-                  <td className="py-3.5 px-4 font-mono">
-                    <span className="font-bold text-blue-700 block text-xs">{log.projectId}</span>
-                    <span className="text-[10px] text-slate-500 block truncate max-w-[140px] font-sans">
+                <tr 
+                  key={log.id} 
+                  className="group hover:bg-slate-50/75 transition-colors cursor-pointer"
+                  onClick={() => setActiveLogDetail(log)}
+                >
+                  {/* 1. Record / Entity */}
+                  <td className="py-2 px-3 font-mono">
+                    <div className="flex items-center space-x-1.5">
+                      <span className="font-bold text-blue-700 text-xs">{log.projectId}</span>
+                      <span className="px-1.5 py-0.2 rounded text-[9px] font-bold uppercase bg-slate-100 text-slate-600 border border-slate-200/80">
+                        {log.entityType}
+                      </span>
+                    </div>
+                    <span className="text-[11px] text-slate-500 truncate max-w-[150px] block font-sans">
                       {log.entityName}
                     </span>
-                    <span className="px-1.5 py-0.2 rounded text-[9px] font-bold uppercase bg-slate-100 text-slate-700 border border-slate-200 inline-block mt-0.5">
-                      {log.entityType}
-                    </span>
                   </td>
 
-                  {/* 1. Who Created */}
-                  <td className="py-3.5 px-4">
-                    <div className="font-bold text-slate-900">{log.createdBy.name}</div>
-                    <div className="text-[10px] text-slate-500 font-mono">{log.createdBy.role}</div>
-                    <div className="text-[9px] text-slate-400 font-mono mt-0.5">Created: {log.createdBy.date}</div>
-                  </td>
-
-                  {/* 2. Who Modified */}
-                  <td className="py-3.5 px-4">
-                    <div className="font-bold text-slate-900">{log.modifiedBy.name}</div>
-                    <div className="text-[10px] text-slate-500 font-mono">{log.modifiedBy.role}</div>
-                    <div className="text-[9px] text-slate-400 font-mono mt-0.5">{log.modifiedBy.branch}</div>
-                  </td>
-
-                  {/* 3. What Was Modified */}
-                  <td className="py-3.5 px-4 max-w-[180px]">
-                    <span className="font-bold text-slate-800 text-xs block leading-snug">
-                      {log.fieldModified}
-                    </span>
-                    <span className="text-[10px] text-blue-600 font-mono block mt-0.5">
-                      ID: {log.id}
-                    </span>
-                  </td>
-
-                  {/* 4. Date & 5. Time */}
-                  <td className="py-3.5 px-4 font-mono whitespace-nowrap">
-                    <div className="font-semibold text-slate-800">{log.date}</div>
-                    <div className="text-[10px] text-slate-400 flex items-center space-x-1 mt-0.5">
-                      <Clock className="w-2.5 h-2.5 text-slate-400" />
-                      <span>{log.time}</span>
+                  {/* 2. Action By (Consolidated Actor + Timestamp) */}
+                  <td className="py-2 px-3 whitespace-nowrap">
+                    <div className="font-semibold text-slate-900 leading-tight">
+                      {log.modifiedBy.name}
+                    </div>
+                    <div className="text-[10px] text-slate-400 font-mono mt-0.5">
+                      {log.date} • {log.time}
                     </div>
                   </td>
 
-                  {/* 6. Previous Value */}
-                  <td className="py-3.5 px-4 max-w-[180px]">
-                    <span className="px-2 py-0.5 rounded text-[10px] font-mono text-rose-700 bg-rose-50 border border-rose-200 line-through block truncate">
-                      {log.previousValue}
+                  {/* 3. Field Modified */}
+                  <td className="py-2 px-3 max-w-[180px]">
+                    <span className="font-semibold text-slate-800 text-xs block truncate" title={log.fieldModified}>
+                      {log.fieldModified}
+                    </span>
+                    <span className="text-[10px] text-slate-400 font-mono block">
+                      {log.id}
                     </span>
                   </td>
 
-                  {/* 7. New Value */}
-                  <td className="py-3.5 px-4 max-w-[180px]">
-                    <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 block truncate">
-                      {log.newValue}
-                    </span>
+                  {/* 4. Change Diff (Inline Previous → New) */}
+                  <td className="py-2 px-3 max-w-[280px]">
+                    <div className="flex items-center space-x-1.5 font-mono text-[11px] truncate">
+                      <span 
+                        className="line-through text-rose-500/90 shrink-0 truncate max-w-[120px]" 
+                        title={log.previousValue}
+                      >
+                        {log.previousValue || "(empty)"}
+                      </span>
+                      <span className="text-slate-400 shrink-0">→</span>
+                      <span 
+                        className="text-emerald-700 font-semibold truncate max-w-[130px]" 
+                        title={log.newValue}
+                      >
+                        {log.newValue || "(empty)"}
+                      </span>
+                    </div>
                   </td>
 
-                  {/* Reason */}
-                  <td className="py-3.5 px-4 max-w-[200px]">
-                    <p className="text-slate-600 text-xs leading-snug line-clamp-2" title={log.reason}>
+                  {/* 5. Reason / Authorization */}
+                  <td className="py-2 px-3 max-w-[220px]">
+                    <p className="text-slate-600 text-[11px] leading-snug truncate" title={log.reason}>
                       {log.reason}
                     </p>
                   </td>
 
-                  {/* Action */}
-                  <td className="py-3.5 px-4 text-right">
+                  {/* 6. Subtle Hover-Only Inspect Button */}
+                  <td className="py-2 px-3 text-right" onClick={(e) => e.stopPropagation()}>
                     <button
                       onClick={() => setActiveLogDetail(log)}
-                      className="apple-button px-2.5 py-1 rounded-lg text-xs font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-900 hover:text-white shadow-2xs"
+                      className="p-1 rounded-md text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-all opacity-40 group-hover:opacity-100"
+                      title="Inspect in Detail Drawer"
                     >
-                      Inspect
+                      <Eye className="w-4 h-4" />
                     </button>
                   </td>
-
                 </tr>
               ))}
             </tbody>

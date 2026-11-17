@@ -57,66 +57,53 @@ export default function ServiceComplaintsPage() {
   return (
     <div className="space-y-6 pb-16">
       
-      {/* Top Header Card */}
-      <div className="glass-surface p-5 sm:p-6 rounded-3xl border border-slate-200/90 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+      {/* Top Header with Slim Inline Metrics Bar */}
+      <div className="glass-surface p-4 sm:p-5 rounded-2xl border border-slate-200/90 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center space-x-2">
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-rose-50 text-rose-700 border border-rose-200 font-mono">
+            <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-rose-50 text-rose-700 border border-rose-200 font-mono">
               Section 35 • Customer Service
             </span>
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-blue-50 text-blue-700 border border-blue-200 font-mono">
-              O&M Post-Commissioning Desk
+            <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-blue-50 text-blue-700 border border-blue-200 font-mono">
+              O&M Desk
             </span>
           </div>
-          <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight mt-1.5">
+          <h1 className="text-xl font-bold text-slate-900 tracking-tight mt-1">
             Customer Service & Complaint Management
           </h1>
-          <p className="text-xs text-slate-500 mt-0.5">
-            End-to-end resolution for generation drops, inverter error codes, net metering sync, module warranty claims, and scheduled O&M.
-          </p>
+
+          {/* Slim Horizontal Text Status Bar (Replaces 5 tall boxes) */}
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-2 text-xs font-mono">
+            <span className="text-slate-600">
+              Active: <strong className="text-slate-900 font-bold">{totalActive}</strong>
+            </span>
+            <span className="text-slate-300">|</span>
+            <span className="text-rose-600">
+              Critical: <strong className="text-rose-700 font-bold">{criticalCount}</strong>
+            </span>
+            <span className="text-slate-300">|</span>
+            <span className="text-indigo-600">
+              In Field: <strong className="text-indigo-700 font-bold">{inActionCount}</strong>
+            </span>
+            <span className="text-slate-300">|</span>
+            <span className="text-emerald-600">
+              Pending Sign-off: <strong className="text-emerald-700 font-bold">{pendingSignoffCount}</strong>
+            </span>
+            <span className="text-slate-300">|</span>
+            <span className="text-slate-500">
+              Warranty: <strong className="text-slate-700 font-bold">{warrantyClaimsCount}</strong>
+            </span>
+          </div>
         </div>
 
         <div className="flex items-center space-x-2.5">
           <button
             onClick={() => setIsNewTicketOpen(true)}
-            className="apple-button px-4 py-2.5 rounded-xl text-xs font-bold bg-slate-900 text-white hover:bg-black shadow-sm flex items-center space-x-2"
+            className="apple-button px-4 py-2 rounded-xl text-xs font-bold bg-slate-900 text-white hover:bg-slate-800 shadow-sm flex items-center space-x-2 whitespace-nowrap"
           >
             <Plus className="w-4 h-4 text-emerald-400" />
             <span>Raise Service Ticket</span>
           </button>
-        </div>
-      </div>
-
-      {/* 5 KPI Stat Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-        <div className="p-4 rounded-2xl bg-white border border-slate-200/90 shadow-2xs space-y-1">
-          <span className="text-[10px] font-bold uppercase text-slate-400 font-mono block">Active Complaints</span>
-          <div className="text-2xl font-black text-slate-900 font-mono">{totalActive}</div>
-          <span className="text-[10px] text-blue-600 font-medium">In resolution queue</span>
-        </div>
-
-        <div className="p-4 rounded-2xl bg-white border border-slate-200/90 shadow-2xs space-y-1">
-          <span className="text-[10px] font-bold uppercase text-rose-600 font-mono block">Critical & Urgent</span>
-          <div className="text-2xl font-black text-rose-700 font-mono">{criticalCount}</div>
-          <span className="text-[10px] text-rose-600 font-medium">Immediate field visit</span>
-        </div>
-
-        <div className="p-4 rounded-2xl bg-white border border-slate-200/90 shadow-2xs space-y-1">
-          <span className="text-[10px] font-bold uppercase text-indigo-600 font-mono block">In Field Action</span>
-          <div className="text-2xl font-black text-indigo-700 font-mono">{inActionCount}</div>
-          <span className="text-[10px] text-indigo-600 font-medium">Technicians on-site</span>
-        </div>
-
-        <div className="p-4 rounded-2xl bg-white border border-slate-200/90 shadow-2xs space-y-1">
-          <span className="text-[10px] font-bold uppercase text-emerald-600 font-mono block">Pending Sign-off</span>
-          <div className="text-2xl font-black text-emerald-700 font-mono">{pendingSignoffCount}</div>
-          <span className="text-[10px] text-emerald-600 font-medium">Awaiting customer OTP</span>
-        </div>
-
-        <div className="p-4 rounded-2xl bg-white border border-slate-200/90 shadow-2xs space-y-1">
-          <span className="text-[10px] font-bold uppercase text-slate-500 font-mono block">Warranty Claims</span>
-          <div className="text-2xl font-black text-slate-900 font-mono">{warrantyClaimsCount}</div>
-          <span className="text-[10px] text-slate-500 font-medium">OEM Tier-1 replacements</span>
         </div>
       </div>
 
@@ -184,78 +171,96 @@ export default function ServiceComplaintsPage() {
 
       </div>
 
-      {/* VIEW 1: 6-STAGE KANBAN BOARD */}
+      {/* VIEW 1: 6-STAGE NARROW KANBAN BOARD */}
       {viewMode === "kanban" ? (
         <div className="overflow-x-auto pb-4">
-          <div className="flex space-x-4 min-w-[1300px]">
+          <div className="flex space-x-3.5 min-w-[1200px]">
             {TICKET_STAGES.map((stage, idx) => {
               const stageTickets = filteredTickets.filter(t => t.stage === stage.id);
 
               return (
-                <div key={stage.id} className="w-64 shrink-0 flex flex-col space-y-3">
-                  
+                <div key={stage.id} className="w-[280px] shrink-0 flex flex-col space-y-2.5">
                   {/* Column Header */}
-                  <div className="p-3 rounded-2xl bg-white border border-slate-200/90 shadow-2xs flex justify-between items-center">
-                    <div>
-                      <span className="text-[9px] font-mono font-bold uppercase text-slate-400 block">Step 0{idx + 1}</span>
+                  <div className="p-2.5 rounded-xl bg-white border border-slate-200/90 shadow-2xs flex justify-between items-center">
+                    <div className="flex items-center space-x-2">
+                      <span className="text-[10px] font-mono font-bold text-slate-400">0{idx + 1}</span>
                       <h3 className="font-bold text-slate-900 text-xs">{stage.shortLabel}</h3>
                     </div>
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold font-mono bg-slate-100 text-slate-700 border border-slate-200">
+                    <span className="px-2 py-0.5 rounded text-[10px] font-bold font-mono bg-slate-100 text-slate-700 border border-slate-200">
                       {stageTickets.length}
                     </span>
                   </div>
 
                   {/* Cards Lane */}
-                  <div className="space-y-3">
-                    {stageTickets.map(ticket => (
-                      <div
-                        key={ticket.id}
-                        onClick={() => setSelectedTicketForLifecycle(ticket)}
-                        className="p-3.5 rounded-2xl bg-white border border-slate-200/90 shadow-2xs hover:shadow-md hover:border-slate-300 transition-all cursor-pointer space-y-2.5 group"
-                      >
-                        {/* Top ID & Priority */}
-                        <div className="flex justify-between items-center">
-                          <span className="text-[10px] font-mono font-bold text-blue-700 bg-blue-50 border border-blue-200 px-1.5 py-0.5 rounded">
-                            {ticket.id}
-                          </span>
-                          <span className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded ${
-                            ticket.priority === "Critical" ? "bg-rose-100 text-rose-800 border border-rose-300"
-                              : ticket.priority === "High" ? "bg-rose-50 text-rose-700 border border-rose-200"
-                              : "bg-blue-50 text-blue-700 border border-blue-200"
-                          }`}>
-                            {ticket.priority}
-                          </span>
-                        </div>
+                  <div className="space-y-2.5">
+                    {stageTickets.map((ticket) => {
+                      // Priority Left Border Color
+                      const priorityBorder =
+                        ticket.priority === "Critical"
+                          ? "border-l-4 border-l-rose-500"
+                          : ticket.priority === "High"
+                          ? "border-l-4 border-l-amber-500"
+                          : "border-l-4 border-l-blue-500";
 
-                        {/* Title & Customer */}
-                        <div>
-                          <h4 className="font-bold text-slate-900 text-xs leading-snug group-hover:text-blue-600 transition-colors">
+                      // Initials for avatar
+                      const initials = ticket.assignedTechnician
+                        .split(" ")
+                        .map((n) => n[0])
+                        .filter(Boolean)
+                        .slice(0, 2)
+                        .join("")
+                        .toUpperCase();
+
+                      return (
+                        <div
+                          key={ticket.id}
+                          onClick={() => setSelectedTicketForLifecycle(ticket)}
+                          className={`p-3 rounded-xl bg-white border border-slate-200/80 shadow-2xs hover:shadow-md hover:border-slate-300 transition-all cursor-pointer group space-y-2 ${priorityBorder}`}
+                        >
+                          {/* Tightly stacked Ticket ID & Category */}
+                          <div className="flex items-center justify-between text-[10px] font-mono">
+                            <span className="font-bold text-slate-600 group-hover:text-blue-700 transition-colors">
+                              {ticket.id}
+                            </span>
+                            <span className="px-1.5 py-0.2 rounded bg-slate-100 text-slate-600 font-semibold text-[9px] truncate max-w-[110px]">
+                              {ticket.categoryLabel?.split(" ")[0]}
+                            </span>
+                          </div>
+
+                          {/* Title */}
+                          <h4 className="font-semibold text-slate-900 text-xs leading-snug group-hover:text-blue-600 transition-colors line-clamp-2">
                             {ticket.title}
                           </h4>
-                          <span className="text-[10px] font-mono text-slate-500 block mt-1">
-                            {ticket.customerName} • {ticket.branch}
-                          </span>
-                        </div>
 
-                        {/* Category & Technician */}
-                        <div className="pt-2 border-t border-slate-100 flex justify-between items-center text-[10px]">
-                          <span className="px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 font-mono font-bold text-[9px] truncate max-w-[120px]">
-                            {ticket.categoryLabel.split(" ")[0]}
-                          </span>
-                          <span className="text-slate-400 font-mono truncate max-w-[110px]">
-                            {ticket.assignedTechnician.split("(")[0]}
-                          </span>
+                          {/* Customer & Location */}
+                          <div className="text-[11px] text-slate-500 truncate font-medium">
+                            {ticket.customerName} • <span className="font-mono text-[10px] text-slate-400">{ticket.branch}</span>
+                          </div>
+
+                          {/* Footer: Plant ID & Assignee Avatar */}
+                          <div className="pt-2 border-t border-slate-100 flex items-center justify-between">
+                            <span className="text-[10px] font-mono text-slate-400">
+                              {ticket.projectId}
+                            </span>
+
+                            {/* Assignee Avatar Circle in Bottom Right */}
+                            <div
+                              className="w-6 h-6 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-[10px] font-bold text-slate-700 shadow-2xs group-hover:bg-blue-50 group-hover:text-blue-700 group-hover:border-blue-200 transition-colors"
+                              title={`Assigned Lead: ${ticket.assignedTechnician}`}
+                            >
+                              {initials}
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
 
                     {stageTickets.length === 0 && (
-                      <div className="p-6 rounded-2xl border border-dashed border-slate-200 text-center text-slate-400 text-xs">
-                        No tickets in this stage
+                      <div className="p-5 rounded-xl border border-dashed border-slate-200 text-center text-slate-400 text-xs">
+                        No tickets
                       </div>
                     )}
                   </div>
-
                 </div>
               );
             })}
