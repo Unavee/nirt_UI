@@ -477,12 +477,12 @@ export default function PipelinesPage() {
       <section
         key={stage.id}
         id={`stage-lane-${stage.id}`}
-        className={`w-[290px] sm:w-[310px] shrink-0 bg-zinc-100/70 rounded-2xl border border-zinc-200/80 p-3 flex flex-col transition-all duration-200 shadow-2xs ${
-          isTargetStep ? "ring-2 ring-blue-500 border-blue-500 bg-blue-50/20" : ""
+        className={`w-[290px] sm:w-[310px] shrink-0 bg-slate-100/60 rounded-2xl p-3.5 flex flex-col transition-all duration-200 ${
+          isTargetStep ? "ring-2 ring-blue-500 bg-blue-50/40" : ""
         }`}
       >
         {/* Compact Column Header */}
-        <div className="pb-2.5 mb-2 border-b border-zinc-200/80">
+        <div className="pb-2.5 mb-2.5 border-b border-slate-200/60">
           <div className="flex items-center justify-between gap-1.5">
             <div className="flex items-center gap-1.5 min-w-0">
               <span className="w-5 h-5 rounded-md bg-zinc-900 text-white text-[10px] font-mono font-bold flex items-center justify-center shrink-0">
@@ -547,53 +547,61 @@ export default function PipelinesPage() {
           {matchedProjects.map((project) => {
             const hardLocked = Boolean(stage.requiresAdvance) && !project.advanceCleared;
             const canAdvance = authorized && !hardLocked;
+            const slaExceeded = (project.daysInStage || 0) > stage.slaDays;
+            const slaWarning = (project.daysInStage || 0) >= stage.slaDays * 0.8;
+            const slaBadgeStyle = slaExceeded
+              ? "bg-rose-50 text-rose-700"
+              : slaWarning
+              ? "bg-amber-50 text-amber-700"
+              : "bg-slate-100 text-slate-600";
 
             return (
               <article
                 key={project.id}
-                className={`p-3 rounded-xl bg-white border transition-all duration-150 group shadow-[0_1px_2px_rgba(0,0,0,0.03)] hover:shadow-md hover:border-zinc-300 space-y-2 cursor-pointer ${
-                  hardLocked ? "border-rose-200 bg-rose-50/10" : "border-zinc-200/80"
+                className={`p-4 rounded-xl bg-white shadow-xs hover:shadow-md transition-all duration-150 group space-y-3 cursor-pointer ${
+                  hardLocked ? "ring-1 ring-rose-200 bg-rose-50/15" : "hover:ring-1 hover:ring-slate-200"
                 }`}
               >
-                {/* Card Header: Client Name & Capacity Badge */}
-                <div className="flex items-start justify-between gap-1.5">
-                  <div className="min-w-0 flex-1">
-                    <span className="text-[9px] font-mono font-bold text-zinc-400 block tracking-tight">
-                      {project.id}
-                    </span>
-                    <h4 className="text-xs font-bold text-zinc-900 leading-snug truncate mt-0.5 group-hover:text-blue-600 transition-colors" title={project.client}>
-                      {project.client}
-                    </h4>
-                  </div>
-                  <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-zinc-100 text-zinc-700 border border-zinc-200/60 shrink-0">
-                    {project.capacity}
+                {/* Card Header: Tertiary Metadata & Capacity */}
+                <div className="flex items-center justify-between gap-2 text-[11px] text-slate-400 font-mono">
+                  <span className="font-medium tracking-wide uppercase">
+                    {project.id}
+                  </span>
+                  <span className="text-xs font-semibold px-2 py-0.5 rounded-md bg-slate-100 text-slate-700">
+                    {project.capacity || `${project.capacityKw || 0} kW`}
                   </span>
                 </div>
 
-                {/* Card Meta: District & Deal Value */}
-                <div className="flex items-center justify-between text-[11px] text-zinc-600 font-mono">
-                  <span className="flex items-center gap-1 min-w-0">
-                    <MapPin className="w-3 h-3 text-zinc-400 shrink-0" />
-                    <span className="truncate">{project.district}</span>
-                  </span>
-                  <span className="font-extrabold text-zinc-900">{project.value}</span>
+                {/* Card Body: Primary Client Name & Location */}
+                <div className="min-w-0">
+                  <h4 className="text-sm sm:text-base font-semibold text-slate-900 leading-snug tracking-tight truncate group-hover:text-blue-600 transition-colors" title={project.client}>
+                    {project.client}
+                  </h4>
+                  <p className="text-xs text-slate-500 truncate flex items-center gap-1 mt-1 font-medium">
+                    <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                    <span>{project.district || project.location || "Tamil Nadu"}</span>
+                  </p>
                 </div>
 
-                {/* Card Status & Age */}
-                <div className="flex items-center justify-between text-[10px] text-zinc-400 font-mono pt-1.5 border-t border-zinc-100">
-                  <span className="text-zinc-600 font-medium truncate max-w-[140px]">{project.status}</span>
-                  <span>{project.daysInStage || 0}d</span>
+                {/* Financial Value & SLA Meter */}
+                <div className="flex items-center justify-between pt-2 border-t border-slate-100 text-xs font-mono tabular-nums">
+                  <span className="font-bold text-slate-900 text-sm">
+                    {project.value ? (typeof project.value === 'number' ? formatINR(project.value) : project.value) : "—"}
+                  </span>
+                  <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-md ${slaBadgeStyle}`}>
+                    {project.daysInStage || 0}d / {stage.slaDays}d SLA
+                  </span>
                 </div>
 
                 {hardLocked && (
-                  <div className="p-1.5 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-[10px] flex items-center gap-1 font-semibold">
-                    <Lock className="w-3 h-3 shrink-0" />
+                  <div className="p-2 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-[10px] flex items-center gap-1.5 font-semibold">
+                    <Lock className="w-3.5 h-3.5 shrink-0" />
                     <span>80% Advance Gate Lock</span>
                   </div>
                 )}
 
-                {/* Card Action Buttons */}
-                <div className="pt-1 flex items-center justify-between gap-1.5">
+                {/* Card Action Buttons (Outline & Contextual) */}
+                <div className="pt-1.5 flex items-center justify-between gap-1.5">
                   <button
                     type="button"
                     onClick={(e) => {
@@ -601,13 +609,13 @@ export default function PipelinesPage() {
                       setEditTargetProject(project);
                       setIsEditModalOpen(true);
                     }}
-                    className="p-1 rounded-lg text-zinc-400 hover:text-zinc-700 hover:bg-zinc-100 transition-colors"
+                    className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
                     title="Audit Stage Reassignment"
                   >
                     <FileCheck className="w-3.5 h-3.5" />
                   </button>
 
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-1.5">
                     {stage.pipelineId === "sales" && stage.id !== "sales_deal_confirmed" && (
                       <button
                         type="button"
@@ -615,7 +623,7 @@ export default function PipelinesPage() {
                           e.stopPropagation();
                           handleDropProject(project, stage);
                         }}
-                        className="p-1 rounded-lg text-zinc-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
+                        className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
                         title="Mark as Not Feasible / Lost"
                       >
                         <X className="w-3.5 h-3.5" />
@@ -629,7 +637,7 @@ export default function PipelinesPage() {
                           e.stopPropagation();
                           handleHoldProject(project);
                         }}
-                        className="p-1 rounded-lg text-zinc-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
+                        className="p-1.5 rounded-lg text-slate-400 hover:text-amber-600 hover:bg-amber-50 transition-colors"
                         title="Pause project on hold"
                       >
                         <PauseCircle className="w-3.5 h-3.5" />
@@ -643,14 +651,14 @@ export default function PipelinesPage() {
                         e.stopPropagation();
                         launchStage(stage, project);
                       }}
-                      className={`px-2.5 py-1 rounded-lg text-[11px] font-bold flex items-center gap-1 transition-all ${
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all ${
                         canAdvance
-                          ? "bg-zinc-900 text-white hover:bg-black shadow-xs active:scale-95"
-                          : "bg-zinc-100 text-zinc-400 cursor-not-allowed"
+                          ? "border border-slate-200 text-slate-700 bg-white hover:bg-slate-900 hover:text-white hover:border-slate-900 group-hover:border-slate-300 shadow-2xs active:scale-95"
+                          : "border border-slate-100 text-slate-300 bg-slate-50 cursor-not-allowed"
                       }`}
                     >
                       <span>{stage.actionLabel || "Advance"}</span>
-                      <ChevronRight className="w-3 h-3" />
+                      <ChevronRight className="w-3.5 h-3.5" />
                     </button>
                   </div>
                 </div>
@@ -672,7 +680,7 @@ export default function PipelinesPage() {
             <button
               type="button"
               onClick={() => launchStage(stage, null)}
-              className="w-full py-1.5 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 bg-zinc-900 text-white hover:bg-black shadow-xs active:scale-95 transition-all"
+              className="w-full py-2 px-3 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 border border-slate-300 bg-white text-slate-800 hover:bg-slate-900 hover:text-white hover:border-slate-900 transition-all shadow-2xs active:scale-95"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>New Enquiry</span>
@@ -873,36 +881,38 @@ export default function PipelinesPage() {
               type="button"
               aria-pressed={isSelected}
               onClick={() => goToPipeline(item.id)}
-              className={`text-left rounded-2xl p-3.5 sm:p-4 border transition-all relative overflow-hidden group ${
+              className={`text-left rounded-2xl p-4 transition-all relative overflow-hidden group ${
                 isSelected
-                  ? "bg-zinc-900 text-white border-zinc-900 shadow-md ring-1 ring-zinc-900"
-                  : "bg-white text-zinc-700 border-zinc-200 hover:border-zinc-300 hover:shadow-2xs"
+                  ? "bg-blue-50/70 text-slate-900 border-2 border-blue-600 shadow-sm ring-1 ring-blue-600/10"
+                  : "bg-white text-slate-700 border border-slate-200 hover:border-slate-300 hover:shadow-xs"
               }`}
             >
               <div className="flex items-center justify-between gap-1.5">
                 <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-md border ${
-                  isSelected ? "bg-white/10 text-white border-white/20" : "bg-zinc-100 text-zinc-700 border-zinc-200"
+                  isSelected ? "bg-blue-100 text-blue-700 border-blue-200" : "bg-slate-100 text-slate-600 border-slate-200"
                 }`}>
                   Pipeline {item.code}
                 </span>
-                <span className={`text-[10px] font-mono font-bold ${isSelected ? "text-zinc-300" : "text-zinc-400"}`}>
+                <span className={`text-[10px] font-mono font-semibold ${isSelected ? "text-blue-700" : "text-slate-400"}`}>
                   {item.openStagesLabel}
                 </span>
               </div>
 
-              <h2 className={`text-sm font-bold tracking-tight mt-1.5 ${isSelected ? "text-white" : "text-zinc-900"}`}>
+              <h2 className="text-sm font-bold tracking-tight text-slate-900 mt-1.5">
                 {item.titleLong}
               </h2>
 
-              <p className={`text-[11px] mt-0.5 leading-snug line-clamp-1 ${isSelected ? "text-zinc-300" : "text-zinc-500"}`}>
+              <p className={`text-[11px] mt-0.5 leading-snug line-clamp-1 ${isSelected ? "text-slate-600" : "text-slate-500"}`}>
                 {item.description}
               </p>
 
-              <div className="flex items-center justify-between pt-2 mt-2 border-t border-zinc-100/20 text-xs font-mono">
-                <span className={`font-bold ${isSelected ? "text-white" : "text-zinc-900"}`}>
+              <div className={`flex items-center justify-between pt-2.5 mt-2.5 border-t text-xs font-mono tabular-nums ${
+                isSelected ? "border-blue-200/60" : "border-slate-100"
+              }`}>
+                <span className="font-bold text-slate-900">
                   {openCount} Open Projects
                 </span>
-                <span className={isSelected ? "text-emerald-400 font-bold" : "text-zinc-500 font-semibold"}>
+                <span className={isSelected ? "text-blue-700 font-bold" : "text-slate-500 font-semibold"}>
                   {closedCount} Closed
                 </span>
               </div>
