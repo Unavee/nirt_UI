@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { 
   ShieldCheck, Search, Filter, Download, Printer, 
   Calendar, Clock, User, ArrowRight, FileText, 
@@ -15,6 +15,18 @@ export default function AuditTrailPage() {
   const [selectedEntity, setSelectedEntity] = useState("all");
   const [selectedStaff, setSelectedStaff] = useState("all");
   const [activeLogDetail, setActiveLogDetail] = useState(null);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") {
+        setActiveLogDetail(null);
+      }
+    };
+    if (activeLogDetail) {
+      window.addEventListener("keydown", handleKeyDown);
+    }
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [activeLogDetail]);
 
   const liveLogs = auditLogs.map((entry) => {
     const [datePart, timePart] = String(entry.timestamp || "").split(",");
@@ -282,98 +294,143 @@ export default function AuditTrailPage() {
         </div>
       </div>
 
-      {/* INSPECTION MODAL */}
+      {/* AUDIT INSPECTION RIGHT-SIDE SLIDE-OVER DRAWER */}
       {activeLogDetail && (
         <Portal>
-          <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-[9999] p-4 animate-in fade-in duration-150">
-            <div className="bg-white rounded-3xl border border-slate-200 max-w-xl w-full p-6 sm:p-7 shadow-2xl space-y-5 max-h-[90vh] overflow-y-auto">
-              
-              <div className="flex justify-between items-start border-b border-slate-100 pb-3">
-                <div>
-                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-blue-50 text-blue-700 border border-blue-200 font-mono">
-                    Audit Inspection • {activeLogDetail.id}
+          <div className="fixed inset-0 z-[9999] overflow-hidden">
+            {/* Backdrop Overlay with click-to-close */}
+            <div
+              onClick={() => setActiveLogDetail(null)}
+              className="absolute inset-0 bg-slate-950/45 backdrop-blur-[1px] transition-opacity animate-in fade-in duration-200"
+            />
+
+            {/* Slide-over Drawer Panel */}
+            <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
+              <aside
+                aria-label="Audit Log Details"
+                className="w-screen max-w-lg bg-white border-l border-slate-200 shadow-2xl flex flex-col justify-between animate-in slide-in-from-right duration-250 ease-out"
+              >
+                {/* Drawer Header */}
+                <div className="px-6 py-5 border-b border-slate-200/80 bg-slate-50/70 flex items-start justify-between">
+                  <div className="space-y-1">
+                    <div className="flex items-center space-x-2">
+                      <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider bg-blue-50 text-blue-700 border border-blue-200">
+                        {activeLogDetail.id}
+                      </span>
+                      <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider bg-slate-100 text-slate-700 border border-slate-200">
+                        {activeLogDetail.entityType}
+                      </span>
+                    </div>
+                    <h3 className="text-base font-bold text-slate-900 tracking-tight">
+                      {activeLogDetail.fieldModified}
+                    </h3>
+                    <p className="text-xs text-slate-500 font-mono">
+                      Record: <span className="text-blue-700 font-bold">{activeLogDetail.projectId}</span> • {activeLogDetail.entityName}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setActiveLogDetail(null)}
+                    className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 rounded-lg transition-colors"
+                    title="Close Drawer (Esc)"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+
+                {/* Drawer Content Body (No internal box stacking) */}
+                <div className="flex-1 overflow-y-auto px-6 py-5 space-y-6">
+                  {/* Meta-data: Tight 2-column clean grid */}
+                  <div>
+                    <h4 className="text-[11px] font-bold uppercase tracking-wider text-slate-400 font-mono mb-3">
+                      Audit Metadata & Provenance
+                    </h4>
+                    <div className="grid grid-cols-2 gap-x-4 gap-y-3.5 text-xs">
+                      <div>
+                        <span className="text-[11px] text-slate-400 block font-medium">1. Created By</span>
+                        <span className="font-semibold text-slate-900 block mt-0.5">{activeLogDetail.createdBy.name}</span>
+                        <span className="text-[11px] text-slate-500 font-mono block">{activeLogDetail.createdBy.role}</span>
+                        <span className="text-[10px] text-slate-400 font-mono block mt-0.5">{activeLogDetail.createdBy.date} • {activeLogDetail.createdBy.time}</span>
+                      </div>
+
+                      <div>
+                        <span className="text-[11px] text-slate-400 block font-medium">2. Modified By</span>
+                        <span className="font-semibold text-slate-900 block mt-0.5">{activeLogDetail.modifiedBy.name}</span>
+                        <span className="text-[11px] text-slate-500 font-mono block">{activeLogDetail.modifiedBy.role}</span>
+                        <span className="text-[10px] text-slate-400 font-mono block mt-0.5">{activeLogDetail.modifiedBy.branch} • {activeLogDetail.modifiedBy.device}</span>
+                      </div>
+
+                      <div>
+                        <span className="text-[11px] text-slate-400 block font-medium">Timestamp</span>
+                        <span className="font-semibold font-mono text-slate-800 block mt-0.5">{activeLogDetail.date}</span>
+                        <span className="text-[11px] text-slate-500 font-mono block">{activeLogDetail.time}</span>
+                      </div>
+
+                      <div>
+                        <span className="text-[11px] text-slate-400 block font-medium">Field Modified</span>
+                        <span className="font-semibold text-slate-900 block mt-0.5">{activeLogDetail.fieldModified}</span>
+                        <span className="text-[10px] text-slate-500 font-mono block">Log Source: {activeLogDetail.source || "System"}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <hr className="border-slate-100" />
+
+                  {/* Previous vs New Value: Side-by-Side Split Pane */}
+                  <div>
+                    <h4 className="text-[11px] font-bold uppercase tracking-wider text-slate-400 font-mono mb-2.5">
+                      Value Comparison (Diff)
+                    </h4>
+                    <div className="grid grid-cols-2 gap-3">
+                      {/* Left: Previous Value */}
+                      <div className="space-y-1">
+                        <div className="flex items-center space-x-1.5 text-rose-700">
+                          <span className="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0" />
+                          <span className="text-[11px] font-mono font-bold uppercase tracking-wider">Previous Value</span>
+                        </div>
+                        <div className="p-3 rounded-lg bg-rose-50/70 border border-rose-200/80 text-rose-900 font-mono text-xs break-words line-through min-h-[72px]">
+                          {activeLogDetail.previousValue || "(empty)"}
+                        </div>
+                      </div>
+
+                      {/* Right: New Value */}
+                      <div className="space-y-1">
+                        <div className="flex items-center space-x-1.5 text-emerald-700">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+                          <span className="text-[11px] font-mono font-bold uppercase tracking-wider">New Value</span>
+                        </div>
+                        <div className="p-3 rounded-lg bg-emerald-50/70 border border-emerald-200/80 text-emerald-900 font-mono text-xs font-semibold break-words min-h-[72px]">
+                          {activeLogDetail.newValue || "(empty)"}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <hr className="border-slate-100" />
+
+                  {/* Reason & Authorization Justification */}
+                  <div className="space-y-2">
+                    <h4 className="text-[11px] font-bold uppercase tracking-wider text-slate-400 font-mono">
+                      Reason & Authorization Justification
+                    </h4>
+                    <div className="p-3.5 rounded-lg bg-slate-50 border border-slate-200/70 text-slate-700 text-xs leading-relaxed">
+                      {activeLogDetail.reason}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Drawer Footer Actions */}
+                <div className="px-6 py-3.5 border-t border-slate-200 bg-slate-50/50 flex items-center justify-between">
+                  <span className="text-[11px] text-slate-400 font-mono">
+                    Press <kbd className="px-1.5 py-0.5 rounded border border-slate-200 bg-white text-[10px]">Esc</kbd> to exit
                   </span>
-                  <h3 className="text-base font-bold text-slate-900 mt-1">
-                    {activeLogDetail.fieldModified}
-                  </h3>
-                  <p className="text-xs text-slate-500 font-mono">
-                    Entity: {activeLogDetail.projectId} ({activeLogDetail.entityName})
-                  </p>
+                  <button
+                    onClick={() => setActiveLogDetail(null)}
+                    className="apple-button px-4 py-2 rounded-md text-xs font-semibold bg-slate-900 text-white hover:bg-slate-800 transition-colors shadow-2xs"
+                  >
+                    Close Inspector
+                  </button>
                 </div>
-                <button
-                  onClick={() => setActiveLogDetail(null)}
-                  className="p-1 rounded-lg text-slate-400 hover:text-slate-800"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-
-              {/* 7 Required Parameters Grid */}
-              <div className="space-y-3 text-xs">
-                
-                <div className="grid grid-cols-2 gap-3 p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
-                  <div>
-                    <span className="text-[10px] font-bold uppercase text-slate-400 font-mono block">1. Created By</span>
-                    <strong className="text-slate-900 block">{activeLogDetail.createdBy.name}</strong>
-                    <span className="text-[10px] text-slate-500 font-mono">{activeLogDetail.createdBy.role}</span>
-                    <span className="text-[9px] text-slate-400 font-mono block mt-0.5">{activeLogDetail.createdBy.date} • {activeLogDetail.createdBy.time}</span>
-                  </div>
-
-                  <div>
-                    <span className="text-[10px] font-bold uppercase text-slate-400 font-mono block">2. Modified By</span>
-                    <strong className="text-slate-900 block">{activeLogDetail.modifiedBy.name}</strong>
-                    <span className="text-[10px] text-slate-500 font-mono">{activeLogDetail.modifiedBy.role}</span>
-                    <span className="text-[9px] text-slate-400 font-mono block mt-0.5">{activeLogDetail.modifiedBy.branch} • {activeLogDetail.modifiedBy.device}</span>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-3 p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
-                  <div>
-                    <span className="text-[10px] font-bold uppercase text-slate-400 font-mono block">3. Field Modified</span>
-                    <strong className="text-slate-900">{activeLogDetail.fieldModified}</strong>
-                  </div>
-
-                  <div>
-                    <span className="text-[10px] font-bold uppercase text-slate-400 font-mono block">4. Date & 5. Time</span>
-                    <strong className="text-slate-900 font-mono">{activeLogDetail.date}</strong>
-                    <span className="text-[10px] text-slate-500 font-mono block">{activeLogDetail.time}</span>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <div>
-                    <span className="text-[10px] font-bold uppercase text-rose-600 font-mono block mb-1">6. Previous Value</span>
-                    <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 font-mono line-through">
-                      {activeLogDetail.previousValue}
-                    </div>
-                  </div>
-
-                  <div>
-                    <span className="text-[10px] font-bold uppercase text-emerald-700 font-mono block mb-1">7. New Value</span>
-                    <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 font-mono font-bold">
-                      {activeLogDetail.newValue}
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <span className="text-[10px] font-bold uppercase text-slate-500 font-mono block mb-1">Audit Reason & Authorization Justification</span>
-                  <div className="p-3.5 rounded-2xl bg-slate-100 border border-slate-200 text-slate-700 leading-relaxed">
-                    {activeLogDetail.reason}
-                  </div>
-                </div>
-
-              </div>
-
-              <div className="flex justify-end pt-2 border-t border-slate-100">
-                <button
-                  onClick={() => setActiveLogDetail(null)}
-                  className="apple-button px-4 py-2 rounded-xl text-xs font-semibold bg-slate-900 text-white"
-                >
-                  Close Inspector
-                </button>
-              </div>
-
+              </aside>
             </div>
           </div>
         </Portal>
