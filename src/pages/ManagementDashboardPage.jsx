@@ -47,14 +47,14 @@ export default function ManagementDashboardPage() {
               BFRD Section 26
             </span>
             <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-700 border border-slate-200 font-mono">
-              5-Pillar Executive Command Hub
+              5-Pillar Executive
             </span>
           </div>
           <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight mt-1.5">
             Executive Management Dashboard
           </h1>
           <p className="text-xs text-slate-500 mt-0.5 max-w-2xl font-medium">
-            Unified statutory executive surveillance across Leads, Sales order book, Project capacity, Financial collections, and Site bottlenecks.
+            Unified statutory executive pipeline across Leads, Sales order book, Project capacity, Financial collections, and Site bottlenecks.
           </p>
         </div>
 

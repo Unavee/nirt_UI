@@ -41,11 +41,11 @@ export default function Navbar() {
               </div>
               <div className="flex flex-col">
                 <span className="font-black text-lg tracking-tight uppercase leading-none">
-                  NIRT SOLAR
+                  NIRT RENEWABLE
                 </span>
-                <span className="text-[10px] font-mono tracking-widest text-zinc-500 uppercase mt-0.5">
+                {/* <span className="text-[10px] font-mono tracking-widest text-zinc-500 uppercase mt-0.5">
                   RENEWABLE ENERGY • SALEM
-                </span>
+                </span> */}
               </div>
             </Link>
           </div>
@@ -72,7 +72,7 @@ export default function Navbar() {
             })}
           </nav>
 
-          {/* Role Switcher Simulator for Demo */}
+          {/* Role Switcher for Demo */}
           <div className="relative">
             <button
               onClick={() => setShowRoleMenu(!showRoleMenu)}

@@ -28,12 +28,18 @@ import {
   TrendingUp,
   Sparkles,
   AlertTriangle,
-  BarChart3
+  BarChart3,
+  FileSpreadsheet,
+  Plus
 } from "lucide-react";
+import ExcelLeadImportModal from "@/components/ExcelLeadImportModal";
+import LeadCaptureModal from "@/components/LeadCaptureModal";
 
 export default function DashboardPage() {
-  const { activeRole, isExecutive, isCoordinator } = useRole();
+  const { activeRole, isExecutive, isCoordinator, can } = useRole();
   const [selectedCircle, setSelectedCircle] = useState("All Circles");
+  const [isExcelModalOpen, setIsExcelModalOpen] = useState(false);
+  const [isNewLeadModalOpen, setIsNewLeadModalOpen] = useState(false);
 
   // Determine if viewing CRM Management Executive Dashboard
   const isManagementView = isExecutive || isCoordinator || activeRole.id === "project_coordinator";
@@ -135,10 +141,10 @@ export default function DashboardPage() {
         <div>
           <div className="flex items-center space-x-2">
             <span className="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-zinc-100 text-zinc-700 border border-zinc-200">
-              CRM Executive Portal
+              CRM Executive
             </span>
             <span className="text-xs text-zinc-400 font-mono">
-              Live Operations & Telemetry
+              Live Operations 
             </span>
           </div>
           <h1 className="text-xl sm:text-2xl font-black text-zinc-900 tracking-tight mt-1">
@@ -149,8 +155,8 @@ export default function DashboardPage() {
           </p>
         </div>
 
-        {/* Circle Filter & Quick Board Link */}
-        <div className="flex items-center space-x-2.5 shrink-0">
+        {/* Circle Filter & Quick Board Link & Lead Actions */}
+        <div className="flex flex-wrap items-center gap-2 shrink-0">
           <select
             value={selectedCircle}
             onChange={(e) => setSelectedCircle(e.target.value)}
@@ -164,15 +170,37 @@ export default function DashboardPage() {
             <option value="Coimbatore">Coimbatore Circle</option>
           </select>
 
+          {/* New Lead Enquiry Action */}
+          <button
+            type="button"
+            onClick={() => setIsNewLeadModalOpen(true)}
+            className="apple-button flex items-center space-x-1.5 px-3 py-2 rounded-md text-xs font-semibold bg-white border border-slate-300 text-slate-800 hover:bg-slate-50 transition-all shadow-2xs whitespace-nowrap shrink-0"
+          >
+            <Plus className="w-3.5 h-3.5 text-blue-600" />
+            <span>New Lead Enquiry</span>
+          </button>
+
+          {/* Primary Upload Excel Leads Button */}
+          {can("sales", "create") && (
+            <button
+              type="button"
+              onClick={() => setIsExcelModalOpen(true)}
+              className="rounded-md border border-amber-600 bg-amber-500 px-3.5 py-2 text-xs font-semibold text-slate-950 hover:bg-amber-400 whitespace-nowrap shrink-0 flex items-center gap-1.5 transition-all shadow-sm active:scale-95"
+            >
+              <FileSpreadsheet className="w-4 h-4" />
+              <span>Upload Excel Leads</span>
+            </button>
+          )}
+
           <Link to="/dashboards"
-            className="apple-button flex items-center space-x-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-blue-50 border border-blue-200 text-blue-700 hover:bg-blue-100 shadow-2xs"
+            className="apple-button flex items-center space-x-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-blue-50 border border-blue-200 text-blue-700 hover:bg-blue-100 shadow-2xs whitespace-nowrap shrink-0"
           >
             <BarChart3 className="w-3.5 h-3.5" />
             <span>5-Pillar Dashboards (Sec 26)</span>
           </Link>
 
           <Link to="/pipelines"
-            className="apple-button flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-slate-900 text-white hover:bg-black shadow-md shadow-slate-900/10"
+            className="apple-button flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-slate-900 text-white hover:bg-black shadow-md shadow-slate-900/10 whitespace-nowrap shrink-0"
           >
             <span>Master Pipeline Board</span>
             <ChevronRight className="w-3.5 h-3.5" />
@@ -389,6 +417,18 @@ export default function DashboardPage() {
           </div>
         </div>
       </section>
+
+      {/* Excel Lead Import Modal */}
+      <ExcelLeadImportModal
+        isOpen={isExcelModalOpen}
+        onClose={() => setIsExcelModalOpen(false)}
+      />
+
+      {/* Lead Capture Modal */}
+      <LeadCaptureModal
+        isOpen={isNewLeadModalOpen}
+        onClose={() => setIsNewLeadModalOpen(false)}
+      />
 
     </div>
   );

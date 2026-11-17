@@ -39,8 +39,10 @@ import {
   Info,
   MapPin,
   Calendar,
-  Filter
+  Filter,
+  FileSpreadsheet
 } from "lucide-react";
+import ExcelLeadImportModal from "@/components/ExcelLeadImportModal";
 
 const PIPELINE_ALIASES = {
   1: "sales",
@@ -175,7 +177,7 @@ function formatINR(amount) {
 }
 
 export default function PipelinesPage() {
-  const { activeRole, isExecutive, isCoordinator, addAuditEntry } = useRole();
+  const { activeRole, isExecutive, isCoordinator, addAuditEntry, can } = useRole();
   const [searchParams, setSearchParams] = useSearchParams();
   const pipelineParam = searchParams.get("pipeline");
   const stepParam = searchParams.get("step");
@@ -189,6 +191,7 @@ export default function PipelinesPage() {
   const [selectedDistrict, setSelectedDistrict] = useState("All");
   const [stageFilterMode, setStageFilterMode] = useState("role");
   const [expandedInfoStageId, setExpandedInfoStageId] = useState(null);
+  const [isExcelImportModalOpen, setIsExcelImportModalOpen] = useState(false);
 
   const [isActionSheetOpen, setIsActionSheetOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -957,8 +960,21 @@ export default function PipelinesPage() {
           </button>
         </div>
 
-        {/* Search & District Filter */}
+        {/* Search, District Filter & Excel Upload Button */}
         <div className="flex items-center gap-2">
+          {/* Primary Upload Excel Leads Button (Visible on Sales Pipeline) */}
+          {selectedPipelineKey === "sales" && can("sales", "create") && (
+            <button
+              type="button"
+              onClick={() => setIsExcelImportModalOpen(true)}
+              className="rounded-md border border-amber-600 bg-amber-500 px-3.5 py-2 text-xs font-semibold text-slate-950 hover:bg-amber-400 whitespace-nowrap shrink-0 flex items-center gap-1.5 transition-all shadow-sm active:scale-95"
+              title="Upload Excel/CSV lead sheets into Sales Pipeline"
+            >
+              <FileSpreadsheet className="w-4 h-4" />
+              <span>Upload Excel Leads</span>
+            </button>
+          )}
+
           <div className="relative flex-1 sm:w-56">
             <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" />
             <input
@@ -1215,6 +1231,16 @@ export default function PipelinesPage() {
           </div>,
           document.body
         )}
+
+      {/* Excel Lead Import Modal */}
+      <ExcelLeadImportModal
+        isOpen={isExcelImportModalOpen}
+        onClose={() => setIsExcelImportModalOpen(false)}
+        onImportSuccess={(newProjects) => {
+          setProjects((prev) => [...newProjects, ...prev]);
+          showNotification(`Successfully batch-imported ${newProjects.length} leads into Sales Pipeline.`);
+        }}
+      />
     </div>
   );
 }

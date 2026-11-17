@@ -142,7 +142,7 @@ export default function OperationsDashboardView({ data }) {
           <div className="flex items-center space-x-2">
             <Layers className="w-4 h-4 text-blue-600" />
             <span className="text-xs font-bold text-slate-900 uppercase tracking-wider font-mono">
-              Stage Bottleneck Surveillance & SLA Resolution
+              Stage Bottleneck & SLA Resolution
             </span>
           </div>
           <span className="text-[11px] text-slate-400 font-mono">

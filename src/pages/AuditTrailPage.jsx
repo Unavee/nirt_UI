@@ -98,7 +98,7 @@ export default function AuditTrailPage() {
             </span>
           </div>
           <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight mt-1.5">
-            Enterprise Audit Trail & Mutation Log
+            Audit Trail Log
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
             Immutable tracking of record creation, field modifications, previous vs. new values, and management authorizations.

@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { ROLES_DEFINITIONS, INITIAL_SYSTEM_AUDIT_LOG } from "@/data/rolesData";
+import { DEFAULT_RBAC_MATRIX } from "@/data/rbacData";
 
 const RoleContext = createContext(null);
 
@@ -114,6 +115,23 @@ export function RoleProvider({ children }) {
     return false;
   };
 
+  // RBAC Permission Check: can(moduleId, actionId)
+  const can = (moduleId, actionId = "view") => {
+    try {
+      const stored = localStorage.getItem("nirt_rbac_permission_matrix");
+      const matrix = stored ? JSON.parse(stored) : DEFAULT_RBAC_MATRIX;
+      const roleId = activeRbacRoleId || "super_admin";
+      const rolePermissions = matrix[roleId];
+      if (!rolePermissions) return true;
+      if (rolePermissions[moduleId] && rolePermissions[moduleId][actionId] !== undefined) {
+        return Boolean(rolePermissions[moduleId][actionId]);
+      }
+      return true;
+    } catch {
+      return true;
+    }
+  };
+
   return (
     <RoleContext.Provider 
       value={{ 
@@ -125,6 +143,7 @@ export function RoleProvider({ children }) {
         isCoordinator,
         canViewAudit,
         isStepAllowed,
+        can,
         auditLogs,
         addAuditEntry
       }}

@@ -582,7 +582,7 @@ export default function UserRoleManagementPage() {
             {/* Title & Concise Subtitle */}
             <div className="space-y-1">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-md bg-slate-900 text-amber-500 flex items-center justify-center shrink-0">
+                <div className="w-9 h-9 rounded-md bg-slate-900 text-white flex items-center justify-center shrink-0">
                   <ShieldCheck className="w-5 h-5" />
                 </div>
                 <div>
@@ -591,9 +591,9 @@ export default function UserRoleManagementPage() {
                   </h1>
                 </div>
               </div>
-              <p className="text-xs sm:text-sm text-slate-500 pl-12 max-w-3xl">
+              {/* <p className="text-xs sm:text-sm text-slate-500 pl-12 max-w-3xl">
                 Enterprise access governance distinguishing Administrator from Regular Department tiers with immutable, timestamped audit logging across all 3 pipelines.
-              </p>
+              </p> */}
             </div>
 
             {/* Right-aligned Single-Line Toolbar */}
@@ -875,61 +875,8 @@ export default function UserRoleManagementPage() {
 
             {/* RIGHT PANE (8 Columns): Sticky Detail, Bulk Presets & Permission Matrix Table */}
             <div className="lg:col-span-8 space-y-4">
-              {/* Sticky Role Header */}
-              <div className="sticky top-4 z-20 bg-white/95 backdrop-blur border border-slate-200 rounded-lg p-4 shadow-sm">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <h2 className="text-lg font-bold text-slate-900">
-                        {inspectedRole.name}
-                      </h2>
-                      <span className={`px-2 py-0.5 rounded text-[11px] font-medium border ${
-                        inspectedRole.tier === "Administrator"
-                          ? "bg-amber-50 text-amber-800 border-amber-200"
-                          : "bg-blue-50 text-blue-800 border-blue-200"
-                      }`}>
-                        {inspectedRole.tier} Tier
-                      </span>
-                    </div>
-                    <div className="text-xs text-slate-500 mt-0.5">
-                      {inspectedRole.department} • Default Staff: <span className="font-medium text-slate-700">{inspectedRole.defaultStaff}</span> ({inspectedRole.staffEmail})
-                    </div>
-                  </div>
-
-                  {/* Primary "Test Session as [Role]" Button */}
-                  <div className="flex items-center gap-2 shrink-0">
-                    <button
-                      onClick={() => handleTestSession(inspectedRole)}
-                      className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium rounded-md transition-colors whitespace-nowrap shrink-0 shadow-sm ${
-                        (activeRbacRoleId || "super_admin") === inspectedRole.id
-                          ? "bg-emerald-50 text-emerald-800 border border-emerald-300 font-semibold"
-                          : "bg-slate-900 text-white hover:bg-slate-800"
-                      }`}
-                    >
-                      <UserCheck className="w-3.5 h-3.5" />
-                      <span>
-                        {(activeRbacRoleId || "super_admin") === inspectedRole.id
-                          ? "Active Session Role"
-                          : `Test Session as ${inspectedRole.name.split("/")[0].trim()}`}
-                      </span>
-                    </button>
-                  </div>
-                </div>
-
-                {/* Description & Inline "Saved & Audited" Indicator */}
-                <div className="mt-3 pt-3 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs">
-                  <p className="text-slate-600 text-[11px] max-w-xl">
-                    {inspectedRole.description}
-                  </p>
-
-                  {/* Subtle Inline "Saved & Audited" Indicator with Timestamp */}
-                  <div className="flex items-center gap-1.5 text-[11px] text-slate-500 whitespace-nowrap shrink-0 font-mono tabular-nums">
-                    <span className={`w-2 h-2 rounded-full ${showSavedPulse ? "bg-emerald-500 animate-ping" : "bg-emerald-500"}`}></span>
-                    <span className="font-medium text-slate-700">Saved & Audited</span>
-                    <span className="text-slate-400">• {lastSavedTimestamp}</span>
-                  </div>
-                </div>
-              </div>
+              {/* Sticky Role Header sticky top-4  */}
+              
 
               {/* Quick Preset / Bulk Controls Bar */}
               <div className="bg-slate-50 border border-slate-200 rounded-lg p-3 flex flex-wrap items-center justify-between gap-3 text-xs">
