@@ -1,8 +1,8 @@
 // NIRT Solar EPC - Role & departmental workspace configuration
 // Strictly aligned with client specification:
 // 1. Sales Pipeline (7 Open, 3 Closed)
-// 2. Project Execution Pipeline (12 Open, 2 Closed)
-// 3. Subsidy Flow Pipeline (3 Open, 1 Closed)
+// 2. Execution Pipeline (12 Open, 2 Closed)
+// 3. Subsidy Pipeline (3 Open, 1 Closed)
 
 export const ROLE_WORKSPACES = {
   sales_rep: {
@@ -60,7 +60,7 @@ export const ROLE_WORKSPACES = {
     pipelineCode: "2",
     menuItems: [
       { label: "Store & Inventory Desk", href: "/", icon: "Truck" },
-      { label: "2. Project Execution Pipeline", href: "/pipelines?pipeline=execution", icon: "Layers", badge: "12 Open" },
+      { label: "2. Execution Pipeline", href: "/pipelines?pipeline=execution", icon: "Layers", badge: "12 Open" },
       { label: "Procurement & BoM", href: "/projects/NIRT-26-0042", icon: "Package", tabTarget: "procurement" },
       { label: "Store & Inventory", href: "/projects/NIRT-26-0042", icon: "Warehouse", tabTarget: "store" },
       { label: "Material Pending Report", href: "/reports", icon: "FileSpreadsheet" }
@@ -82,7 +82,7 @@ export const ROLE_WORKSPACES = {
     pipelineCode: "2",
     menuItems: [
       { label: "EPC Site Operations", href: "/", icon: "Wrench" },
-      { label: "2. Project Execution Pipeline", href: "/pipelines?pipeline=execution", icon: "Layers", badge: "12 Open" },
+      { label: "2. Execution Pipeline", href: "/pipelines?pipeline=execution", icon: "Layers", badge: "12 Open" },
       { label: "Installation & Site Erection", href: "/projects/NIRT-26-0042", icon: "Activity", tabTarget: "installation" },
       { label: "Inspection & Commissioning", href: "/projects/NIRT-26-0042", icon: "ShieldCheck", tabTarget: "inspection" },
       { label: "Net Metering Synchronisation", href: "/projects/NIRT-26-0042", icon: "Zap", tabTarget: "net_metering" },
@@ -106,7 +106,7 @@ export const ROLE_WORKSPACES = {
     pipelineCode: "2",
     menuItems: [
       { label: "Liaison Command Desk", href: "/", icon: "Zap" },
-      { label: "2. Project Execution Pipeline", href: "/pipelines?pipeline=execution", icon: "Layers", badge: "12 Open" },
+      { label: "2. Execution Pipeline", href: "/pipelines?pipeline=execution", icon: "Layers", badge: "12 Open" },
       { label: "TANGEDCO Feasibility Sanctions", href: "/projects/NIRT-26-0042", icon: "Zap", tabTarget: "feasibility" },
       { label: "DISCOM Application Filing", href: "/projects/NIRT-26-0042", icon: "Building2", tabTarget: "discom_application" },
       { label: "Bi-directional Net Metering", href: "/projects/NIRT-26-0042", icon: "Zap", tabTarget: "net_metering" },
@@ -129,7 +129,7 @@ export const ROLE_WORKSPACES = {
     pipelineCode: "2",
     menuItems: [
       { label: "Accounts Desk Home", href: "/", icon: "IndianRupee" },
-      { label: "2. Project Execution Pipeline", href: "/pipelines?pipeline=execution", icon: "Layers", badge: "12 Open" },
+      { label: "2. Execution Pipeline", href: "/pipelines?pipeline=execution", icon: "Layers", badge: "12 Open" },
       { label: "Financial Dashboard", href: "/dashboards", icon: "BarChart3" },
       { label: "80% Advance Clearance", href: "/projects/NIRT-26-0042", icon: "CreditCard", tabTarget: "financials" },
       { label: "Final Payment & NOC", href: "/projects/NIRT-26-0042", icon: "CheckCircle2", tabTarget: "final_payment" },
@@ -153,7 +153,7 @@ export const ROLE_WORKSPACES = {
     pipelineCode: "3",
     menuItems: [
       { label: "PM Surya Ghar Desk", href: "/", icon: "Landmark" },
-      { label: "3. Subsidy Flow Pipeline", href: "/pipelines?pipeline=subsidy", icon: "Layers", badge: "3 Open" },
+      { label: "3. Subsidy Pipeline", href: "/pipelines?pipeline=subsidy", icon: "Layers", badge: "3 Open" },
       { label: "Subsidy DBT Management", href: "/projects/NIRT-26-0042", icon: "Landmark", tabTarget: "subsidy_management" },
       { label: "Project Closure & Handover", href: "/projects/NIRT-26-0042", icon: "Award", tabTarget: "project_closure" },
       { label: "Subsidy Status Report", href: "/reports", icon: "FileSpreadsheet" }
@@ -177,8 +177,8 @@ export const ROLE_WORKSPACES = {
       { label: "Executive Dashboards", href: "/dashboards", icon: "BarChart3" },
       { label: "Management MIS Reports", href: "/reports", icon: "FileSpreadsheet", badge: "22" },
       { label: "1. Sales Pipeline", href: "/pipelines?pipeline=sales", icon: "Layers", badge: "7 Open" },
-      { label: "2. Project Execution Pipeline", href: "/pipelines?pipeline=execution", icon: "Layers", badge: "12 Open" },
-      { label: "3. Subsidy Flow Pipeline", href: "/pipelines?pipeline=subsidy", icon: "Layers", badge: "3 Open" },
+      { label: "2. Execution Pipeline", href: "/pipelines?pipeline=execution", icon: "Layers", badge: "12 Open" },
+      { label: "3. Subsidy Pipeline", href: "/pipelines?pipeline=subsidy", icon: "Layers", badge: "3 Open" },
       { label: "Projects Master Registry", href: "/projects", icon: "FolderKanban" },
       { label: "Approvals Governance Hub", href: "/approvals", icon: "ShieldCheck" },
       { label: "Audit Trail", href: "/audit", icon: "ShieldAlert" },
@@ -186,9 +186,9 @@ export const ROLE_WORKSPACES = {
       { label: "Mobile Field Hub", href: "/field", icon: "Smartphone", mobileOnly: true }
     ],
     assignedSteps: [
-      { step: "P1", name: "1. Sales Pipeline (7 Open, 3 Closed)", pipeline: "Sales", status: "Lead to Order" },
-      { step: "P2", name: "2. Project Execution Pipeline (12 Open, 2 Closed)", pipeline: "Execution", status: "Advance to Completion" },
-      { step: "P3", name: "3. Subsidy Flow Pipeline (3 Open, 1 Closed)", pipeline: "Subsidy", status: "Claim to DBT" }
+      { step: "P1", name: "Sales Pipeline Overview", pipeline: "Sales", status: "Lead to Order" },
+      { step: "P2", name: "Execution & Grid Operations", pipeline: "Execution", status: "Advance to Completion" },
+      { step: "P3", name: "Subsidy Disbursal & DBT", pipeline: "Subsidy", status: "Claim to DBT" }
     ],
     spotlightTabs: "ALL"
   },
@@ -205,17 +205,17 @@ export const ROLE_WORKSPACES = {
       { label: "Executive Dashboards", href: "/dashboards", icon: "BarChart3" },
       { label: "Management MIS Reports", href: "/reports", icon: "FileSpreadsheet", badge: "22" },
       { label: "1. Sales Pipeline", href: "/pipelines?pipeline=sales", icon: "Layers", badge: "7 Open" },
-      { label: "2. Project Execution Pipeline", href: "/pipelines?pipeline=execution", icon: "Layers", badge: "12 Open" },
-      { label: "3. Subsidy Flow Pipeline", href: "/pipelines?pipeline=subsidy", icon: "Layers", badge: "3 Open" },
+      { label: "2. Execution Pipeline", href: "/pipelines?pipeline=execution", icon: "Layers", badge: "12 Open" },
+      { label: "3. Subsidy Pipeline", href: "/pipelines?pipeline=subsidy", icon: "Layers", badge: "3 Open" },
       { label: "Projects Master Registry", href: "/projects", icon: "FolderKanban" },
       { label: "Approvals Governance Hub", href: "/approvals", icon: "ShieldCheck" },
       { label: "Audit Trail", href: "/audit", icon: "ShieldAlert" },
       { label: "Customer Service & Complaints", href: "/service", icon: "Headset" }
     ],
     assignedSteps: [
-      { step: "P1", name: "1. Sales Pipeline (7 Open, 3 Closed)", pipeline: "Sales", status: "Lead to Order" },
-      { step: "P2", name: "2. Project Execution Pipeline (12 Open, 2 Closed)", pipeline: "Execution", status: "Advance to Completion" },
-      { step: "P3", name: "3. Subsidy Flow Pipeline (3 Open, 1 Closed)", pipeline: "Subsidy", status: "Claim to DBT" }
+      { step: "P1", name: "Sales Pipeline Overview", pipeline: "Sales", status: "Lead to Order" },
+      { step: "P2", name: "Execution & Grid Operations", pipeline: "Execution", status: "Advance to Completion" },
+      { step: "P3", name: "Subsidy Disbursal & DBT", pipeline: "Subsidy", status: "Claim to DBT" }
     ],
     spotlightTabs: "ALL"
   }

@@ -220,20 +220,20 @@ export default function Sidebar() {
                 to={targetUrl}
                 className={`apple-button flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-all ${
                   isActive
-                    ? "bg-slate-900 text-white font-semibold shadow-xs"
+                    ? "bg-blue-50 text-blue-900 font-semibold border border-blue-200/80 shadow-2xs"
                     : "text-slate-600 hover:text-slate-900 hover:bg-slate-100/80"
                 } ${isCollapsed ? "justify-center px-2" : ""}`}
                 title={isCollapsed ? item.label : ""}
               >
-                <div className="flex items-center space-x-2.5 min-w-0">
-                  <Icon className={`w-4 h-4 shrink-0 ${isActive ? "text-white" : "text-slate-500"}`} />
+                <div className="flex items-center space-x-2.5 min-w-0 flex-1 mr-1">
+                  <Icon className={`w-4 h-4 shrink-0 ${isActive ? "text-blue-600" : "text-slate-500"}`} />
                   {!isCollapsed && <span className="truncate">{item.label}</span>}
                 </div>
                 {!isCollapsed && item.badge && (
                   <span
-                    className={`text-[9px] font-mono font-bold px-1.5 py-0.2 rounded-md ${
+                    className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded-md whitespace-nowrap shrink-0 ${
                       isActive
-                        ? "bg-white/20 text-white"
+                        ? "bg-blue-100 text-blue-800 border border-blue-200/60"
                         : "bg-slate-100 text-slate-600"
                     }`}
                   >
@@ -324,7 +324,7 @@ export default function Sidebar() {
                 to="/audit"
                 className={`apple-button flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs font-medium transition-all ${
                   pathname === "/audit"
-                    ? "bg-slate-900 text-white shadow-xs font-semibold"
+                    ? "bg-blue-50 text-blue-900 font-semibold border border-blue-200/80 shadow-2xs"
                     : "text-slate-600 hover:text-slate-900 hover:bg-slate-100/70"
                 } ${isCollapsed ? "justify-center px-2" : ""}`}
                 title={isCollapsed ? "Audit Trail" : ""}
@@ -336,7 +336,7 @@ export default function Sidebar() {
                 to="/settings/users"
                 className={`apple-button flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs font-medium transition-all ${
                   pathname === "/settings/users"
-                    ? "bg-slate-900 text-white shadow-xs font-semibold"
+                    ? "bg-blue-50 text-blue-900 font-semibold border border-blue-200/80 shadow-2xs"
                     : "text-slate-600 hover:text-slate-900 hover:bg-slate-100/70"
                 } ${isCollapsed ? "justify-center px-2" : ""}`}
                 title={isCollapsed ? "Users & Roles Governance" : ""}
