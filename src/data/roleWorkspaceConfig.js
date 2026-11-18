@@ -62,7 +62,7 @@ export const ROLE_WORKSPACES = {
       { label: "Store & Inventory Desk", href: "/", icon: "Truck" },
       { label: "2. Execution Pipeline", href: "/pipelines?pipeline=execution", icon: "Layers", badge: "12 Open" },
       { label: "Procurement & BoM", href: "/projects/NIRT-26-0042", icon: "Package", tabTarget: "procurement" },
-      { label: "Store & Inventory", href: "/projects/NIRT-26-0042", icon: "Warehouse", tabTarget: "store" },
+      // { label: "Store & Inventory", href: "/projects/NIRT-26-0042", icon: "Warehouse", tabTarget: "store" },
       { label: "Material Pending Report", href: "/reports", icon: "FileSpreadsheet" }
     ],
     assignedSteps: [
